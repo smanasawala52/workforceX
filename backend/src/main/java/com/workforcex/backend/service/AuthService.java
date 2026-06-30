@@ -1,0 +1,32 @@
+package com.workforcex.backend.service;
+
+import com.workforcex.backend.dto.RegisterRequest;
+import com.workforcex.backend.entity.User;
+import com.workforcex.backend.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor // generates constructor for final fields = constructor injection
+public class AuthService {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public User register(RegisterRequest request) {
+        if (userRepository.existsByMobileNumber(request.mobileNumber())) {
+            throw new IllegalArgumentException("Mobile number already registered");
+        }
+
+        // Dev-mode rule: password = mobile number, but always stored as a BCrypt hash
+        String hashedPassword = passwordEncoder.encode(request.mobileNumber());
+
+        User user = new User();
+        user.setMobileNumber(request.mobileNumber());
+        user.setPassword(hashedPassword);
+        user.setRole(request.role());
+
+        return userRepository.save(user);
+    }
+}
