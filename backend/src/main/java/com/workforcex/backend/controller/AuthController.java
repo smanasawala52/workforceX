@@ -1,6 +1,7 @@
 package com.workforcex.backend.controller;
 
 import com.workforcex.backend.dto.RegisterRequest;
+import com.workforcex.backend.dto.RegisterResponse;
 import com.workforcex.backend.entity.User;
 import com.workforcex.backend.service.AuthService;
 import jakarta.validation.Valid;
@@ -20,8 +21,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
         User savedUser = authService.register(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(RegisterResponse.fromEntity(savedUser));
     }
 }
