@@ -101,7 +101,8 @@ class AuthControllerIntegrationTest {
                         .content(loginBody))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.mobileNumber").value(MOBILE))
-                .andExpect(jsonPath("$.role").value("EMPLOYER"));
+                .andExpect(jsonPath("$.role").value("EMPLOYER"))
+                .andExpect(jsonPath("$.token").isNotEmpty());
     }
 
     @Test
@@ -134,5 +135,18 @@ class AuthControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loginBody))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void protectedEndpoint_rejectsRequest_withoutToken() throws Exception {
+        // No matching controller exists yet for this path, but the security
+        // filter chain should reject it (401/403) BEFORE Spring even looks
+        // for a matching route - proving anyRequest().authenticated() works.
+        mockMvc.perform(post("/api/some-protected-endpoint"))
+                .andExpect(result -> {
+                    int status = result.getResponse().getStatus();
+                    org.assertj.core.api.Assertions.assertThat(status)
+                            .isIn(401, 403);
+                });
     }
 }

@@ -5,6 +5,7 @@ import com.workforcex.backend.dto.LoginResponse;
 import com.workforcex.backend.dto.RegisterRequest;
 import com.workforcex.backend.dto.RegisterResponse;
 import com.workforcex.backend.entity.User;
+import com.workforcex.backend.security.JwtUtil;
 import com.workforcex.backend.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+    private final JwtUtil jwtUtil;
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
@@ -31,6 +33,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         User user = authService.login(request);
-        return ResponseEntity.ok(LoginResponse.fromEntity(user));
+        String token = jwtUtil.generateToken(user.getMobileNumber(), user.getRole().name());
+        return ResponseEntity.ok(LoginResponse.fromEntity(user, token));
     }
 }

@@ -8,9 +8,10 @@ import java.util.UUID;
 public record LoginResponse(
         UUID id,
         String mobileNumber,
-        Role role
+        Role role,
+        String token
 ) {
-    public static LoginResponse fromEntity(User user) {
-        return new LoginResponse(user.getId(), user.getMobileNumber(), user.getRole());
+    public static LoginResponse fromEntity(User user, String token) {
+        return new LoginResponse(user.getId(), user.getMobileNumber(), user.getRole(), token);
     }
 }
