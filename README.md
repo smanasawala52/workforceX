@@ -21,6 +21,6 @@ Employer creates a Job → System ranks Workers → Employer sees ranked candida
 - [x] Milestone 8: JWT authentication
 - [x] Milestone 9: Worker profile
 - [x] Milestone 10: Employer profile
-- [ ] Milestone 11: Job module
+- [x] Milestone 11: Job module
 - [ ] Milestone 12: Matching engine
 - [ ] Android app (parallel track)

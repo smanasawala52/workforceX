@@ -1,64 +1,14 @@
 package com.workforcex.backend.controller;
 
-import com.workforcex.backend.repository.EmployerProfileRepository;
-import com.workforcex.backend.repository.UserRepository;
-import com.workforcex.backend.repository.WorkerProfileRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class EmployerProfileControllerIntegrationTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private EmployerProfileRepository employerProfileRepository;
-
-    @Autowired
-    private WorkerProfileRepository workerProfileRepository;
+class EmployerProfileControllerIntegrationTest extends AbstractIntegrationTest {
 
     private static final String MOBILE = "9000022222";
-
-    @BeforeEach
-    void cleanDatabase() {
-        employerProfileRepository.deleteAll();
-        workerProfileRepository.deleteAll(); // other test classes share this DB - must clean both
-        userRepository.deleteAll();
-    }
-
-    private String registerAndLogin() throws Exception {
-        String registerBody = """
-                { "mobileNumber": "%s", "role": "EMPLOYER" }
-                """.formatted(MOBILE);
-        mockMvc.perform(post("/api/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(registerBody));
-
-        String loginBody = """
-                { "mobileNumber": "%s", "password": "%s" }
-                """.formatted(MOBILE, MOBILE);
-        MvcResult loginResult = mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginBody))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        return loginResult.getResponse().getContentAsString().split("\"token\":\"")[1].split("\"")[0];
-    }
 
     @Test
     void getProfile_withoutToken_isRejected() throws Exception {
@@ -71,7 +21,7 @@ class EmployerProfileControllerIntegrationTest {
 
     @Test
     void saveThenGetProfile_succeeds_withValidToken() throws Exception {
-        String token = registerAndLogin();
+        String token = registerAndLoginAs(MOBILE, "EMPLOYER");
 
         String profileBody = """
                 {

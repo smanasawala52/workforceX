@@ -1,51 +1,14 @@
 package com.workforcex.backend.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.workforcex.backend.repository.EmployerProfileRepository;
-import com.workforcex.backend.repository.UserRepository;
-import com.workforcex.backend.repository.WorkerProfileRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Full integration test: real HTTP request -> controller -> service -> H2 database.
- * Confirms registration and login actually work end-to-end, not just in isolation.
- */
-@SpringBootTest
-@AutoConfigureMockMvc
-class AuthControllerIntegrationTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private WorkerProfileRepository workerProfileRepository;
-
-    @Autowired
-    private EmployerProfileRepository employerProfileRepository;
+class AuthControllerIntegrationTest extends AbstractIntegrationTest {
 
     private static final String MOBILE = "9111122233";
-
-    @BeforeEach
-    void cleanDatabase() {
-        workerProfileRepository.deleteAll();
-        employerProfileRepository.deleteAll();
-        userRepository.deleteAll();
-    }
 
     @Test
     void register_returns201_withUserDetails_noPasswordExposed() throws Exception {
@@ -93,22 +56,13 @@ class AuthControllerIntegrationTest {
 
     @Test
     void login_returns200_withCorrectCredentials() throws Exception {
-        String registerBody = """
-                { "mobileNumber": "%s", "role": "EMPLOYER" }
-                """.formatted(MOBILE);
-
-        mockMvc.perform(post("/api/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(registerBody));
-
-        // Dev-mode rule: password equals mobile number
-        String loginBody = """
-                { "mobileNumber": "%s", "password": "%s" }
-                """.formatted(MOBILE, MOBILE);
-
+        registerAndLoginAs(MOBILE, "EMPLOYER"); // register + login in one shot via helper
+        // re-login explicitly to assert response shape
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginBody))
+                        .content("""
+                                { "mobileNumber": "%s", "password": "%s" }
+                                """.formatted(MOBILE, MOBILE)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.mobileNumber").value(MOBILE))
                 .andExpect(jsonPath("$.role").value("EMPLOYER"))
@@ -117,46 +71,32 @@ class AuthControllerIntegrationTest {
 
     @Test
     void login_returns400_withWrongPassword() throws Exception {
-        String registerBody = """
-                { "mobileNumber": "%s", "role": "WORKER" }
-                """.formatted(MOBILE);
-
-        mockMvc.perform(post("/api/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(registerBody));
-
-        String loginBody = """
-                { "mobileNumber": "%s", "password": "wrong-password" }
-                """.formatted(MOBILE);
+        registerAndLoginAs(MOBILE, "WORKER");
 
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginBody))
+                        .content("""
+                                { "mobileNumber": "%s", "password": "wrong" }
+                                """.formatted(MOBILE)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void login_returns400_whenUserDoesNotExist() throws Exception {
-        String loginBody = """
-                { "mobileNumber": "9999999999", "password": "9999999999" }
-                """;
-
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginBody))
+                        .content("""
+                                { "mobileNumber": "9999999999", "password": "9999999999" }
+                                """))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void protectedEndpoint_rejectsRequest_withoutToken() throws Exception {
-        // No matching controller exists yet for this path, but the security
-        // filter chain should reject it (401/403) BEFORE Spring even looks
-        // for a matching route - proving anyRequest().authenticated() works.
         mockMvc.perform(post("/api/some-protected-endpoint"))
                 .andExpect(result -> {
                     int status = result.getResponse().getStatus();
-                    org.assertj.core.api.Assertions.assertThat(status)
-                            .isIn(401, 403);
+                    org.assertj.core.api.Assertions.assertThat(status).isIn(401, 403);
                 });
     }
 }
