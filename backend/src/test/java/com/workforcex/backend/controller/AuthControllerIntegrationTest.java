@@ -1,7 +1,9 @@
 package com.workforcex.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.workforcex.backend.repository.EmployerProfileRepository;
 import com.workforcex.backend.repository.UserRepository;
+import com.workforcex.backend.repository.WorkerProfileRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +32,18 @@ class AuthControllerIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private WorkerProfileRepository workerProfileRepository;
+
+    @Autowired
+    private EmployerProfileRepository employerProfileRepository;
+
     private static final String MOBILE = "9111122233";
 
     @BeforeEach
     void cleanDatabase() {
+        workerProfileRepository.deleteAll();
+        employerProfileRepository.deleteAll();
         userRepository.deleteAll();
     }
 

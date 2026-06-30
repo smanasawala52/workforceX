@@ -1,5 +1,6 @@
 package com.workforcex.backend.controller;
 
+import com.workforcex.backend.repository.EmployerProfileRepository;
 import com.workforcex.backend.repository.UserRepository;
 import com.workforcex.backend.repository.WorkerProfileRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,11 +28,15 @@ class WorkerProfileControllerIntegrationTest {
     @Autowired
     private WorkerProfileRepository workerProfileRepository;
 
+    @Autowired
+    private EmployerProfileRepository employerProfileRepository;
+
     private static final String MOBILE = "9000011111";
 
     @BeforeEach
     void cleanDatabase() {
         workerProfileRepository.deleteAll();
+        employerProfileRepository.deleteAll(); // other test classes share this DB - must clean both
         userRepository.deleteAll();
     }
 
