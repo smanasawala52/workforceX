@@ -1,5 +1,7 @@
 package com.workforcex.backend.controller;
 
+import com.workforcex.backend.dto.LoginRequest;
+import com.workforcex.backend.dto.LoginResponse;
 import com.workforcex.backend.dto.RegisterRequest;
 import com.workforcex.backend.dto.RegisterResponse;
 import com.workforcex.backend.entity.User;
@@ -24,5 +26,11 @@ public class AuthController {
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
         User savedUser = authService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(RegisterResponse.fromEntity(savedUser));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        User user = authService.login(request);
+        return ResponseEntity.ok(LoginResponse.fromEntity(user));
     }
 }

@@ -1,5 +1,6 @@
 package com.workforcex.backend.service;
 
+import com.workforcex.backend.dto.LoginRequest;
 import com.workforcex.backend.dto.RegisterRequest;
 import com.workforcex.backend.entity.User;
 import com.workforcex.backend.repository.UserRepository;
@@ -28,5 +29,16 @@ public class AuthService {
         user.setRole(request.role());
 
         return userRepository.save(user);
+    }
+
+    public User login(LoginRequest request) {
+        User user = userRepository.findByMobileNumber(request.mobileNumber())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid mobile number or password"));
+
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+            throw new IllegalArgumentException("Invalid mobile number or password");
+        }
+
+        return user;
     }
 }
