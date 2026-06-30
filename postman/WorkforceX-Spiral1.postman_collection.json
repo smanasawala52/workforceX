@@ -66,6 +66,24 @@
           }
         },
         {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobileNumber\": \"9876543210\",\n  \"password\": \"9876543210\"\n}"
+            }
+          }
+        },
+        {
           "name": "Register - Invalid Mobile (should fail validation)",
           "request": {
             "method": "POST",

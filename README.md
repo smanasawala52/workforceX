@@ -12,13 +12,13 @@ Employer creates a Job → System ranks Workers → Employer sees ranked candida
 
 ## Spiral 1 Status
 - [x] Milestone 1: Spring Boot project skeleton (Web, Data JPA, H2, Security, Validation, Lombok)
-- [ ] Milestone 2: Package structure
-- [ ] Milestone 3: Role enum
-- [ ] Milestone 4: User entity
-- [ ] Milestone 5: User repository
-- [ ] Milestone 6: Registration API
-- [ ] Milestone 7: Login API
-- [ ] Milestone 8: JWT authentication
+- [x] Milestone 2: Package structure
+- [x] Milestone 3: Role enum
+- [x] Milestone 4: User entity
+- [x] Milestone 5: User repository
+- [x] Milestone 6: Registration API
+- [x] Milestone 7: Login API
+- [x] Milestone 8: JWT authentication
 - [ ] Milestone 9: Worker profile
 - [ ] Milestone 10: Employer profile
 - [ ] Milestone 11: Job module
