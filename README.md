@@ -22,5 +22,5 @@ Employer creates a Job → System ranks Workers → Employer sees ranked candida
 - [x] Milestone 9: Worker profile
 - [x] Milestone 10: Employer profile
 - [x] Milestone 11: Job module
-- [ ] Milestone 12: Matching engine
-- [ ] Android app (parallel track)
+- [x] Milestone 12: Matching engine
+- [x] Android app (parallel track) — two separate apps: worker + employer

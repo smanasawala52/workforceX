@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">WorkforceX - Hire</string>
+    <string name="hint_mobile">Mobile Number (10 digits)</string>
+    <string name="hint_password">Password</string>
+    <string name="btn_login">Login</string>
+    <string name="btn_register">Register</string>
+    <string name="label_no_account">Don\'t have an account? Register</string>
+    <string name="label_have_account">Already registered? Login</string>
+    <string name="role_worker">Worker</string>
+    <string name="role_employer">Employer</string>
+    <string name="error_mobile_required">Enter your 10-digit mobile number</string>
+    <string name="error_role_required">Select a role</string>
+</resources>

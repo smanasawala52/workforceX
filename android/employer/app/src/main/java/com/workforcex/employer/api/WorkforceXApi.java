@@ -1,0 +1,76 @@
+package com.workforcex.employer.api;
+
+import java.util.List;
+import retrofit2.Call;
+import retrofit2.http.*;
+
+public interface WorkforceXApi {
+
+    // ── Auth ──────────────────────────────────────────────────────────────────
+
+    @POST("api/auth/register")
+    Call<RegisterResponse> register(@Body RegisterRequest request);
+
+    @POST("api/auth/login")
+    Call<LoginResponse> login(@Body LoginRequest request);
+
+    // ── Worker Profile ────────────────────────────────────────────────────────
+
+    @PUT("api/worker/profile")
+    Call<WorkerProfileResponse> saveWorkerProfile(
+            @Header("Authorization") String token,
+            @Body WorkerProfileRequest request
+    );
+
+    @GET("api/worker/profile")
+    Call<WorkerProfileResponse> getWorkerProfile(@Header("Authorization") String token);
+
+    // ── Employer Profile ──────────────────────────────────────────────────────
+
+    @PUT("api/employer/profile")
+    Call<EmployerProfileResponse> saveEmployerProfile(
+            @Header("Authorization") String token,
+            @Body EmployerProfileRequest request
+    );
+
+    @GET("api/employer/profile")
+    Call<EmployerProfileResponse> getEmployerProfile(@Header("Authorization") String token);
+
+    // ── Jobs ──────────────────────────────────────────────────────────────────
+
+    @POST("api/jobs")
+    Call<JobResponse> createJob(
+            @Header("Authorization") String token,
+            @Body JobRequest request
+    );
+
+    @GET("api/jobs")
+    Call<List<JobResponse>> getMyJobs(@Header("Authorization") String token);
+
+    @GET("api/jobs/{jobId}")
+    Call<JobResponse> getJobById(
+            @Header("Authorization") String token,
+            @Path("jobId") String jobId
+    );
+
+    @PUT("api/jobs/{jobId}")
+    Call<JobResponse> updateJob(
+            @Header("Authorization") String token,
+            @Path("jobId") String jobId,
+            @Body JobRequest request
+    );
+
+    @DELETE("api/jobs/{jobId}")
+    Call<Void> deleteJob(
+            @Header("Authorization") String token,
+            @Path("jobId") String jobId
+    );
+
+    // ── Matching ──────────────────────────────────────────────────────────────
+
+    @GET("api/matching/{jobId}")
+    Call<List<MatchedWorker>> getMatchedWorkers(
+            @Header("Authorization") String token,
+            @Path("jobId") String jobId
+    );
+}
