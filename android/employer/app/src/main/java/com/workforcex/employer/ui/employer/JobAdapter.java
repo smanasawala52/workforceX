@@ -43,7 +43,16 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         holder.tvTitle.setText(job.title);
         holder.tvLocation.setText("📍 " + (job.location != null ? job.location : "Not specified"));
         holder.tvSkills.setText("Skills: " + (job.skillsRequired != null ? job.skillsRequired : "Any"));
-        holder.tvSalary.setText(job.salary != null ? "₹" + job.salary.intValue() + "/month" : "");
+        String salaryText = "";
+        if (job.salaryMin != null && job.salaryMax != null) {
+            salaryText = "₹" + job.salaryMin.intValue() + " - ₹" + job.salaryMax.intValue() + "/month";
+        } else if (job.salaryMin != null) {
+            salaryText = "₹" + job.salaryMin.intValue() + "+/month";
+        }
+        if (job.openPositions != null && job.openPositions > 0) {
+            salaryText += (salaryText.isEmpty() ? "" : "  ·  ") + job.openPositions + " openings";
+        }
+        holder.tvSalary.setText(salaryText);
         holder.btnFindCandidates.setOnClickListener(v -> onFindCandidates.onAction(job));
         holder.btnEdit.setOnClickListener(v -> onEdit.onAction(job));
     }

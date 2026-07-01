@@ -20,7 +20,7 @@ class JobControllerIntegrationTest extends AbstractIntegrationTest {
                   "skillsRequired": "security,patrolling",
                   "experienceRequired": 2,
                   "location": "Ahmedabad",
-                  "salary": 15000,
+                  "salaryMin": 14000, "salaryMax": 16000, "openPositions": 2,
                   "description": "Night shift security guard"
                 }
                 """;
@@ -59,7 +59,7 @@ class JobControllerIntegrationTest extends AbstractIntegrationTest {
                                   "skillsRequired": "security,patrolling",
                                   "experienceRequired": 5,
                                   "location": "Ahmedabad",
-                                  "salary": 20000,
+                                  "salaryMin": 19000, "salaryMax": 21000, "openPositions": 1,
                                   "description": "Updated"
                                 }
                                 """))

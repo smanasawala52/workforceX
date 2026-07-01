@@ -25,7 +25,6 @@ public class JobService {
         Job job = new Job();
         job.setEmployer(employer);
         applyRequest(job, request);
-
         return jobRepository.save(job);
     }
 
@@ -36,8 +35,7 @@ public class JobService {
     }
 
     public void deleteJob(String employerMobileNumber, UUID jobId) {
-        Job job = getOwnedJob(employerMobileNumber, jobId);
-        jobRepository.delete(job);
+        jobRepository.delete(getOwnedJob(employerMobileNumber, jobId));
     }
 
     public Job getJobById(String employerMobileNumber, UUID jobId) {
@@ -47,22 +45,15 @@ public class JobService {
     public List<Job> getJobsForEmployer(String employerMobileNumber) {
         User employer = userRepository.findByMobileNumber(employerMobileNumber)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
         return jobRepository.findAllByEmployerId(employer.getId());
     }
 
-    /**
-     * Fetches a job and verifies the requesting employer actually owns it.
-     * Prevents Employer A from editing/viewing/deleting Employer B's jobs.
-     */
     private Job getOwnedJob(String employerMobileNumber, UUID jobId) {
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new IllegalArgumentException("Job not found"));
-
         if (!job.getEmployer().getMobileNumber().equals(employerMobileNumber)) {
             throw new IllegalArgumentException("You do not have permission to access this job");
         }
-
         return job;
     }
 
@@ -71,7 +62,9 @@ public class JobService {
         job.setSkillsRequired(request.skillsRequired());
         job.setExperienceRequired(request.experienceRequired());
         job.setLocation(request.location());
-        job.setSalary(request.salary());
+        job.setSalaryMin(request.salaryMin());
+        job.setSalaryMax(request.salaryMax());
+        job.setOpenPositions(request.openPositions());
         job.setDescription(request.description());
     }
 }

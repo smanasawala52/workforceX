@@ -17,7 +17,7 @@ public class JobCreateEditActivity extends AppCompatActivity {
 
     private ActivityJobCreateEditBinding binding;
     private TokenManager tokenManager;
-    private String jobId; // null = create mode, non-null = edit mode
+    private String jobId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +28,6 @@ public class JobCreateEditActivity extends AppCompatActivity {
 
         jobId = getIntent().getStringExtra("jobId");
         boolean isEditing = jobId != null;
-
         setTitle(isEditing ? "Edit Job" : "Create Job");
 
         if (isEditing) {
@@ -37,8 +36,12 @@ public class JobCreateEditActivity extends AppCompatActivity {
             int exp = getIntent().getIntExtra("jobExperience", 0);
             if (exp > 0) binding.etExperience.setText(String.valueOf(exp));
             binding.etLocation.setText(getIntent().getStringExtra("jobLocation"));
-            double salary = getIntent().getDoubleExtra("jobSalary", 0);
-            if (salary > 0) binding.etSalary.setText(String.valueOf((int) salary));
+            double salMin = getIntent().getDoubleExtra("jobSalaryMin", 0);
+            double salMax = getIntent().getDoubleExtra("jobSalaryMax", 0);
+            if (salMin > 0) binding.etSalaryMin.setText(String.valueOf((int) salMin));
+            if (salMax > 0) binding.etSalaryMax.setText(String.valueOf((int) salMax));
+            int positions = getIntent().getIntExtra("jobOpenPositions", 0);
+            if (positions > 0) binding.etOpenPositions.setText(String.valueOf(positions));
             binding.etDescription.setText(getIntent().getStringExtra("jobDescription"));
         }
 
@@ -58,8 +61,15 @@ public class JobCreateEditActivity extends AppCompatActivity {
 
         String expStr = binding.etExperience.getText().toString().trim();
         request.experienceRequired = expStr.isEmpty() ? null : Integer.parseInt(expStr);
-        String salStr = binding.etSalary.getText().toString().trim();
-        request.salary = salStr.isEmpty() ? null : Double.parseDouble(salStr);
+
+        String salMinStr = binding.etSalaryMin.getText().toString().trim();
+        request.salaryMin = salMinStr.isEmpty() ? null : Double.parseDouble(salMinStr);
+
+        String salMaxStr = binding.etSalaryMax.getText().toString().trim();
+        request.salaryMax = salMaxStr.isEmpty() ? null : Double.parseDouble(salMaxStr);
+
+        String posStr = binding.etOpenPositions.getText().toString().trim();
+        request.openPositions = posStr.isEmpty() ? null : Integer.parseInt(posStr);
 
         setLoading(true);
 

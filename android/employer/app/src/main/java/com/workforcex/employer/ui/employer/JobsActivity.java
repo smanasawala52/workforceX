@@ -79,7 +79,9 @@ public class JobsActivity extends AppCompatActivity {
         intent.putExtra("jobSkills", job.skillsRequired);
         intent.putExtra("jobExperience", job.experienceRequired != null ? job.experienceRequired : 0);
         intent.putExtra("jobLocation", job.location);
-        intent.putExtra("jobSalary", job.salary != null ? job.salary : 0.0);
+        intent.putExtra("jobSalaryMin", job.salaryMin != null ? job.salaryMin : 0.0);
+        intent.putExtra("jobSalaryMax", job.salaryMax != null ? job.salaryMax : 0.0);
+        intent.putExtra("jobOpenPositions", job.openPositions != null ? job.openPositions : 0);
         intent.putExtra("jobDescription", job.description);
         startActivity(intent);
     }

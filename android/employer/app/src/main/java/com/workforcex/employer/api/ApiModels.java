@@ -33,30 +33,6 @@ class LoginResponse {
     public String token;
 }
 
-// ── Worker Profile ────────────────────────────────────────────────────────────
-
-class WorkerProfileRequest {
-    public String name;
-    public String gender;
-    public String city;
-    public String state;
-    public String skills;
-    public Integer experience;
-    public Double preferredSalary;
-}
-
-class WorkerProfileResponse {
-    public String id;
-    public String mobileNumber;
-    public String name;
-    public String gender;
-    public String city;
-    public String state;
-    public String skills;
-    public Integer experience;
-    public Double preferredSalary;
-}
-
 // ── Employer Profile ──────────────────────────────────────────────────────────
 
 class EmployerProfileRequest {
@@ -81,8 +57,10 @@ class JobRequest {
     public String title;
     public String skillsRequired;
     public Integer experienceRequired;
-    public String location;
-    public Double salary;
+    public String location;         // comma-separated cities
+    public Double salaryMin;
+    public Double salaryMax;
+    public Integer openPositions;
     public String description;
 }
 
@@ -92,8 +70,10 @@ class JobResponse {
     public String title;
     public String skillsRequired;
     public Integer experienceRequired;
-    public String location;
-    public Double salary;
+    public String location;         // comma-separated cities
+    public Double salaryMin;
+    public Double salaryMax;
+    public Integer openPositions;
     public String description;
 }
 

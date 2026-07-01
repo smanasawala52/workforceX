@@ -275,7 +275,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Security Guard\",\n  \"skillsRequired\": \"security,patrolling\",\n  \"experienceRequired\": 2,\n  \"location\": \"Ahmedabad\",\n  \"salary\": 15000,\n  \"description\": \"Night shift security guard\"\n}"
+              "raw": "{\n  \"title\": \"Security Guard\",\n  \"skillsRequired\": \"security,patrolling\",\n  \"experienceRequired\": 2,\n  \"location\": \"Mumbai,Pune,Thane\",\n  \"salaryMin\": 15000,\n  \"salaryMax\": 18000,\n  \"openPositions\": 3,\n  \"description\": \"Night shift security guard for residential complex\"\n}"
             }
           }
         },
@@ -351,7 +351,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Senior Security Guard\",\n  \"skillsRequired\": \"security,patrolling\",\n  \"experienceRequired\": 5,\n  \"location\": \"Ahmedabad\",\n  \"salary\": 20000,\n  \"description\": \"Updated\"\n}"
+              "raw": "{\n  \"title\": \"Senior Security Guard\",\n  \"skillsRequired\": \"security,patrolling\",\n  \"experienceRequired\": 5,\n  \"location\": \"Mumbai,Pune\",\n  \"salaryMin\": 19000,\n  \"salaryMax\": 22000,\n  \"openPositions\": 1,\n  \"description\": \"Updated description\"\n}"
             }
           }
         },

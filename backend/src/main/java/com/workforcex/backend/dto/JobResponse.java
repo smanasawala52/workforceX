@@ -10,8 +10,10 @@ public record JobResponse(
         String title,
         String skillsRequired,
         Integer experienceRequired,
-        String location,
-        Double salary,
+        String location,            // comma-separated cities
+        Double salaryMin,
+        Double salaryMax,
+        Integer openPositions,
         String description
 ) {
     public static JobResponse fromEntity(Job job) {
@@ -22,7 +24,9 @@ public record JobResponse(
                 job.getSkillsRequired(),
                 job.getExperienceRequired(),
                 job.getLocation(),
-                job.getSalary(),
+                job.getSalaryMin(),
+                job.getSalaryMax(),
+                job.getOpenPositions(),
                 job.getDescription()
         );
     }

@@ -9,8 +9,8 @@ import java.util.UUID;
 
 /**
  * A job posting created by an Employer.
- * skillsRequired stored as comma-separated string, same approach as WorkerProfile.skills -
- * matching engine will split both on commas to compare.
+ * skillsRequired and location stored as comma-separated strings —
+ * matching engine splits on commas to compare.
  */
 @Entity
 @Table(name = "jobs")
@@ -30,13 +30,17 @@ public class Job {
     @Column(nullable = false)
     private String title;
 
-    private String skillsRequired; // comma-separated, e.g. "driving,security"
+    private String skillsRequired;      // comma-separated, e.g. "security,patrolling"
 
     private Integer experienceRequired; // years
 
+    // Comma-separated cities, e.g. "Mumbai,Pune,Thane"
     private String location;
 
-    private Double salary;
+    private Double salaryMin;           // salary range lower bound (₹/month)
+    private Double salaryMax;           // salary range upper bound (₹/month)
+
+    private Integer openPositions;      // number of vacancies
 
     @Column(length = 2000)
     private String description;
