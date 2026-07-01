@@ -5,10 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
-/**
- * What a client is allowed to send when registering.
- * Only mobile number + role — nothing else, per registration philosophy.
- */
 public record RegisterRequest(
 
         @NotBlank(message = "Mobile number is required")
@@ -16,7 +12,20 @@ public record RegisterRequest(
         String mobileNumber,
 
         @NotNull(message = "Role is required")
-        Role role
+        Role role,
+
+        // Country code defaults to India (+91) if not provided
+        String countryCode
 
 ) {
+    // Compact canonical constructor — apply default if null
+    public RegisterRequest {
+        if (countryCode == null || countryCode.isBlank()) {
+            countryCode = "+91";
+        }
+        // Ensure it always starts with +
+        if (!countryCode.startsWith("+")) {
+            countryCode = "+" + countryCode;
+        }
+    }
 }

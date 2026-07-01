@@ -36,7 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
         setLoading(true);
         // Always register as EMPLOYER in this app
-        RetrofitClient.get().register(new RegisterRequest(mobile, "EMPLOYER"))
+        RetrofitClient.get().register(new RegisterRequest(mobile, "EMPLOYER", "+91"))
                 .enqueue(new Callback<RegisterResponse>() {
                     @Override
                     public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {

@@ -22,30 +22,45 @@
         android:textSize="16sp"
         android:layout_marginBottom="32dp"/>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <!-- Mobile number with +91 prefix -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_mobile"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:orientation="horizontal"
         android:layout_marginBottom="16dp">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etMobile"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+91"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingEnd="8dp"
+            android:paddingTop="16dp"
+            android:gravity="center_vertical"/>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="phone"
-            android:maxLength="10"/>
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="Mobile Number (10 digits)"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etMobile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:maxLength="10"/>
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_password"
+        android:hint="Password"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         app:passwordToggleEnabled="true"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_marginBottom="24dp">
-
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
@@ -57,14 +72,14 @@
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/btn_login"
+        android:text="Login"
         android:layout_marginBottom="16dp"/>
 
     <TextView
         android:id="@+id/tvGoToRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/label_no_account"
+        android:text="Don't have an account? Register"
         android:textColor="@color/design_default_color_primary"
         android:padding="8dp"/>
 

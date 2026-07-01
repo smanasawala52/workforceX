@@ -58,7 +58,7 @@ abstract class AbstractIntegrationTest {
      */
     protected String registerAndLoginAs(String mobileNumber, String role) throws Exception {
         String registerBody = """
-                { "mobileNumber": "%s", "role": "%s" }
+                { "mobileNumber": "%s", "role": "%s", "countryCode": "+91" }
                 """.formatted(mobileNumber, role);
         mockMvc.perform(post("/api/auth/register")
                 .contentType(APPLICATION_JSON)

@@ -1,13 +1,13 @@
 package com.workforcex.worker.api;
 
-// ── Auth ─────────────────────────────────────────────────────────────────────
-
 class RegisterRequest {
     public String mobileNumber;
     public String role;
-    public RegisterRequest(String mobileNumber, String role) {
+    public String countryCode;
+    public RegisterRequest(String mobileNumber, String role, String countryCode) {
         this.mobileNumber = mobileNumber;
         this.role = role;
+        this.countryCode = countryCode;
     }
 }
 
@@ -22,18 +22,20 @@ class LoginRequest {
 
 class RegisterResponse {
     public String id;
+    public String countryCode;
     public String mobileNumber;
+    public String fullMobileNumber;
     public String role;
 }
 
 class LoginResponse {
     public String id;
+    public String countryCode;
     public String mobileNumber;
+    public String fullMobileNumber;
     public String role;
     public String token;
 }
-
-// ── Worker Profile ────────────────────────────────────────────────────────────
 
 class WorkerProfileRequest {
     public String name;
@@ -56,48 +58,6 @@ class WorkerProfileResponse {
     public Integer experience;
     public Double preferredSalary;
 }
-
-// ── Employer Profile ──────────────────────────────────────────────────────────
-
-class EmployerProfileRequest {
-    public String companyName;
-    public String contactPerson;
-    public String email;
-    public String address;
-}
-
-class EmployerProfileResponse {
-    public String id;
-    public String mobileNumber;
-    public String companyName;
-    public String contactPerson;
-    public String email;
-    public String address;
-}
-
-// ── Job ───────────────────────────────────────────────────────────────────────
-
-class JobRequest {
-    public String title;
-    public String skillsRequired;
-    public Integer experienceRequired;
-    public String location;
-    public Double salary;
-    public String description;
-}
-
-class JobResponse {
-    public String id;
-    public String employerId;
-    public String title;
-    public String skillsRequired;
-    public Integer experienceRequired;
-    public String location;
-    public Double salary;
-    public String description;
-}
-
-// ── Matching ──────────────────────────────────────────────────────────────────
 
 class MatchedWorker {
     public String workerId;

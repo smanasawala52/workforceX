@@ -1,13 +1,13 @@
 package com.workforcex.employer.api;
 
-// ── Auth ─────────────────────────────────────────────────────────────────────
-
 class RegisterRequest {
     public String mobileNumber;
     public String role;
-    public RegisterRequest(String mobileNumber, String role) {
+    public String countryCode;
+    public RegisterRequest(String mobileNumber, String role, String countryCode) {
         this.mobileNumber = mobileNumber;
         this.role = role;
+        this.countryCode = countryCode;
     }
 }
 
@@ -22,18 +22,20 @@ class LoginRequest {
 
 class RegisterResponse {
     public String id;
+    public String countryCode;
     public String mobileNumber;
+    public String fullMobileNumber;
     public String role;
 }
 
 class LoginResponse {
     public String id;
+    public String countryCode;
     public String mobileNumber;
+    public String fullMobileNumber;
     public String role;
     public String token;
 }
-
-// ── Employer Profile ──────────────────────────────────────────────────────────
 
 class EmployerProfileRequest {
     public String companyName;
@@ -51,13 +53,11 @@ class EmployerProfileResponse {
     public String address;
 }
 
-// ── Job ───────────────────────────────────────────────────────────────────────
-
 class JobRequest {
     public String title;
     public String skillsRequired;
     public Integer experienceRequired;
-    public String location;         // comma-separated cities
+    public String location;
     public Double salaryMin;
     public Double salaryMax;
     public Integer openPositions;
@@ -70,14 +70,12 @@ class JobResponse {
     public String title;
     public String skillsRequired;
     public Integer experienceRequired;
-    public String location;         // comma-separated cities
+    public String location;
     public Double salaryMin;
     public Double salaryMax;
     public Integer openPositions;
     public String description;
 }
-
-// ── Matching ──────────────────────────────────────────────────────────────────
 
 class MatchedWorker {
     public String workerId;

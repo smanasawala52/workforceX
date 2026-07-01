@@ -7,11 +7,20 @@ import java.util.UUID;
 
 public record LoginResponse(
         UUID id,
+        String countryCode,
         String mobileNumber,
+        String fullMobileNumber,   // e.g. +919876543210
         Role role,
         String token
 ) {
     public static LoginResponse fromEntity(User user, String token) {
-        return new LoginResponse(user.getId(), user.getMobileNumber(), user.getRole(), token);
+        return new LoginResponse(
+                user.getId(),
+                user.getCountryCode(),
+                user.getMobileNumber(),
+                user.getFullMobileNumber(),
+                user.getRole(),
+                token
+        );
     }
 }

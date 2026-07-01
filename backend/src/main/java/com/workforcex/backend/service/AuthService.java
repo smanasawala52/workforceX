@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor // generates constructor for final fields = constructor injection
+@RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -20,12 +20,10 @@ public class AuthService {
             throw new IllegalArgumentException("Mobile number already registered");
         }
 
-        // Dev-mode rule: password = mobile number, but always stored as a BCrypt hash
-        String hashedPassword = passwordEncoder.encode(request.mobileNumber());
-
         User user = new User();
+        user.setCountryCode(request.countryCode()); // defaults to +91 via DTO constructor
         user.setMobileNumber(request.mobileNumber());
-        user.setPassword(hashedPassword);
+        user.setPassword(passwordEncoder.encode(request.mobileNumber())); // dev: password = mobile number
         user.setRole(request.role());
 
         return userRepository.save(user);

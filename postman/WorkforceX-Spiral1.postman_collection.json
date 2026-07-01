@@ -45,7 +45,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"mobileNumber\": \"9876543210\",\n  \"role\": \"WORKER\"\n}"
+              "raw": "{\n  \"mobileNumber\": \"9876543210\",\n  \"role\": \"WORKER\",\n  \"countryCode\": \"+91\"\n}"
             }
           }
         },
@@ -72,7 +72,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"mobileNumber\": \"9123456780\",\n  \"role\": \"EMPLOYER\"\n}"
+              "raw": "{\n  \"mobileNumber\": \"9123456780\",\n  \"role\": \"EMPLOYER\",\n  \"countryCode\": \"+91\"\n}"
             }
           }
         },
@@ -99,7 +99,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"mobileNumber\": \"9876543210\",\n  \"role\": \"WORKER\"\n}"
+              "raw": "{\n  \"mobileNumber\": \"9876543210\",\n  \"role\": \"WORKER\",\n  \"countryCode\": \"+91\"\n}"
             }
           }
         },

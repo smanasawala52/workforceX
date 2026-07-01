@@ -13,7 +13,7 @@ class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     void register_returns201_withUserDetails_noPasswordExposed() throws Exception {
         String body = """
-                { "mobileNumber": "%s", "role": "WORKER" }
+                { "mobileNumber": "%s", "role": "WORKER", "countryCode": "+91" }
                 """.formatted(MOBILE);
 
         mockMvc.perform(post("/api/auth/register")
@@ -22,7 +22,9 @@ class AuthControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.mobileNumber").value(MOBILE))
                 .andExpect(jsonPath("$.role").value("WORKER"))
-                .andExpect(jsonPath("$.password").doesNotExist());
+                .andExpect(jsonPath("$.password").doesNotExist())
+                .andExpect(jsonPath("$.countryCode").value("+91"))
+                .andExpect(jsonPath("$.fullMobileNumber").value("+91" + MOBILE));
     }
 
     @Test
@@ -40,7 +42,7 @@ class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     void register_returns400_whenMobileNumberAlreadyRegistered() throws Exception {
         String body = """
-                { "mobileNumber": "%s", "role": "WORKER" }
+                { "mobileNumber": "%s", "role": "WORKER", "countryCode": "+91" }
                 """.formatted(MOBILE);
 
         mockMvc.perform(post("/api/auth/register")

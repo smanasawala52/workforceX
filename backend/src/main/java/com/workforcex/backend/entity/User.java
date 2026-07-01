@@ -8,11 +8,6 @@ import lombok.Setter;
 
 import java.util.UUID;
 
-/**
- * Core account record. Every Worker and Employer has exactly one User row.
- * Only mobileNumber + password + role exist here.
- * Worker-specific and Employer-specific details live in their own profile tables.
- */
 @Entity
 @Table(name = "users")
 @Getter
@@ -25,13 +20,23 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    // Country code stored separately for future internationalisation
+    // Defaults to +91 (India)
+    @Column(nullable = false)
+    private String countryCode = "+91";
+
     @Column(nullable = false, unique = true)
-    private String mobileNumber;
+    private String mobileNumber; // 10-digit local number, no country code
 
     @Column(nullable = false)
-    private String password; // BCrypt hash, never plain text
+    private String password; // BCrypt hash
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    /** Returns the full international number, e.g. +919876543210 */
+    public String getFullMobileNumber() {
+        return countryCode + mobileNumber;
+    }
 }
