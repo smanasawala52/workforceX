@@ -42,7 +42,7 @@ class AuthServiceTest {
 
     @Test
     void register_savesNewUser_whenMobileNumberNotTaken() {
-        RegisterRequest request = new RegisterRequest(MOBILE, Role.WORKER);
+        RegisterRequest request = new RegisterRequest(MOBILE, Role.WORKER,"");
 
         when(userRepository.existsByMobileNumber(MOBILE)).thenReturn(false);
         when(passwordEncoder.encode(MOBILE)).thenReturn("hashed-password");
@@ -62,7 +62,7 @@ class AuthServiceTest {
 
     @Test
     void register_throws_whenMobileNumberAlreadyExists() {
-        RegisterRequest request = new RegisterRequest(MOBILE, Role.WORKER);
+        RegisterRequest request = new RegisterRequest(MOBILE, Role.WORKER,"");
 
         when(userRepository.existsByMobileNumber(MOBILE)).thenReturn(true);
 

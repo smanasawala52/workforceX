@@ -25,8 +25,8 @@ Write-Host "Starting backend in a new window..." -ForegroundColor Cyan
 Start-Process powershell -ArgumentList "-NoExit", "-Command", `
     "cd '$root\backend'; Write-Host 'Starting Spring Boot backend...' -ForegroundColor Cyan; mvn spring-boot:run"
 
-Write-Host "Waiting 15s for backend to start before launching apps..." -ForegroundColor Yellow
-Start-Sleep -Seconds 15
+Write-Host "Waiting 60s for backend to start before launching apps..." -ForegroundColor Yellow
+Start-Sleep -Seconds 60
 
 # ── Worker App ────────────────────────────────────────────────────────────────
 Write-Host "Starting Worker app in a new window..." -ForegroundColor Cyan
