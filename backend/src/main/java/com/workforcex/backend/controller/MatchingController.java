@@ -1,5 +1,7 @@
 package com.workforcex.backend.controller;
 
+import com.workforcex.backend.dto.CandidateSearchRequest;
+import com.workforcex.backend.dto.CandidateSearchResponse;
 import com.workforcex.backend.dto.MatchedWorkerResponse;
 import com.workforcex.backend.service.MatchingService;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +21,8 @@ public class MatchingController {
     private final MatchingService matchingService;
 
     /**
-     * GET /api/matching/{jobId}
-     * Returns workers ranked by score (Skills 40%, Experience 30%, Location 20%, Salary 10%).
-     * Only the employer who owns the job can call this.
+     * Spiral 1: GET /api/matching/{jobId}
+     * Ranks all workers against a specific job.
      */
     @GetMapping("/{jobId}")
     @PreAuthorize("hasRole('EMPLOYER')")
@@ -29,8 +30,30 @@ public class MatchingController {
             Authentication authentication,
             @PathVariable UUID jobId
     ) {
-        List<MatchedWorkerResponse> results =
-                matchingService.getMatchedWorkers(authentication.getName(), jobId);
-        return ResponseEntity.ok(results);
+        return ResponseEntity.ok(
+                matchingService.getMatchedWorkers(authentication.getName(), jobId));
+    }
+
+    /**
+     * Spiral 2: GET /api/matching/search
+     * Free-text candidate search with optional filters.
+     * All params optional. Returns ranked workers with score breakdown.
+     *
+     * Example: /api/matching/search?skills=driving,security&city=Mumbai&experienceMin=2&salaryMax=20000
+     */
+    @GetMapping("/search")
+    @PreAuthorize("hasRole('EMPLOYER')")
+    public ResponseEntity<List<CandidateSearchResponse>> search(
+            Authentication authentication,
+            @RequestParam(required = false) String skills,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) Integer experienceMin,
+            @RequestParam(required = false) Integer experienceMax,
+            @RequestParam(required = false) Double salaryMin,
+            @RequestParam(required = false) Double salaryMax
+    ) {
+        CandidateSearchRequest request = new CandidateSearchRequest(
+                skills, city, experienceMin, experienceMax, salaryMin, salaryMax);
+        return ResponseEntity.ok(matchingService.search(request));
     }
 }

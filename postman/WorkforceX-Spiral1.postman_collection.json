@@ -407,6 +407,141 @@
           }
         }
       ]
+    },
+    {
+      "name": "Candidate Search (Spiral 2)",
+      "item": [
+        {
+          "name": "Search All Candidates",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/matching/search",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matching",
+                "search"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search by City",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/matching/search?city=Mumbai",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matching",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "city",
+                  "value": "Mumbai"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search by Skills",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/matching/search?skills=security,driving",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matching",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "skills",
+                  "value": "security,driving"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search with All Filters",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/matching/search?skills=security&city=Mumbai&experienceMin=2&experienceMax=10&salaryMin=10000&salaryMax=20000",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matching",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "skills",
+                  "value": "security"
+                },
+                {
+                  "key": "city",
+                  "value": "Mumbai"
+                },
+                {
+                  "key": "experienceMin",
+                  "value": "2"
+                },
+                {
+                  "key": "experienceMax",
+                  "value": "10"
+                },
+                {
+                  "key": "salaryMin",
+                  "value": "10000"
+                },
+                {
+                  "key": "salaryMax",
+                  "value": "20000"
+                }
+              ]
+            }
+          }
+        }
+      ]
     }
   ]
 }

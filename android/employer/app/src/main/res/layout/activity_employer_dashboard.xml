@@ -29,6 +29,14 @@
         android:layout_marginBottom="12dp"/>
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSearchCandidates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search All Candidates"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_marginBottom="12dp"/>
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnLogout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

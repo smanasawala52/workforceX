@@ -1,5 +1,7 @@
 package com.workforcex.backend.service;
 
+import com.workforcex.backend.dto.CandidateSearchRequest;
+import com.workforcex.backend.dto.CandidateSearchResponse;
 import com.workforcex.backend.dto.MatchedWorkerResponse;
 import com.workforcex.backend.entity.Job;
 import com.workforcex.backend.entity.WorkerProfile;
@@ -15,13 +17,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * Matching Engine — Spiral 1: rule-based weighted scoring.
+ * Matching Engine — Spiral 1 + Spiral 2 search.
  *
- * Formula:
+ * Formula (both job-match and free search):
  *   Skills     = 40%
  *   Experience = 30%
- *   Location   = 20%  (worker city matches any of the job's cities)
- *   Salary     = 10%  (worker expectation vs job salary range midpoint)
+ *   Location   = 20%
+ *   Salary     = 10%
  */
 @Service
 @RequiredArgsConstructor
@@ -35,6 +37,8 @@ public class MatchingService {
     private final JobRepository jobRepository;
     private final WorkerProfileRepository workerProfileRepository;
 
+    // ── Spiral 1: match workers to a specific job ─────────────────────────────
+
     public List<MatchedWorkerResponse> getMatchedWorkers(String employerMobileNumber, UUID jobId) {
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new IllegalArgumentException("Job not found"));
@@ -44,67 +48,127 @@ public class MatchingService {
         }
 
         return workerProfileRepository.findAll().stream()
-                .map(worker -> MatchedWorkerResponse.fromProfile(worker, calculateScore(job, worker)))
+                .map(worker -> {
+                    Scores s = score(
+                            job.getSkillsRequired(), worker.getSkills(),
+                            job.getExperienceRequired(), worker.getExperience(),
+                            job.getLocation(), worker.getCity(),
+                            job.getSalaryMin(), job.getSalaryMax(), worker.getPreferredSalary()
+                    );
+                    return MatchedWorkerResponse.fromProfile(worker, s.total());
+                })
                 .filter(r -> r.score() > 0)
                 .sorted((a, b) -> Double.compare(b.score(), a.score()))
                 .collect(Collectors.toList());
     }
 
-    private double calculateScore(Job job, WorkerProfile worker) {
-        return (calculateSkillScore(job.getSkillsRequired(), worker.getSkills())     * WEIGHT_SKILLS)
-             + (calculateExperienceScore(job.getExperienceRequired(), worker.getExperience()) * WEIGHT_EXPERIENCE)
-             + (calculateLocationScore(job.getLocation(), worker.getCity())          * WEIGHT_LOCATION)
-             + (calculateSalaryScore(job.getSalaryMin(), job.getSalaryMax(), worker.getPreferredSalary()) * WEIGHT_SALARY);
+    // ── Spiral 2: free-text search with filters ───────────────────────────────
+
+    /**
+     * Search all workers using optional filters.
+     * Hard filters (city, experience range, salary range) eliminate candidates.
+     * Skill score drives ranking among those who pass.
+     */
+    public List<CandidateSearchResponse> search(CandidateSearchRequest request) {
+        return workerProfileRepository.findAll().stream()
+                .filter(worker -> passesHardFilters(worker, request))
+                .map(worker -> {
+                    Scores s = score(
+                            request.skills(), worker.getSkills(),
+                            request.experienceMin(), worker.getExperience(),
+                            request.city(), worker.getCity(),
+                            request.salaryMin(), request.salaryMax(), worker.getPreferredSalary()
+                    );
+                    return CandidateSearchResponse.fromProfile(
+                            worker, s.total(), s.skill(), s.experience(), s.location(), s.salary()
+                    );
+                })
+                .filter(r -> r.totalScore() > 0)
+                .sorted((a, b) -> Double.compare(b.totalScore(), a.totalScore()))
+                .collect(Collectors.toList());
     }
 
-    /** Skills: proportion of required skills the worker has × 100. */
-    private double calculateSkillScore(String jobSkills, String workerSkills) {
+    // ── Hard filters (eliminate, not score) ──────────────────────────────────
+
+    private boolean passesHardFilters(WorkerProfile worker, CandidateSearchRequest req) {
+        // City filter
+        if (req.city() != null && !req.city().isBlank()) {
+            if (worker.getCity() == null) return false;
+            if (!worker.getCity().trim().equalsIgnoreCase(req.city().trim())) return false;
+        }
+        // Experience range filter
+        if (req.experienceMin() != null && worker.getExperience() != null
+                && worker.getExperience() < req.experienceMin()) return false;
+        if (req.experienceMax() != null && worker.getExperience() != null
+                && worker.getExperience() > req.experienceMax()) return false;
+        // Salary range filter (worker's expectation must be within requested range)
+        if (req.salaryMin() != null && worker.getPreferredSalary() != null
+                && worker.getPreferredSalary() < req.salaryMin()) return false;
+        if (req.salaryMax() != null && worker.getPreferredSalary() != null
+                && worker.getPreferredSalary() > req.salaryMax()) return false;
+        return true;
+    }
+
+    // ── Shared scoring ────────────────────────────────────────────────────────
+
+    private record Scores(double skill, double experience, double location, double salary) {
+        double total() {
+            return skill * WEIGHT_SKILLS
+                    + experience * WEIGHT_EXPERIENCE
+                    + location * WEIGHT_LOCATION
+                    + salary * WEIGHT_SALARY;
+        }
+    }
+
+    private Scores score(
+            String jobSkills, String workerSkills,
+            Integer requiredExp, Integer workerExp,
+            String jobLocation, String workerCity,
+            Double salaryMin, Double salaryMax, Double workerExpectedSalary
+    ) {
+        return new Scores(
+                skillScore(jobSkills, workerSkills),
+                experienceScore(requiredExp, workerExp),
+                locationScore(jobLocation, workerCity),
+                salaryScore(salaryMin, salaryMax, workerExpectedSalary)
+        );
+    }
+
+    private double skillScore(String jobSkills, String workerSkills) {
         if (jobSkills == null || jobSkills.isBlank()) return 100.0;
         if (workerSkills == null || workerSkills.isBlank()) return 0.0;
-
         Set<String> required = splitToSet(jobSkills);
-        Set<String> has      = splitToSet(workerSkills);
+        Set<String> has = splitToSet(workerSkills);
         long matched = required.stream().filter(has::contains).count();
         return (double) matched / required.size() * 100.0;
     }
 
-    /** Experience: meets/exceeds requirement → 100, otherwise proportional. */
-    private double calculateExperienceScore(Integer required, Integer workerExp) {
+    private double experienceScore(Integer required, Integer workerExp) {
         if (required == null || required == 0) return 100.0;
         if (workerExp == null) return 0.0;
         return workerExp >= required ? 100.0 : (double) workerExp / required * 100.0;
     }
 
-    /**
-     * Location: worker's city matches ANY of the job's comma-separated cities → 100.
-     * e.g. job = "Mumbai,Pune,Thane", worker city = "Pune" → 100
-     */
-    private double calculateLocationScore(String jobLocations, String workerCity) {
-        if (jobLocations == null || jobLocations.isBlank()) return 100.0;
+    private double locationScore(String jobLocation, String workerCity) {
+        if (jobLocation == null || jobLocation.isBlank()) return 100.0;
         if (workerCity == null || workerCity.isBlank()) return 0.0;
-        Set<String> cities = splitToSet(jobLocations);
+        Set<String> cities = splitToSet(jobLocation);
         return cities.contains(workerCity.trim().toLowerCase()) ? 100.0 : 0.0;
     }
 
-    /**
-     * Salary: uses midpoint of job's salary range.
-     * Worker expectation ≤ midpoint → 100. Above → proportional.
-     * If no range defined, full score.
-     */
-    private double calculateSalaryScore(Double salaryMin, Double salaryMax, Double workerExpected) {
-        if (salaryMin == null && salaryMax == null) return 100.0;
+    private double salaryScore(Double salaryMin, Double salaryMax, Double workerExpected) {
         if (workerExpected == null) return 100.0;
-
-        double midpoint = salaryMin != null && salaryMax != null
+        if (salaryMin == null && salaryMax == null) return 100.0;
+        double midpoint = (salaryMin != null && salaryMax != null)
                 ? (salaryMin + salaryMax) / 2.0
                 : salaryMin != null ? salaryMin : salaryMax;
-
         return workerExpected <= midpoint ? 100.0 : midpoint / workerExpected * 100.0;
     }
 
     private Set<String> splitToSet(String csv) {
         return Arrays.stream(csv.toLowerCase().split(","))
                 .map(String::trim)
+                .filter(s -> !s.isEmpty())
                 .collect(Collectors.toSet());
     }
 }

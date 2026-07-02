@@ -27,6 +27,10 @@ public class EmployerDashboardActivity extends AppCompatActivity {
 
         binding.btnMyJobs.setOnClickListener(v ->
                 startActivity(new Intent(this, JobsActivity.class)));
+
+        binding.btnSearchCandidates.setOnClickListener(v ->
+                startActivity(new Intent(this, SearchCandidatesActivity.class)));
+
         binding.btnLogout.setOnClickListener(v -> logout());
 
         loadProfile();
