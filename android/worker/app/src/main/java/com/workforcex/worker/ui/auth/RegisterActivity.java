@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import com.workforcex.worker.R;
 import com.workforcex.worker.api.RegisterRequest;
 import com.workforcex.worker.api.RegisterResponse;
 import com.workforcex.worker.api.RetrofitClient;
@@ -22,29 +23,24 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         binding.btnRegister.setOnClickListener(v -> attemptRegister());
         binding.tvGoToLogin.setOnClickListener(v -> finish());
     }
 
     private void attemptRegister() {
         String mobile = binding.etMobile.getText().toString().trim();
-
         if (mobile.length() != 10) {
-            binding.etMobile.setError(getString(R.string.error_mobile_required));
+            binding.etMobile.setError("Enter a valid 10-digit mobile number");
             return;
         }
-
         int selectedId = binding.radioGroupRole.getCheckedRadioButtonId();
         if (selectedId == -1) {
-            Toast.makeText(this, getString(R.string.error_role_required), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please select a role", Toast.LENGTH_SHORT).show();
             return;
         }
-
         String role = (selectedId == R.id.rbWorker) ? "WORKER" : "EMPLOYER";
         setLoading(true);
-
-        RetrofitClient.get().register(new RegisterRequest(mobile, role))
+        RetrofitClient.get().register(new RegisterRequest(mobile, role, "+91"))
                 .enqueue(new Callback<RegisterResponse>() {
                     @Override
                     public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
@@ -57,7 +53,6 @@ public class RegisterActivity extends AppCompatActivity {
                             Toast.makeText(RegisterActivity.this, "Mobile number already registered", Toast.LENGTH_SHORT).show();
                         }
                     }
-
                     @Override
                     public void onFailure(Call<RegisterResponse> call, Throwable t) {
                         setLoading(false);

@@ -1,6 +1,6 @@
 package com.workforcex.worker.api;
 
-class RegisterRequest {
+public class RegisterRequest {
     public String mobileNumber;
     public String role;
     public String countryCode;
@@ -11,7 +11,7 @@ class RegisterRequest {
     }
 }
 
-class LoginRequest {
+public class LoginRequest {
     public String mobileNumber;
     public String password;
     public LoginRequest(String mobileNumber, String password) {
@@ -20,7 +20,7 @@ class LoginRequest {
     }
 }
 
-class RegisterResponse {
+public class RegisterResponse {
     public String id;
     public String countryCode;
     public String mobileNumber;
@@ -28,7 +28,7 @@ class RegisterResponse {
     public String role;
 }
 
-class LoginResponse {
+public class LoginResponse {
     public String id;
     public String countryCode;
     public String mobileNumber;
@@ -37,7 +37,7 @@ class LoginResponse {
     public String token;
 }
 
-class WorkerProfileRequest {
+public class WorkerProfileRequest {
     public String name;
     public String gender;
     public String city;
@@ -47,7 +47,7 @@ class WorkerProfileRequest {
     public Double preferredSalary;
 }
 
-class WorkerProfileResponse {
+public class WorkerProfileResponse {
     public String id;
     public String mobileNumber;
     public String name;
@@ -57,15 +57,4 @@ class WorkerProfileResponse {
     public String skills;
     public Integer experience;
     public Double preferredSalary;
-}
-
-class MatchedWorker {
-    public String workerId;
-    public String name;
-    public String mobileNumber;
-    public String skills;
-    public Integer experience;
-    public String city;
-    public Double preferredSalary;
-    public Double score;
 }

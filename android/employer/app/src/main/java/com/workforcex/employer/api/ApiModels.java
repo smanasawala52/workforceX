@@ -1,6 +1,6 @@
 package com.workforcex.employer.api;
 
-class RegisterRequest {
+public class RegisterRequest {
     public String mobileNumber;
     public String role;
     public String countryCode;
@@ -11,7 +11,7 @@ class RegisterRequest {
     }
 }
 
-class LoginRequest {
+public class LoginRequest {
     public String mobileNumber;
     public String password;
     public LoginRequest(String mobileNumber, String password) {
@@ -20,7 +20,7 @@ class LoginRequest {
     }
 }
 
-class RegisterResponse {
+public class RegisterResponse {
     public String id;
     public String countryCode;
     public String mobileNumber;
@@ -28,7 +28,7 @@ class RegisterResponse {
     public String role;
 }
 
-class LoginResponse {
+public class LoginResponse {
     public String id;
     public String countryCode;
     public String mobileNumber;
@@ -37,14 +37,14 @@ class LoginResponse {
     public String token;
 }
 
-class EmployerProfileRequest {
+public class EmployerProfileRequest {
     public String companyName;
     public String contactPerson;
     public String email;
     public String address;
 }
 
-class EmployerProfileResponse {
+public class EmployerProfileResponse {
     public String id;
     public String mobileNumber;
     public String companyName;
@@ -53,7 +53,7 @@ class EmployerProfileResponse {
     public String address;
 }
 
-class JobRequest {
+public class JobRequest {
     public String title;
     public String skillsRequired;
     public Integer experienceRequired;
@@ -64,7 +64,7 @@ class JobRequest {
     public String description;
 }
 
-class JobResponse {
+public class JobResponse {
     public String id;
     public String employerId;
     public String title;
@@ -77,7 +77,7 @@ class JobResponse {
     public String description;
 }
 
-class MatchedWorker {
+public class MatchedWorker {
     public String workerId;
     public String name;
     public String mobileNumber;
