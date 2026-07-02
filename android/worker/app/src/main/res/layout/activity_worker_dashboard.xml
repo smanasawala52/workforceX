@@ -31,10 +31,18 @@
         android:layout_marginBottom="24dp"/>
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnBrowseJobs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Browse Available Jobs"
+        android:layout_marginBottom="12dp"/>
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnEditProfile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Edit My Profile"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_marginBottom="12dp"/>
 
     <com.google.android.material.button.MaterialButton

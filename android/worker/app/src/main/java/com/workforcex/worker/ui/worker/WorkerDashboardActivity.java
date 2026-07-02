@@ -28,6 +28,9 @@ public class WorkerDashboardActivity extends AppCompatActivity {
 
         binding.tvWelcome.setText("Welcome, " + tokenManager.getMobile());
 
+        binding.btnBrowseJobs.setOnClickListener(v ->
+                startActivity(new Intent(this, BrowseJobsActivity.class)));
+
         binding.btnEditProfile.setOnClickListener(v ->
                 startActivity(new Intent(this, WorkerProfileActivity.class)));
 

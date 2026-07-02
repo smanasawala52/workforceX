@@ -542,6 +542,34 @@
           }
         }
       ]
+    },
+    {
+      "name": "Worker - Browse Jobs (Spiral 2)",
+      "item": [
+        {
+          "name": "Browse All Available Jobs (Worker)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs/browse",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "jobs",
+                "browse"
+              ]
+            }
+          }
+        }
+      ]
     }
   ]
 }

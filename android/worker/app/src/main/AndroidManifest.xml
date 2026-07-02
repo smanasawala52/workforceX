@@ -23,6 +23,7 @@
         <activity android:name=".ui.auth.RegisterActivity" android:exported="false"/>
         <activity android:name=".ui.worker.WorkerDashboardActivity" android:exported="false"/>
         <activity android:name=".ui.worker.WorkerProfileActivity" android:exported="false"/>
+        <activity android:name=".ui.worker.BrowseJobsActivity" android:exported="false"/>
 
     </application>
 
