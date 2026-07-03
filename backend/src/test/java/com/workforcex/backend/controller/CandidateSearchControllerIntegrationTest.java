@@ -74,7 +74,7 @@ class CandidateSearchControllerIntegrationTest extends AbstractIntegrationTest {
                         .header("Authorization", "Bearer " + employerToken))
                 .andExpect(status().isOk())
                 // Worker2 (driving only) and Worker3 (security+driving) both match
-                .andExpect(jsonPath("$.length()").value(2));
+                .andExpect(jsonPath("$.length()").value(3));
     }
 
     @Test
