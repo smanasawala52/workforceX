@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -16,33 +17,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 /**
- * All integration test classes share the SAME H2 database within a single
- * Maven test run (Spring caches the application context). That means any
- * test class deleting `users` must first delete every table with a foreign
- * key pointing at users - regardless of which entity that test class is
- * directly testing.
- *
- * Centralizing cleanup here means adding a new FK-related table later
- * (e.g. matching results) only requires updating this ONE method.
+ * Base class for all integration tests.
+ * - ActiveProfiles("test") disables DataInitializer so 200 dummy jobs
+ *   are NOT seeded during test runs, keeping tests fast and isolated.
+ * - cleanAllTables() deletes in FK-safe order before every test.
+ * - registerAndLoginAs() is a shared helper so each test class doesn't
+ *   repeat the register+login boilerplate.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 abstract class AbstractIntegrationTest {
 
-    @Autowired
-    protected MockMvc mockMvc;
-
-    @Autowired
-    protected UserRepository userRepository;
-
-    @Autowired
-    protected WorkerProfileRepository workerProfileRepository;
-
-    @Autowired
-    protected EmployerProfileRepository employerProfileRepository;
-
-    @Autowired
-    protected JobRepository jobRepository;
+    @Autowired protected MockMvc mockMvc;
+    @Autowired protected UserRepository userRepository;
+    @Autowired protected WorkerProfileRepository workerProfileRepository;
+    @Autowired protected EmployerProfileRepository employerProfileRepository;
+    @Autowired protected JobRepository jobRepository;
 
     @BeforeEach
     void cleanAllTables() {
@@ -52,10 +43,6 @@ abstract class AbstractIntegrationTest {
         userRepository.deleteAll();
     }
 
-    /**
-     * Registers a user with the given mobile/role, logs in, and returns the JWT.
-     * Dev-mode rule: password always equals mobile number.
-     */
     protected String registerAndLoginAs(String mobileNumber, String role) throws Exception {
         String registerBody = """
                 { "mobileNumber": "%s", "role": "%s", "countryCode": "+91" }
@@ -73,6 +60,7 @@ abstract class AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        return result.getResponse().getContentAsString().split("\"token\":\"")[1].split("\"")[0];
+        return result.getResponse().getContentAsString()
+                .split("\"token\":\"")[1].split("\"")[0];
     }
 }

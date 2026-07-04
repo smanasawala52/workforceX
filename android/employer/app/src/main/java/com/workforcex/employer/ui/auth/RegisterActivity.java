@@ -22,8 +22,6 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        // Employer app always registers as EMPLOYER — hide the role selector
-        binding.radioGroupRole.setVisibility(View.GONE);
         binding.btnRegister.setOnClickListener(v -> attemptRegister());
         binding.tvGoToLogin.setOnClickListener(v -> finish());
     }
@@ -35,14 +33,14 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
         setLoading(true);
-        // Always register as EMPLOYER in this app
+        // Employer app always registers as EMPLOYER — no role selector needed
         RetrofitClient.get().register(new RegisterRequest(mobile, "EMPLOYER", "+91"))
                 .enqueue(new Callback<RegisterResponse>() {
                     @Override
                     public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
                         setLoading(false);
                         if (response.isSuccessful()) {
-                            Toast.makeText(RegisterActivity.this, "Registered! Please login.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Account created! Please login.", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                             finish();
                         } else {
