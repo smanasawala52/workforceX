@@ -6,6 +6,7 @@ import com.workforcex.backend.entity.WorkerProfile;
 import com.workforcex.backend.repository.UserRepository;
 import com.workforcex.backend.repository.WorkerProfileRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.stereotype.Service;
@@ -60,11 +61,16 @@ public class ResumeService {
             throw new IllegalArgumentException("Only PDF files are accepted");
         }
 
-        // Parse PDF text
+        // Parse PDF text — PDFBox 3.x uses Loader.loadPDF(byte[])
         String extractedText;
-        try (PDDocument doc = PDDocument.load(file.getInputStream())) {
-            PDFTextStripper stripper = new PDFTextStripper();
-            extractedText = stripper.getText(doc);
+        try {
+            byte[] pdfBytes = file.getBytes();
+            try (PDDocument doc = Loader.loadPDF(pdfBytes)) {
+                PDFTextStripper stripper = new PDFTextStripper();
+                extractedText = stripper.getText(doc);
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Could not parse PDF file. Please ensure it is a valid, non-encrypted PDF.");
         }
 
         // Extract skills
