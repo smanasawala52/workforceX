@@ -1,6 +1,7 @@
 package com.workforcex.worker.api;
 
 import java.util.List;
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -20,7 +21,13 @@ public interface WorkforceXApi {
     @GET("api/worker/profile")
     Call<WorkerProfileResponse> getWorkerProfile(@Header("Authorization") String token);
 
-    // Spiral 2: browse all available jobs
     @GET("api/jobs/browse")
     Call<List<JobBrowseItem>> browseJobs(@Header("Authorization") String token);
+
+    @Multipart
+    @POST("api/worker/resume")
+    Call<ResumeParseResult> uploadResume(
+            @Header("Authorization") String token,
+            @Part MultipartBody.Part file
+    );
 }

@@ -6,12 +6,30 @@
     android:padding="16dp">
 
     <TextView
+        android:id="@+id/tvFilterInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Available Jobs"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:textSize="13sp"
+        android:textColor="?attr/colorPrimary"
+        android:visibility="gone"
+        android:layout_marginBottom="4dp"/>
+
+    <TextView
+        android:id="@+id/tvResultCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:visibility="gone"
+        android:layout_marginBottom="8dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnToggleJobs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Show All Jobs"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:visibility="gone"
+        android:layout_marginBottom="12dp"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -24,7 +42,7 @@
         android:id="@+id/tvEmpty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="No jobs available yet. Check back soon!"
+        android:text="No matching jobs found."
         android:textAlignment="center"
         android:visibility="gone"
         android:layout_marginTop="40dp"/>

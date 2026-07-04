@@ -91,6 +91,14 @@ public class MatchingService {
     // ── Hard filters (eliminate, not score) ──────────────────────────────────
 
     private boolean passesHardFilters(WorkerProfile worker, CandidateSearchRequest req) {
+        // Skills filter — worker must have AT LEAST ONE of the required skills
+        if (req.skills() != null && !req.skills().isBlank()) {
+            if (worker.getSkills() == null || worker.getSkills().isBlank()) return false;
+            Set<String> required = splitToSet(req.skills());
+            Set<String> has = splitToSet(worker.getSkills());
+            boolean anyMatch = required.stream().anyMatch(has::contains);
+            if (!anyMatch) return false;
+        }
         // City filter
         if (req.city() != null && !req.city().isBlank()) {
             if (worker.getCity() == null) return false;
@@ -101,7 +109,7 @@ public class MatchingService {
                 && worker.getExperience() < req.experienceMin()) return false;
         if (req.experienceMax() != null && worker.getExperience() != null
                 && worker.getExperience() > req.experienceMax()) return false;
-        // Salary range filter (worker's expectation must be within requested range)
+        // Salary range filter
         if (req.salaryMin() != null && worker.getPreferredSalary() != null
                 && worker.getPreferredSalary() < req.salaryMin()) return false;
         if (req.salaryMax() != null && worker.getPreferredSalary() != null

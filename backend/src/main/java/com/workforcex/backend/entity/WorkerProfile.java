@@ -44,5 +44,14 @@ public class WorkerProfile {
 
     private Double preferredSalary;
 
+    // Resume fields (Spiral 2) - stores parsed text, not the raw file
+    private String resumeFileName;
+
+    @Column(length = 10000)
+    private String resumeText; // full extracted text from PDF
+
+    @Column(length = 2000)
+    private String resumeExtractedSkills; // auto-detected skills from resume
+
     // Photo and video are future scope - not part of Spiral 1
 }

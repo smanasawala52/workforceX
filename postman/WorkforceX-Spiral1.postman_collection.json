@@ -570,6 +570,44 @@
           }
         }
       ]
+    },
+    {
+      "name": "Resume Upload (Spiral 2)",
+      "item": [
+        {
+          "name": "Upload Resume PDF",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/worker/resume",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "worker",
+                "resume"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "description": "Select a PDF file from your machine"
+                }
+              ]
+            }
+          }
+        }
+      ]
     }
   ]
 }

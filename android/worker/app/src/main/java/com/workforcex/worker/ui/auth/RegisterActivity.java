@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.workforcex.worker.R;
 import com.workforcex.worker.api.RegisterRequest;
 import com.workforcex.worker.api.RegisterResponse;
 import com.workforcex.worker.api.RetrofitClient;
@@ -33,20 +32,15 @@ public class RegisterActivity extends AppCompatActivity {
             binding.etMobile.setError("Enter a valid 10-digit mobile number");
             return;
         }
-        int selectedId = binding.radioGroupRole.getCheckedRadioButtonId();
-        if (selectedId == -1) {
-            Toast.makeText(this, "Please select a role", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        String role = (selectedId == R.id.rbWorker) ? "WORKER" : "EMPLOYER";
         setLoading(true);
-        RetrofitClient.get().register(new RegisterRequest(mobile, role, "+91"))
+        // Worker app always registers as WORKER
+        RetrofitClient.get().register(new RegisterRequest(mobile, "WORKER", "+91"))
                 .enqueue(new Callback<RegisterResponse>() {
                     @Override
                     public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
                         setLoading(false);
                         if (response.isSuccessful()) {
-                            Toast.makeText(RegisterActivity.this, "Registered! Please login.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Account created! Please login.", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                             finish();
                         } else {
