@@ -20,7 +20,8 @@ public record JobApplicationResponse(
         Double workerPreferredSalary,
         ApplicationStatus status,
         LocalDateTime appliedAt,
-        LocalDateTime updatedAt
+        LocalDateTime updatedAt,
+        String employerMobile
 ) {
     public static JobApplicationResponse fromEntity(JobApplication app, String companyName) {
         var worker = app.getWorker();
@@ -34,7 +35,8 @@ public record JobApplicationResponse(
                 null, null, null, null, null, null, // worker profile fields filled below
                 app.getStatus(),
                 app.getAppliedAt(),
-                app.getUpdatedAt()
+                app.getUpdatedAt(),
+                job.getEmployer().getMobileNumber()
         );
     }
 
@@ -64,7 +66,8 @@ public record JobApplicationResponse(
                 workerSalary,
                 app.getStatus(),
                 app.getAppliedAt(),
-                app.getUpdatedAt()
+                app.getUpdatedAt(),
+                job.getEmployer().getMobileNumber()
         );
     }
 }

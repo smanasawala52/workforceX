@@ -1,10 +1,6 @@
 package com.workforcex.backend.controller;
 
-import com.workforcex.backend.repository.EmployerProfileRepository;
-import com.workforcex.backend.repository.JobApplicationRepository;
-import com.workforcex.backend.repository.JobRepository;
-import com.workforcex.backend.repository.UserRepository;
-import com.workforcex.backend.repository.WorkerProfileRepository;
+import com.workforcex.backend.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,10 +32,12 @@ abstract class AbstractIntegrationTest {
     @Autowired protected EmployerProfileRepository employerProfileRepository;
     @Autowired protected JobRepository jobRepository;
     @Autowired protected JobApplicationRepository applicationRepository;
+    @Autowired protected NotificationRepository notificationRepository;
 
     @BeforeEach
     void cleanAllTables() {
         applicationRepository.deleteAll(); // must be before jobs and users
+        notificationRepository.deleteAll(); // must be before users
         jobRepository.deleteAll();
         workerProfileRepository.deleteAll();
         employerProfileRepository.deleteAll();

@@ -31,6 +31,21 @@ public class ApplicationController {
                 .body(applicationService.apply(auth.getName(), jobId));
     }
 
+    /**
+     * Employer: proactively offer a job to a matched worker.
+     * POST /api/applications/offer?jobId=...&workerId=...
+     */
+    @PostMapping("/offer")
+    @PreAuthorize("hasRole('EMPLOYER')")
+    public ResponseEntity<JobApplicationResponse> offerJob(
+            Authentication auth,
+            @RequestParam UUID jobId,
+            @RequestParam UUID workerId
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(applicationService.offerJob(auth.getName(), jobId, workerId));
+    }
+
     /** Worker: view all jobs I applied to. GET /api/applications/my */
     @GetMapping("/my")
     @PreAuthorize("hasRole('WORKER')")

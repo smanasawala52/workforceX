@@ -6,6 +6,8 @@
     <application
         android:allowBackup="true"
         android:label="WorkforceX - Hire"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.WorkforceX">
@@ -27,6 +29,7 @@
         <activity android:name=".ui.employer.MatchingResultsActivity" android:exported="false"/>
         <activity android:name=".ui.employer.SearchCandidatesActivity" android:exported="false"/>
         <activity android:name=".ui.employer.JobApplicantsActivity" android:exported="false"/>
+        <activity android:name=".ui.employer.NotificationsActivity" android:exported="false"/>
 
     </application>
 

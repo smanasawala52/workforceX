@@ -39,28 +39,30 @@ class DataInitializerTest {
     }
 
     @Test
-    void dataInitializer_seeds200Jobs_across10Employers() throws Exception {
+    void dataInitializer_seedsData() throws Exception {
         DataInitializer initializer = new DataInitializer(
                 userRepository, employerProfileRepository,
-                jobRepository, passwordEncoder);
+                jobRepository, workerProfileRepository, passwordEncoder);
 
         // Simulate startup
         initializer.run(null);
 
         assertThat(jobRepository.count()).isEqualTo(200);
-        assertThat(userRepository.count()).isEqualTo(10); // 10 employer accounts
+        assertThat(userRepository.count()).isEqualTo(30); // 10 employers + 20 workers
         assertThat(employerProfileRepository.count()).isEqualTo(10);
+        assertThat(workerProfileRepository.count()).isEqualTo(20);
     }
 
     @Test
-    void dataInitializer_doesNotSeedTwice_whenJobsAlreadyExist() throws Exception {
+    void dataInitializer_doesNotSeedTwice() throws Exception {
         DataInitializer initializer = new DataInitializer(
                 userRepository, employerProfileRepository,
-                jobRepository, passwordEncoder);
+                jobRepository, workerProfileRepository, passwordEncoder);
 
         initializer.run(null); // first run — seeds
         initializer.run(null); // second run — should skip
 
         assertThat(jobRepository.count()).isEqualTo(200); // not 400
+        assertThat(workerProfileRepository.count()).isEqualTo(20);
     }
 }

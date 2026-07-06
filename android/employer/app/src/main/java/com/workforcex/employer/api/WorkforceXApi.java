@@ -59,4 +59,17 @@ public interface WorkforceXApi {
             @Header("Authorization") String token,
             @Path("applicationId") String applicationId,
             @Query("status") String status);
+
+    @POST("api/applications/offer")
+    Call<JobApplicationItem> offerJob(
+            @Header("Authorization") String token,
+            @Query("jobId") String jobId,
+            @Query("workerId") String workerId);
+
+    // Notifications
+    @GET("api/notifications")
+    Call<List<Notification>> getUnreadNotifications(@Header("Authorization") String token);
+
+    @PUT("api/notifications/{notificationId}/read")
+    Call<Void> markAsRead(@Header("Authorization") String token, @Path("notificationId") String notificationId);
 }

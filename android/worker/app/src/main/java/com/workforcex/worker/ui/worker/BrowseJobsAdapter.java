@@ -1,5 +1,6 @@
 package com.workforcex.worker.ui.worker;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.workforcex.worker.R;
 import com.workforcex.worker.api.JobBrowseItem;
 import java.util.List;
+import java.util.Set;
 
 public class BrowseJobsAdapter extends RecyclerView.Adapter<BrowseJobsAdapter.JobViewHolder> {
 
@@ -17,19 +19,17 @@ public class BrowseJobsAdapter extends RecyclerView.Adapter<BrowseJobsAdapter.Jo
 
     private List<JobBrowseItem> jobs;
     private final OnApplyClick onApplyClick;
+    private final Set<String> appliedJobIds;
 
-    public BrowseJobsAdapter(List<JobBrowseItem> jobs, OnApplyClick onApplyClick) {
+    public BrowseJobsAdapter(List<JobBrowseItem> jobs, OnApplyClick onApplyClick, Set<String> appliedJobIds) {
         this.jobs = jobs;
         this.onApplyClick = onApplyClick;
+        this.appliedJobIds = appliedJobIds;
     }
 
     public void update(List<JobBrowseItem> newJobs) {
         this.jobs = newJobs;
         notifyDataSetChanged();
-    }
-
-    public void markApplied(int position) {
-        notifyItemChanged(position);
     }
 
     @NonNull
@@ -59,7 +59,23 @@ public class BrowseJobsAdapter extends RecyclerView.Adapter<BrowseJobsAdapter.Jo
         h.tvOpenings.setText(job.openPositions != null && job.openPositions > 0
                 ? job.openPositions + " opening" + (job.openPositions > 1 ? "s" : "") : "");
 
+        boolean isApplied = appliedJobIds.contains(job.id) || job.applied;
+        if (isApplied) {
+            h.btnApply.setEnabled(false);
+            h.btnApply.setText("Applied");
+        } else {
+            h.btnApply.setEnabled(true);
+            h.btnApply.setText("Apply Now");
+        }
+
         h.btnApply.setOnClickListener(v -> onApplyClick.onApply(job, h.getAdapterPosition()));
+
+        h.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), JobDetailsActivity.class);
+            intent.putExtra("job", job);
+            intent.putExtra("isApplied", isApplied);
+            v.getContext().startActivity(intent);
+        });
     }
 
     @Override

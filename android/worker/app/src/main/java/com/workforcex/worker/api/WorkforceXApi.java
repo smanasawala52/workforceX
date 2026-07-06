@@ -38,4 +38,7 @@ public interface WorkforceXApi {
 
     @GET("api/applications/my")
     Call<List<JobApplication>> getMyApplications(@Header("Authorization") String token);
+
+    @GET("api/notifications")
+    Call<List<Notification>> getUnreadNotifications(@Header("Authorization") String token);
 }

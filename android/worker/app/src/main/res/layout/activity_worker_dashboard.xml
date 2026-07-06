@@ -45,10 +45,10 @@
         android:layout_marginBottom="12dp"/>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnMyApplications"
+        android:id="@+id/btnNotifications"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="My Applications"
+        android:text="Notifications"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_marginBottom="12dp"/>
 

@@ -132,25 +132,40 @@ public class JobApplicantsActivity extends AppCompatActivity {
                     h.tvStatus.setTextColor(Color.parseColor("#1B5E20")); break;
                 case "REJECTED":
                     h.tvStatus.setTextColor(Color.parseColor("#B71C1C")); break;
+                case "INTERVIEW":
+                    h.tvStatus.setTextColor(Color.parseColor("#FFC107")); break;
+                case "OFFERED":
+                    h.tvStatus.setTextColor(Color.parseColor("#FF9800")); break;
+                case "HIRED":
+                    h.tvStatus.setTextColor(Color.parseColor("#4CAF50")); break;
                 default:
                     h.tvStatus.setTextColor(Color.parseColor("#1565C0"));
             }
 
-            boolean actionable = !"REJECTED".equals(status);
+            boolean actionable = !"REJECTED".equals(status) && !"HIRED".equals(status);
             h.btnShortlist.setEnabled("PENDING".equals(status));
+            h.btnInterview.setEnabled("SHORTLISTED".equals(status));
+            h.btnOffer.setEnabled("INTERVIEW".equals(status));
+            h.btnHire.setEnabled("OFFERED".equals(status));
             h.btnReject.setEnabled(actionable);
 
             h.btnShortlist.setOnClickListener(v ->
                     onAction.onAction(item, "SHORTLISTED", h.getAdapterPosition()));
             h.btnReject.setOnClickListener(v ->
                     onAction.onAction(item, "REJECTED", h.getAdapterPosition()));
+            h.btnInterview.setOnClickListener(v ->
+                    onAction.onAction(item, "INTERVIEW", h.getAdapterPosition()));
+            h.btnOffer.setOnClickListener(v ->
+                    onAction.onAction(item, "OFFERED", h.getAdapterPosition()));
+            h.btnHire.setOnClickListener(v ->
+                    onAction.onAction(item, "HIRED", h.getAdapterPosition()));
         }
 
         @Override public int getItemCount() { return items.size(); }
 
         static class VH extends RecyclerView.ViewHolder {
             TextView tvName, tvMobile, tvSkills, tvDetails, tvStatus;
-            Button btnShortlist, btnReject;
+            Button btnShortlist, btnReject, btnInterview, btnOffer, btnHire;
             VH(View v) {
                 super(v);
                 tvName      = v.findViewById(R.id.tvName);
@@ -160,6 +175,9 @@ public class JobApplicantsActivity extends AppCompatActivity {
                 tvStatus    = v.findViewById(R.id.tvStatus);
                 btnShortlist = v.findViewById(R.id.btnShortlist);
                 btnReject    = v.findViewById(R.id.btnReject);
+                btnInterview = v.findViewById(R.id.btnInterview);
+                btnOffer     = v.findViewById(R.id.btnOffer);
+                btnHire      = v.findViewById(R.id.btnHire);
             }
         }
     }

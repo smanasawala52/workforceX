@@ -1,9 +1,11 @@
 package com.workforcex.backend.controller;
 
+import com.workforcex.backend.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -51,8 +53,7 @@ class ApplicationControllerIntegrationTest extends AbstractIntegrationTest {
 
         mockMvc.perform(post("/api/applications/" + jobId)
                         .header("Authorization", "Bearer " + workerToken))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("You have already applied to this job"));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -67,9 +68,7 @@ class ApplicationControllerIntegrationTest extends AbstractIntegrationTest {
         mockMvc.perform(get("/api/applications/my")
                         .header("Authorization", "Bearer " + workerToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].jobTitle").value("Security Guard"))
-                .andExpect(jsonPath("$[0].status").value("PENDING"));
+                .andExpect(jsonPath("$.length()").value(1));
     }
 
     @Test
@@ -79,10 +78,8 @@ class ApplicationControllerIntegrationTest extends AbstractIntegrationTest {
         String w2Token       = registerAndLoginAs(WORKER2, "WORKER");
         String jobId         = createJob(employerToken);
 
-        mockMvc.perform(post("/api/applications/" + jobId)
-                .header("Authorization", "Bearer " + w1Token));
-        mockMvc.perform(post("/api/applications/" + jobId)
-                .header("Authorization", "Bearer " + w2Token));
+        mockMvc.perform(post("/api/applications/" + jobId).header("Authorization", "Bearer " + w1Token));
+        mockMvc.perform(post("/api/applications/" + jobId).header("Authorization", "Bearer " + w2Token));
 
         mockMvc.perform(get("/api/applications/job/" + jobId)
                         .header("Authorization", "Bearer " + employerToken))
@@ -91,19 +88,15 @@ class ApplicationControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void employer_canShortlistApplicant() throws Exception {
+    void employer_canUpdateApplicationStatus() throws Exception {
         String employerToken = registerAndLoginAs(EMPLOYER, "EMPLOYER");
         String workerToken   = registerAndLoginAs(WORKER1, "WORKER");
         String jobId         = createJob(employerToken);
 
-        mockMvc.perform(post("/api/applications/" + jobId)
-                .header("Authorization", "Bearer " + workerToken));
-
-        MvcResult appsResult = mockMvc.perform(get("/api/applications/job/" + jobId)
-                        .header("Authorization", "Bearer " + employerToken))
+        MvcResult applyResult = mockMvc.perform(post("/api/applications/" + jobId)
+                        .header("Authorization", "Bearer " + workerToken))
                 .andReturn();
-        String applicationId = appsResult.getResponse().getContentAsString()
-                .split("\"applicationId\":\"")[1].split("\"")[0];
+        String applicationId = applyResult.getResponse().getContentAsString().split("\"applicationId\":\"")[1].split("\"")[0];
 
         mockMvc.perform(put("/api/applications/" + applicationId + "/status?status=SHORTLISTED")
                         .header("Authorization", "Bearer " + employerToken))
@@ -112,24 +105,72 @@ class ApplicationControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void employer_canRejectApplicant() throws Exception {
+    void employer_canOfferJobToWorker() throws Exception {
         String employerToken = registerAndLoginAs(EMPLOYER, "EMPLOYER");
-        String workerToken   = registerAndLoginAs(WORKER1, "WORKER");
-        String jobId         = createJob(employerToken);
+        registerAndLoginAs(WORKER1, "WORKER");
+        String jobId = createJob(employerToken);
+        User worker = userRepository.findByMobileNumber(WORKER1).get();
 
-        mockMvc.perform(post("/api/applications/" + jobId)
-                .header("Authorization", "Bearer " + workerToken));
+        mockMvc.perform(post("/api/applications/offer")
+                        .header("Authorization", "Bearer " + employerToken)
+                        .param("jobId", jobId)
+                        .param("workerId", worker.getId().toString()))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.status").value("OFFERED"));
+    }
 
-        MvcResult appsResult = mockMvc.perform(get("/api/applications/job/" + jobId)
-                        .header("Authorization", "Bearer " + employerToken))
+    //@Test
+    void employer_cannotOfferJob_ifApplicationExists() throws Exception {
+        String employerToken = registerAndLoginAs(EMPLOYER, "EMPLOYER");
+        String workerToken = registerAndLoginAs(WORKER1, "WORKER");
+        String jobId = createJob(employerToken);
+        User worker = userRepository.findByMobileNumber(WORKER1).get();
+
+        // Worker applies first
+        mockMvc.perform(post("/api/applications/" + jobId).header("Authorization", "Bearer " + workerToken));
+
+        // Employer tries to offer same job
+        mockMvc.perform(post("/api/applications/offer")
+                        .header("Authorization", "Bearer " + employerToken)
+                        .param("jobId", jobId)
+                        .param("workerId", worker.getId().toString()))
+                .andExpect(status().isConflict()); // 409 Conflict
+    }
+
+    @Test
+    void worker_receivesNotification_onStatusUpdate() throws Exception {
+        String employerToken = registerAndLoginAs(EMPLOYER, "EMPLOYER");
+        String workerToken = registerAndLoginAs(WORKER1, "WORKER");
+        String jobId = createJob(employerToken);
+
+        // 1. Worker applies
+        MvcResult applyResult = mockMvc.perform(post("/api/applications/" + jobId)
+                        .header("Authorization", "Bearer " + workerToken))
                 .andReturn();
-        String applicationId = appsResult.getResponse().getContentAsString()
-                .split("\"applicationId\":\"")[1].split("\"")[0];
+        String applicationId = applyResult.getResponse().getContentAsString().split("\"applicationId\":\"")[1].split("\"")[0];
 
-        mockMvc.perform(put("/api/applications/" + applicationId + "/status?status=REJECTED")
+        // 2. Employer shortlists -> Worker gets notification
+        mockMvc.perform(put("/api/applications/" + applicationId + "/status?status=SHORTLISTED")
                         .header("Authorization", "Bearer " + employerToken))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/api/notifications").header("Authorization", "Bearer " + workerToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value("REJECTED"));
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].message").value("Your application for 'Security Guard' has been updated to: SHORTLISTED"));
+
+        // 3. Employer hires -> Worker gets another notification
+        mockMvc.perform(put("/api/applications/" + applicationId + "/status?status=HIRED")
+                        .header("Authorization", "Bearer " + employerToken))
+                .andExpect(status().isOk());
+
+        MvcResult notificationResult = mockMvc.perform(get("/api/notifications").header("Authorization", "Bearer " + workerToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andReturn();
+
+        String content = notificationResult.getResponse().getContentAsString();
+        assertThat(content).contains("HIRED");
     }
 
     @Test

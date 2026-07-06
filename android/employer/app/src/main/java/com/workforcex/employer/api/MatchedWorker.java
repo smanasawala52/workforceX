@@ -1,4 +1,5 @@
 package com.workforcex.employer.api;
+
 public class MatchedWorker {
     public String workerId;
     public String name;
@@ -8,4 +9,5 @@ public class MatchedWorker {
     public String city;
     public Double preferredSalary;
     public Double score;
+    public String applicationStatus;
 }

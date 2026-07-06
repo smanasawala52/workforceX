@@ -26,6 +26,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
     private TokenManager tokenManager;
     private BrowseJobsAdapter adapter;
     private List<JobBrowseItem> allJobs = new ArrayList<>();
+    private Set<String> appliedJobIds = new HashSet<>();
     private String filterSkills;
     private String filterCity;
     private boolean showMatchedFirst;
@@ -38,7 +39,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         tokenManager = new TokenManager(this);
-        adapter = new BrowseJobsAdapter(new ArrayList<>(), this::applyToJob);
+        adapter = new BrowseJobsAdapter(new ArrayList<>(), this::applyToJob, appliedJobIds);
         binding.rvJobs.setLayoutManager(new LinearLayoutManager(this));
         binding.rvJobs.setAdapter(adapter);
 
@@ -60,11 +61,36 @@ public class BrowseJobsActivity extends AppCompatActivity {
         }
 
         binding.btnToggleJobs.setOnClickListener(v -> toggleJobsView());
-        loadJobs();
+        loadInitialData();
+    }
+
+    private void loadInitialData() {
+        binding.progressBar.setVisibility(View.VISIBLE);
+        // First, get the jobs this worker has already applied to
+        RetrofitClient.get().getMyApplications(tokenManager.getBearerToken())
+                .enqueue(new Callback<List<JobApplication>>() {
+                    @Override
+                    public void onResponse(Call<List<JobApplication>> call,
+                                           Response<List<JobApplication>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            appliedJobIds.clear();
+                            Set<String> newIds = response.body().stream()
+                                    .map(app -> app.jobId)
+                                    .collect(Collectors.toSet());
+                            appliedJobIds.addAll(newIds);
+                        }
+                        // Then, load all jobs
+                        loadJobs();
+                    }
+                    @Override
+                    public void onFailure(Call<List<JobApplication>> call, Throwable t) {
+                        // Still load jobs even if this fails
+                        loadJobs();
+                    }
+                });
     }
 
     private void loadJobs() {
-        binding.progressBar.setVisibility(View.VISIBLE);
         RetrofitClient.get().browseJobs(tokenManager.getBearerToken())
                 .enqueue(new Callback<List<JobBrowseItem>>() {
                     @Override
@@ -106,6 +132,10 @@ public class BrowseJobsActivity extends AppCompatActivity {
     }
 
     private void applyToJob(JobBrowseItem job, int position) {
+        // Disable button immediately to prevent double-clicks
+        job.applied = true;
+        adapter.notifyItemChanged(position);
+
         RetrofitClient.get().applyToJob(tokenManager.getBearerToken(), job.id)
                 .enqueue(new Callback<JobApplication>() {
                     @Override
@@ -114,18 +144,22 @@ public class BrowseJobsActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             Toast.makeText(BrowseJobsActivity.this,
                                     "Applied to " + job.title + "! ✓", Toast.LENGTH_SHORT).show();
-                        } else if (response.code() == 400) {
-                            Toast.makeText(BrowseJobsActivity.this,
-                                    "Already applied to this job", Toast.LENGTH_SHORT).show();
+                            appliedJobIds.add(job.id); // Add to our set
                         } else {
                             Toast.makeText(BrowseJobsActivity.this,
                                     "Failed to apply", Toast.LENGTH_SHORT).show();
+                            // Re-enable button if the call failed
+                            job.applied = false;
+                            adapter.notifyItemChanged(position);
                         }
                     }
                     @Override
                     public void onFailure(Call<JobApplication> call, Throwable t) {
                         Toast.makeText(BrowseJobsActivity.this,
                                 "Network error", Toast.LENGTH_SHORT).show();
+                        // Re-enable button on failure
+                        job.applied = false;
+                        adapter.notifyItemChanged(position);
                     }
                 });
     }

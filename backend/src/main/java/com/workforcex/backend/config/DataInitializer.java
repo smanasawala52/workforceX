@@ -25,17 +25,76 @@ public class DataInitializer implements ApplicationRunner {
     private final UserRepository userRepository;
     private final EmployerProfileRepository employerProfileRepository;
     private final JobRepository jobRepository;
+    private final WorkerProfileRepository workerProfileRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(ApplicationArguments args) {
         if (jobRepository.count() > 0) {
             log.info("DataInitializer: jobs already exist, skipping seed.");
-            return;
+        } else {
+            log.info("DataInitializer: seeding 200 dummy jobs...");
+            createJobs();
+            log.info("DataInitializer: job seeding complete.");
         }
-        log.info("DataInitializer: seeding 200 dummy jobs...");
-        createJobs();
-        log.info("DataInitializer: seeding complete.");
+
+        if (workerProfileRepository.count() > 0) {
+            log.info("DataInitializer: workers already exist, skipping seed.");
+        } else {
+            log.info("DataInitializer: seeding 20 dummy workers...");
+            createWorkers();
+            log.info("DataInitializer: worker seeding complete.");
+        }
+    }
+
+    private void createWorkers() {
+        String[][] workers = {
+            // mobile, name, skills, experience, city, salary
+            {"9900000001", "Anil Kumar", "security,patrolling", "2", "Mumbai", "15000"},
+            {"9900000002", "Sunita Sharma", "housekeeping,cleaning", "1", "Delhi", "12000"},
+            {"9900000003", "Rajesh Singh", "driving,car", "5", "Bangalore", "20000"},
+            {"9900000004", "Priya Patel", "data-entry,computer", "2", "Hyderabad", "14000"},
+            {"9900000005", "Amit Kumar", "cctv,surveillance", "3", "Chennai", "16000"},
+            {"9900000006", "Meena Devi", "cooking,north-indian", "4", "Pune", "15000"},
+            {"9900000007", "Sanjay Verma", "electrical,wiring", "6", "Kolkata", "22000"},
+            {"9900000008", "Kavita Gupta", "reception,communication", "3", "Ahmedabad", "15000"},
+            {"9900000009", "Manoj Yadav", "plumbing,pipe-fitting", "7", "Surat", "24000"},
+            {"9900000010", "Pooja Mishra", "office-assistance,filing", "1", "Jaipur", "11000"},
+            {"9900000011", "Ravi Shankar", "carpentry,woodwork", "8", "Lucknow", "25000"},
+            {"9900000012", "Geeta Reddy", "patient-care,hospital", "2", "Kanpur", "14000"},
+            {"9900000013", "Ashok Rathod", "painting,wall-painting", "4", "Nagpur", "18000"},
+            {"9900000014", "Deepa Iyer", "cooking,south-indian", "5", "Indore", "16000"},
+            {"9900000015", "Vikram Rathore", "ac-repair,hvac", "6", "Thane", "23000"},
+            {"9900000016", "Shanti Bai", "laundry,washing,ironing", "2", "Bhopal", "13000"},
+            {"9900000017", "Gopal Krishna", "lift,elevator,maintenance", "9", "Visakhapatnam", "28000"},
+            {"9900000018", "Rekha Patil", "warehouse,loading,unloading", "3", "Patna", "16000"},
+            {"9900000019", "Harish Chandra", "generator,dg-set", "7", "Vadodara", "21000"},
+            {"9900000020", "Usha Rani", "construction,material-handling", "1", "Ludhiana", "12000"}
+        };
+
+        for (String[] w : workers) {
+            User user = userRepository.findByMobileNumber(w[0]).orElseGet(() -> {
+                User u = new User();
+                u.setCountryCode("+91");
+                u.setMobileNumber(w[0]);
+                u.setPassword(passwordEncoder.encode(w[0]));
+                u.setRole(Role.WORKER);
+                return userRepository.save(u);
+            });
+
+            WorkerProfile profile = workerProfileRepository.findByUserId(user.getId())
+                    .orElseGet(() -> {
+                        WorkerProfile p = new WorkerProfile();
+                        p.setUser(user);
+                        return p;
+                    });
+            profile.setName(w[1]);
+            profile.setSkills(w[2]);
+            profile.setExperience(Integer.parseInt(w[3]));
+            profile.setCity(w[4]);
+            profile.setPreferredSalary(Double.parseDouble(w[5]));
+            workerProfileRepository.save(profile);
+        }
     }
 
     private void createJobs() {

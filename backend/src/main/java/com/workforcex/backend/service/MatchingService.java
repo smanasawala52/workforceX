@@ -3,8 +3,11 @@ package com.workforcex.backend.service;
 import com.workforcex.backend.dto.CandidateSearchRequest;
 import com.workforcex.backend.dto.CandidateSearchResponse;
 import com.workforcex.backend.dto.MatchedWorkerResponse;
+import com.workforcex.backend.entity.ApplicationStatus;
 import com.workforcex.backend.entity.Job;
+import com.workforcex.backend.entity.JobApplication;
 import com.workforcex.backend.entity.WorkerProfile;
+import com.workforcex.backend.repository.JobApplicationRepository;
 import com.workforcex.backend.repository.JobRepository;
 import com.workforcex.backend.repository.WorkerProfileRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,15 +19,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-/**
- * Matching Engine — Spiral 1 + Spiral 2 search.
- *
- * Formula (both job-match and free search):
- *   Skills     = 40%
- *   Experience = 30%
- *   Location   = 20%
- *   Salary     = 10%
- */
 @Service
 @RequiredArgsConstructor
 public class MatchingService {
@@ -36,8 +30,7 @@ public class MatchingService {
 
     private final JobRepository jobRepository;
     private final WorkerProfileRepository workerProfileRepository;
-
-    // ── Spiral 1: match workers to a specific job ─────────────────────────────
+    private final JobApplicationRepository applicationRepository;
 
     public List<MatchedWorkerResponse> getMatchedWorkers(String employerMobileNumber, UUID jobId) {
         Job job = jobRepository.findById(jobId)
@@ -55,20 +48,19 @@ public class MatchingService {
                             job.getLocation(), worker.getCity(),
                             job.getSalaryMin(), job.getSalaryMax(), worker.getPreferredSalary()
                     );
-                    return MatchedWorkerResponse.fromProfile(worker, s.total());
+
+                    ApplicationStatus status = applicationRepository
+                        .findByJobIdAndWorkerId(jobId, worker.getUser().getId())
+                        .map(JobApplication::getStatus)
+                        .orElse(null);
+
+                    return MatchedWorkerResponse.fromProfile(worker, s.total(), status);
                 })
                 .filter(r -> r.score() > 0)
                 .sorted((a, b) -> Double.compare(b.score(), a.score()))
                 .collect(Collectors.toList());
     }
 
-    // ── Spiral 2: free-text search with filters ───────────────────────────────
-
-    /**
-     * Search all workers using optional filters.
-     * Hard filters (city, experience range, salary range) eliminate candidates.
-     * Skill score drives ranking among those who pass.
-     */
     public List<CandidateSearchResponse> search(CandidateSearchRequest request) {
         return workerProfileRepository.findAll().stream()
                 .filter(worker -> passesHardFilters(worker, request))
@@ -88,10 +80,7 @@ public class MatchingService {
                 .collect(Collectors.toList());
     }
 
-    // ── Hard filters (eliminate, not score) ──────────────────────────────────
-
     private boolean passesHardFilters(WorkerProfile worker, CandidateSearchRequest req) {
-        // Skills filter — worker must have AT LEAST ONE of the required skills
         if (req.skills() != null && !req.skills().isBlank()) {
             if (worker.getSkills() == null || worker.getSkills().isBlank()) return false;
             Set<String> required = splitToSet(req.skills());
@@ -99,25 +88,20 @@ public class MatchingService {
             boolean anyMatch = required.stream().anyMatch(has::contains);
             if (!anyMatch) return false;
         }
-        // City filter
         if (req.city() != null && !req.city().isBlank()) {
             if (worker.getCity() == null) return false;
             if (!worker.getCity().trim().equalsIgnoreCase(req.city().trim())) return false;
         }
-        // Experience range filter
         if (req.experienceMin() != null && worker.getExperience() != null
                 && worker.getExperience() < req.experienceMin()) return false;
         if (req.experienceMax() != null && worker.getExperience() != null
                 && worker.getExperience() > req.experienceMax()) return false;
-        // Salary range filter
         if (req.salaryMin() != null && worker.getPreferredSalary() != null
                 && worker.getPreferredSalary() < req.salaryMin()) return false;
         if (req.salaryMax() != null && worker.getPreferredSalary() != null
                 && worker.getPreferredSalary() > req.salaryMax()) return false;
         return true;
     }
-
-    // ── Shared scoring ────────────────────────────────────────────────────────
 
     private record Scores(double skill, double experience, double location, double salary) {
         double total() {

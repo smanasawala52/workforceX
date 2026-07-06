@@ -130,16 +130,44 @@ if ($LASTEXITCODE -ne 0) {
 
 Write-Host "Install SUCCESS!" -ForegroundColor Green
 
-# ── Step 6: Launch App ────────────────────────────────────────────────────────
+# ── Step 6: Launch App & Capture Logs ───────────────────────────────────────
 
 Write-Host ""
+Write-Host "Clearing old device logs..." -ForegroundColor Yellow
+adb logcat -c
+
 Write-Host "Launching WorkforceX Employer app..." -ForegroundColor Magenta
 adb shell am start -n com.workforcex.employer/.ui.auth.SplashActivity
 
-Write-Host ""
-Write-Host "==========================================" -ForegroundColor Magenta
-Write-Host "  Employer app is running!               " -ForegroundColor Magenta
-Write-Host "  Backend must be on localhost:8080      " -ForegroundColor Magenta
-Write-Host "  (emulator uses 10.0.2.2 internally)   " -ForegroundColor Magenta
-Write-Host "==========================================" -ForegroundColor Magenta
-Write-Host ""
+Write-Host "Waiting 5 seconds for app to launch..." -ForegroundColor Yellow
+Start-Sleep -Seconds 5
+
+Write-Host "Checking for crash logs..." -ForegroundColor Yellow
+
+# Dump logs and look for the fatal exception signature
+$logOutput = adb logcat -d | Select-String "FATAL EXCEPTION" -Context 0, 30
+
+if ($logOutput) {
+    Write-Host "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" -ForegroundColor Red
+    Write-Host "!!                                      !!" -ForegroundColor Red
+    Write-Host "!!    A C R A S H   W A S   F O U N D   !!" -ForegroundColor Red
+    Write-Host "!!                                      !!" -ForegroundColor Red
+    Write-Host "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "--- CRASH LOG ---" -ForegroundColor Yellow
+    Write-Host $logOutput -ForegroundColor Red
+    Write-Host "-----------------" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "The error above is likely the cause of the crash." -ForegroundColor White
+    Write-Host "Please review the stack trace to identify the problem." -ForegroundColor White
+    Write-Host ""
+    exit 1 # Exit with an error code to indicate failure
+} else {
+    Write-Host ""
+    Write-Host "==========================================" -ForegroundColor Magenta
+    Write-Host "  No crash detected. App is running!     " -ForegroundColor Magenta
+    Write-Host "  Backend must be on localhost:8080      " -ForegroundColor Magenta
+    Write-Host "  (emulator uses 10.0.2.2 internally)   " -ForegroundColor Magenta
+    Write-Host "==========================================" -ForegroundColor Magenta
+    Write-Host ""
+}

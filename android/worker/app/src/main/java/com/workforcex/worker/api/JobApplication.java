@@ -7,4 +7,5 @@ public class JobApplication {
     public String companyName;
     public String status; // PENDING, SHORTLISTED, REJECTED
     public String appliedAt;
+    public String employerMobile;
 }

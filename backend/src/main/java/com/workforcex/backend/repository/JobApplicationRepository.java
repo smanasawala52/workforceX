@@ -19,6 +19,9 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication, 
     // Check for duplicate application
     boolean existsByJobIdAndWorkerId(UUID jobId, UUID workerId);
 
+    // Find a specific application
+    Optional<JobApplication> findByJobIdAndWorkerId(UUID jobId, UUID workerId);
+
     // Employer: filter applicants by status
     List<JobApplication> findAllByJobIdAndStatus(UUID jobId, ApplicationStatus status);
 }

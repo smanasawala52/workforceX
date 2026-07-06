@@ -1,6 +1,8 @@
 package com.workforcex.worker.api;
 
-public class JobBrowseItem {
+import java.io.Serializable;
+
+public class JobBrowseItem implements Serializable {
     public String id;
     public String title;
     public String companyName;

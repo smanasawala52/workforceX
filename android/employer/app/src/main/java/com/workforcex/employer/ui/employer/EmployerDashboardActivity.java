@@ -2,8 +2,12 @@ package com.workforcex.employer.ui.employer;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import com.workforcex.employer.R;
 import com.workforcex.employer.api.EmployerProfileResponse;
 import com.workforcex.employer.api.RetrofitClient;
 import com.workforcex.employer.databinding.ActivityEmployerDashboardBinding;
@@ -25,6 +29,8 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         tokenManager = new TokenManager(this);
 
+        setSupportActionBar(binding.toolbar);
+
         binding.btnMyJobs.setOnClickListener(v ->
                 startActivity(new Intent(this, JobsActivity.class)));
 
@@ -34,6 +40,21 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         binding.btnLogout.setOnClickListener(v -> logout());
 
         loadProfile();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.dashboard_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_notifications) {
+            startActivity(new Intent(this, NotificationsActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void loadProfile() {

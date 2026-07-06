@@ -20,6 +20,7 @@ public class ApplicationService {
     private final UserRepository userRepository;
     private final WorkerProfileRepository workerProfileRepository;
     private final EmployerProfileRepository employerProfileRepository;
+    private final NotificationService notificationService;
 
     // ── Worker: apply to a job ────────────────────────────────────────────────
 
@@ -40,6 +41,50 @@ public class ApplicationService {
         application.setStatus(ApplicationStatus.PENDING);
 
         applicationRepository.save(application);
+
+        // Notify the employer
+        notificationService.createNotification(job.getEmployer(), "A new candidate has applied for your job: " + job.getTitle());
+
+        return buildResponse(application);
+    }
+
+    // ── Employer: proactively offer a job to a matched worker ───────────────
+
+    public JobApplicationResponse offerJob(String employerMobile, UUID jobId, UUID workerId) {
+        User employer = userRepository.findByMobileNumber(employerMobile)
+                .orElseThrow(() -> new IllegalArgumentException("Employer not found"));
+
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new IllegalArgumentException("Job not found"));
+
+        // Verify the employer owns the job
+        if (!job.getEmployer().getId().equals(employer.getId())) {
+            throw new IllegalArgumentException("You do not have permission to offer this job");
+        }
+
+        User worker = userRepository.findById(workerId)
+                .orElseThrow(() -> new IllegalArgumentException("Worker not found"));
+
+        // Check if an application already exists
+        if (applicationRepository.existsByJobIdAndWorkerId(jobId, workerId)) {
+            throw new IllegalStateException("An application for this job already exists for this worker.");
+        }
+
+        JobApplication application = new JobApplication();
+        application.setJob(job);
+        application.setWorker(worker);
+        application.setStatus(ApplicationStatus.OFFERED); // Directly set to OFFERED
+        applicationRepository.save(application);
+
+        // Notify the worker about the job offer
+        String message = String.format(
+            "You have received a job offer for '%s' from %s!",
+            job.getTitle(),
+            employerProfileRepository.findByUserId(employer.getId())
+                .map(EmployerProfile::getCompanyName).orElse("a company")
+        );
+        notificationService.createNotification(worker, message);
+
         return buildResponse(application);
     }
 
@@ -80,9 +125,28 @@ public class ApplicationService {
             throw new IllegalArgumentException("You do not have permission to update this application");
         }
 
+        if (newStatus == ApplicationStatus.HIRED) {
+            Job job = application.getJob();
+            if (job.getOpenPositions() > 0) {
+                job.setOpenPositions(job.getOpenPositions() - 1);
+                jobRepository.save(job);
+            } else {
+                throw new IllegalStateException("No open positions left for this job");
+            }
+        }
+
         application.setStatus(newStatus);
         application.setUpdatedAt(LocalDateTime.now());
         applicationRepository.save(application);
+
+        // Notify the worker about the status update
+        String message = String.format(
+            "Your application for '%s' has been updated to: %s",
+            application.getJob().getTitle(),
+            newStatus.toString()
+        );
+        notificationService.createNotification(application.getWorker(), message);
+
         return buildResponse(application);
     }
 

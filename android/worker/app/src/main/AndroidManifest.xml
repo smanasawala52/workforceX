@@ -6,6 +6,8 @@
     <application
         android:allowBackup="true"
         android:label="WorkforceX - Find Jobs"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.WorkforceX">
@@ -25,7 +27,7 @@
         <activity android:name=".ui.worker.WorkerProfileActivity" android:exported="false"/>
         <activity android:name=".ui.worker.BrowseJobsActivity" android:exported="false"/>
         <activity android:name=".ui.worker.MyApplicationsActivity" android:exported="false"/>
-        <activity android:name=".ui.worker.MyApplicationsActivity" android:exported="false"/>
+        <activity android:name=".ui.worker.JobDetailsActivity" android:exported="false"/>
 
     </application>
 

@@ -84,6 +84,12 @@ public class MyApplicationsActivity extends AppCompatActivity {
                     h.tvStatus.setTextColor(Color.parseColor("#1B5E20")); break;
                 case "REJECTED":
                     h.tvStatus.setTextColor(Color.parseColor("#B71C1C")); break;
+                case "INTERVIEW":
+                    h.tvStatus.setTextColor(Color.parseColor("#FFC107")); break;
+                case "OFFERED":
+                    h.tvStatus.setTextColor(Color.parseColor("#FF9800")); break;
+                case "HIRED":
+                    h.tvStatus.setTextColor(Color.parseColor("#4CAF50")); break;
                 default:
                     h.tvStatus.setTextColor(Color.parseColor("#1565C0"));
             }
