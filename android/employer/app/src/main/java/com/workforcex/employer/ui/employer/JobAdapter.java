@@ -17,11 +17,14 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
 
     private List<JobResponse> jobs;
     private final OnJobAction onFindCandidates;
+    private final OnJobAction onViewApplicants;
     private final OnJobAction onEdit;
 
-    public JobAdapter(List<JobResponse> jobs, OnJobAction onFindCandidates, OnJobAction onEdit) {
+    public JobAdapter(List<JobResponse> jobs, OnJobAction onFindCandidates,
+                      OnJobAction onViewApplicants, OnJobAction onEdit) {
         this.jobs = jobs;
         this.onFindCandidates = onFindCandidates;
+        this.onViewApplicants = onViewApplicants;
         this.onEdit = onEdit;
     }
 
@@ -30,48 +33,47 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         notifyDataSetChanged();
     }
 
-    @NonNull
-    @Override
+    @NonNull @Override
     public JobViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_job, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_job, parent, false);
         return new JobViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull JobViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull JobViewHolder h, int position) {
         JobResponse job = jobs.get(position);
-        holder.tvTitle.setText(job.title);
-        holder.tvLocation.setText("📍 " + (job.location != null ? job.location : "Not specified"));
-        holder.tvSkills.setText("Skills: " + (job.skillsRequired != null ? job.skillsRequired : "Any"));
+        h.tvTitle.setText(job.title);
+        h.tvLocation.setText("📍 " + (job.location != null ? job.location : "Not specified"));
+        h.tvSkills.setText("Skills: " + (job.skillsRequired != null ? job.skillsRequired : "Any"));
+
         String salaryText = "";
-        if (job.salaryMin != null && job.salaryMax != null) {
+        if (job.salaryMin != null && job.salaryMax != null)
             salaryText = "₹" + job.salaryMin.intValue() + " - ₹" + job.salaryMax.intValue() + "/month";
-        } else if (job.salaryMin != null) {
-            salaryText = "₹" + job.salaryMin.intValue() + "+/month";
-        }
-        if (job.openPositions != null && job.openPositions > 0) {
+        if (job.openPositions != null && job.openPositions > 0)
             salaryText += (salaryText.isEmpty() ? "" : "  ·  ") + job.openPositions + " openings";
-        }
-        holder.tvSalary.setText(salaryText);
-        holder.btnFindCandidates.setOnClickListener(v -> onFindCandidates.onAction(job));
-        holder.btnEdit.setOnClickListener(v -> onEdit.onAction(job));
+        h.tvSalary.setText(salaryText);
+
+        h.btnFindCandidates.setOnClickListener(v -> onFindCandidates.onAction(job));
+        h.btnApplicants.setOnClickListener(v -> onViewApplicants.onAction(job));
+        h.btnEdit.setOnClickListener(v -> onEdit.onAction(job));
     }
 
-    @Override
-    public int getItemCount() { return jobs.size(); }
+    @Override public int getItemCount() { return jobs.size(); }
 
     static class JobViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvLocation, tvSkills, tvSalary;
-        Button btnFindCandidates, btnEdit;
+        Button btnFindCandidates, btnApplicants, btnEdit;
 
-        JobViewHolder(View itemView) {
-            super(itemView);
-            tvTitle = itemView.findViewById(R.id.tvTitle);
-            tvLocation = itemView.findViewById(R.id.tvLocation);
-            tvSkills = itemView.findViewById(R.id.tvSkills);
-            tvSalary = itemView.findViewById(R.id.tvSalary);
-            btnFindCandidates = itemView.findViewById(R.id.btnFindCandidates);
-            btnEdit = itemView.findViewById(R.id.btnEdit);
+        JobViewHolder(View v) {
+            super(v);
+            tvTitle          = v.findViewById(R.id.tvTitle);
+            tvLocation       = v.findViewById(R.id.tvLocation);
+            tvSkills         = v.findViewById(R.id.tvSkills);
+            tvSalary         = v.findViewById(R.id.tvSalary);
+            btnFindCandidates = v.findViewById(R.id.btnFindCandidates);
+            btnApplicants    = v.findViewById(R.id.btnApplicants);
+            btnEdit          = v.findViewById(R.id.btnEdit);
         }
     }
 }

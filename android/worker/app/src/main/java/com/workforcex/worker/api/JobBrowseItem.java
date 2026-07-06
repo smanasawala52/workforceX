@@ -11,4 +11,5 @@ public class JobBrowseItem {
     public Double salaryMax;
     public Integer openPositions;
     public String description;
+    public Boolean applied = false; // local UI state — not from API
 }

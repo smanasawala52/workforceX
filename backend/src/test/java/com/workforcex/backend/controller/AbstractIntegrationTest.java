@@ -1,6 +1,7 @@
 package com.workforcex.backend.controller;
 
 import com.workforcex.backend.repository.EmployerProfileRepository;
+import com.workforcex.backend.repository.JobApplicationRepository;
 import com.workforcex.backend.repository.JobRepository;
 import com.workforcex.backend.repository.UserRepository;
 import com.workforcex.backend.repository.WorkerProfileRepository;
@@ -34,9 +35,11 @@ abstract class AbstractIntegrationTest {
     @Autowired protected WorkerProfileRepository workerProfileRepository;
     @Autowired protected EmployerProfileRepository employerProfileRepository;
     @Autowired protected JobRepository jobRepository;
+    @Autowired protected JobApplicationRepository applicationRepository;
 
     @BeforeEach
     void cleanAllTables() {
+        applicationRepository.deleteAll(); // must be before jobs and users
         jobRepository.deleteAll();
         workerProfileRepository.deleteAll();
         employerProfileRepository.deleteAll();

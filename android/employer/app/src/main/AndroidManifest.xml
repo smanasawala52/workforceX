@@ -26,6 +26,7 @@
         <activity android:name=".ui.employer.JobCreateEditActivity" android:exported="false"/>
         <activity android:name=".ui.employer.MatchingResultsActivity" android:exported="false"/>
         <activity android:name=".ui.employer.SearchCandidatesActivity" android:exported="false"/>
+        <activity android:name=".ui.employer.JobApplicantsActivity" android:exported="false"/>
 
     </application>
 

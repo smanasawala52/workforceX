@@ -27,16 +27,20 @@ public class JobsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityJobsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        setTitle("My Jobs");
         tokenManager = new TokenManager(this);
 
-        adapter = new JobAdapter(new ArrayList<>(), this::onFindCandidates, this::onEditJob);
+        adapter = new JobAdapter(
+                new ArrayList<>(),
+                this::onFindCandidates,
+                this::onViewApplicants,
+                this::onEditJob
+        );
         binding.rvJobs.setLayoutManager(new LinearLayoutManager(this));
         binding.rvJobs.setAdapter(adapter);
 
-        binding.btnCreateJob.setOnClickListener(v -> {
-            Intent intent = new Intent(this, JobCreateEditActivity.class);
-            startActivity(intent);
-        });
+        binding.btnCreateJob.setOnClickListener(v ->
+                startActivity(new Intent(this, JobCreateEditActivity.class)));
     }
 
     @Override
@@ -50,23 +54,34 @@ public class JobsActivity extends AppCompatActivity {
         RetrofitClient.get().getMyJobs(tokenManager.getBearerToken())
                 .enqueue(new Callback<List<JobResponse>>() {
                     @Override
-                    public void onResponse(Call<List<JobResponse>> call, Response<List<JobResponse>> response) {
+                    public void onResponse(Call<List<JobResponse>> call,
+                                           Response<List<JobResponse>> response) {
                         binding.progressBar.setVisibility(View.GONE);
                         if (response.isSuccessful() && response.body() != null) {
-                            adapter.updateJobs(response.body());
-                            binding.tvEmpty.setVisibility(response.body().isEmpty() ? View.VISIBLE : View.GONE);
+                            List<JobResponse> jobs = response.body();
+                            adapter.updateJobs(jobs);
+                            binding.tvEmpty.setVisibility(
+                                    jobs.isEmpty() ? View.VISIBLE : View.GONE);
                         }
                     }
                     @Override
                     public void onFailure(Call<List<JobResponse>> call, Throwable t) {
                         binding.progressBar.setVisibility(View.GONE);
-                        Toast.makeText(JobsActivity.this, "Failed to load jobs", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(JobsActivity.this,
+                                "Failed to load jobs", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
     private void onFindCandidates(JobResponse job) {
         Intent intent = new Intent(this, MatchingResultsActivity.class);
+        intent.putExtra("jobId", job.id);
+        intent.putExtra("jobTitle", job.title);
+        startActivity(intent);
+    }
+
+    private void onViewApplicants(JobResponse job) {
+        Intent intent = new Intent(this, JobApplicantsActivity.class);
         intent.putExtra("jobId", job.id);
         intent.putExtra("jobTitle", job.title);
         startActivity(intent);

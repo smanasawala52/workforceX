@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import com.workforcex.worker.api.JobApplication;
 import com.workforcex.worker.api.JobBrowseItem;
 import com.workforcex.worker.api.RetrofitClient;
 import com.workforcex.worker.databinding.ActivityBrowseJobsBinding;
@@ -24,7 +25,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
     private ActivityBrowseJobsBinding binding;
     private TokenManager tokenManager;
     private BrowseJobsAdapter adapter;
-
     private List<JobBrowseItem> allJobs = new ArrayList<>();
     private String filterSkills;
     private String filterCity;
@@ -38,13 +38,12 @@ public class BrowseJobsActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         tokenManager = new TokenManager(this);
-        adapter = new BrowseJobsAdapter(new ArrayList<>());
+        adapter = new BrowseJobsAdapter(new ArrayList<>(), this::applyToJob);
         binding.rvJobs.setLayoutManager(new LinearLayoutManager(this));
         binding.rvJobs.setAdapter(adapter);
 
-        // Receive filter from WorkerProfileActivity after profile save
-        filterSkills = getIntent().getStringExtra("filterSkills");
-        filterCity   = getIntent().getStringExtra("filterCity");
+        filterSkills     = getIntent().getStringExtra("filterSkills");
+        filterCity       = getIntent().getStringExtra("filterCity");
         showMatchedFirst = getIntent().getBooleanExtra("showMatchedFirst", false);
 
         if (showMatchedFirst && filterSkills != null && !filterSkills.isEmpty()) {
@@ -52,7 +51,7 @@ public class BrowseJobsActivity extends AppCompatActivity {
             binding.btnToggleJobs.setVisibility(View.VISIBLE);
             binding.btnToggleJobs.setText("Show All Jobs");
             binding.tvFilterInfo.setVisibility(View.VISIBLE);
-            binding.tvFilterInfo.setText("Showing jobs matching: " + filterSkills);
+            binding.tvFilterInfo.setText("Matching: " + filterSkills);
         } else {
             setTitle("Available Jobs");
             binding.btnToggleJobs.setVisibility(View.GONE);
@@ -61,7 +60,6 @@ public class BrowseJobsActivity extends AppCompatActivity {
         }
 
         binding.btnToggleJobs.setOnClickListener(v -> toggleJobsView());
-
         loadJobs();
     }
 
@@ -76,14 +74,13 @@ public class BrowseJobsActivity extends AppCompatActivity {
                         if (response.isSuccessful() && response.body() != null) {
                             allJobs = response.body();
                             displayJobs(currentlyShowingMatched && showMatchedFirst);
-                        } else {
-                            Toast.makeText(BrowseJobsActivity.this, "Failed to load jobs", Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override
                     public void onFailure(Call<List<JobBrowseItem>> call, Throwable t) {
                         binding.progressBar.setVisibility(View.GONE);
-                        Toast.makeText(BrowseJobsActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(BrowseJobsActivity.this,
+                                "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -91,52 +88,57 @@ public class BrowseJobsActivity extends AppCompatActivity {
     private void toggleJobsView() {
         currentlyShowingMatched = !currentlyShowingMatched;
         displayJobs(currentlyShowingMatched);
-        if (currentlyShowingMatched) {
-            binding.btnToggleJobs.setText("Show All Jobs");
-            binding.tvFilterInfo.setVisibility(View.VISIBLE);
-            setTitle("Jobs Matching Your Skills");
-        } else {
-            binding.btnToggleJobs.setText("Show Matching Jobs");
-            binding.tvFilterInfo.setVisibility(View.GONE);
-            setTitle("All Available Jobs (" + allJobs.size() + ")");
-        }
+        binding.btnToggleJobs.setText(currentlyShowingMatched ? "Show All Jobs" : "Show Matching Jobs");
+        binding.tvFilterInfo.setVisibility(currentlyShowingMatched ? View.VISIBLE : View.GONE);
+        setTitle(currentlyShowingMatched ? "Jobs Matching Your Skills" :
+                "All Jobs (" + allJobs.size() + ")");
     }
 
     private void displayJobs(boolean matchedOnly) {
-        List<JobBrowseItem> toShow;
-        if (matchedOnly && filterSkills != null && !filterSkills.isEmpty()) {
-            toShow = filterBySkills(allJobs, filterSkills, filterCity);
-        } else {
-            toShow = allJobs;
-        }
+        List<JobBrowseItem> toShow = matchedOnly && filterSkills != null && !filterSkills.isEmpty()
+                ? filterBySkills(allJobs, filterSkills, filterCity)
+                : allJobs;
         adapter.update(toShow);
         binding.tvEmpty.setVisibility(toShow.isEmpty() ? View.VISIBLE : View.GONE);
+        binding.tvResultCount.setVisibility(View.VISIBLE);
+        binding.tvResultCount.setText(toShow.size() +
+                (matchedOnly ? " job(s) match your skills" : " total jobs available"));
+    }
 
-        if (matchedOnly) {
-            binding.tvResultCount.setVisibility(View.VISIBLE);
-            binding.tvResultCount.setText(toShow.size() + " job(s) match your skills");
-        } else {
-            binding.tvResultCount.setVisibility(View.VISIBLE);
-            binding.tvResultCount.setText(toShow.size() + " total jobs available");
-        }
+    private void applyToJob(JobBrowseItem job, int position) {
+        RetrofitClient.get().applyToJob(tokenManager.getBearerToken(), job.id)
+                .enqueue(new Callback<JobApplication>() {
+                    @Override
+                    public void onResponse(Call<JobApplication> call,
+                                           Response<JobApplication> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(BrowseJobsActivity.this,
+                                    "Applied to " + job.title + "! ✓", Toast.LENGTH_SHORT).show();
+                        } else if (response.code() == 400) {
+                            Toast.makeText(BrowseJobsActivity.this,
+                                    "Already applied to this job", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(BrowseJobsActivity.this,
+                                    "Failed to apply", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<JobApplication> call, Throwable t) {
+                        Toast.makeText(BrowseJobsActivity.this,
+                                "Network error", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private List<JobBrowseItem> filterBySkills(List<JobBrowseItem> jobs, String skills, String city) {
-        if (skills == null || skills.isEmpty()) return jobs;
-        Set<String> workerSkills = new HashSet<>(
-                Arrays.asList(skills.toLowerCase().split(",")));
-
+        Set<String> workerSkills = new HashSet<>(Arrays.asList(skills.toLowerCase().split(",")));
         return jobs.stream().filter(job -> {
             if (job.skillsRequired == null) return false;
-            Set<String> jobSkills = new HashSet<>(
-                    Arrays.asList(job.skillsRequired.toLowerCase().split(",")));
-            // At least one skill overlap
-            boolean skillMatch = jobSkills.stream().anyMatch(workerSkills::contains);
-            if (!skillMatch) return false;
-            // Optional city filter
-            if (city != null && !city.isEmpty() && job.location != null) {
+            Set<String> jobSkills = new HashSet<>(Arrays.asList(job.skillsRequired.toLowerCase().split(",")));
+            boolean match = jobSkills.stream().anyMatch(workerSkills::contains);
+            if (!match) return false;
+            if (city != null && !city.isEmpty() && job.location != null)
                 return job.location.toLowerCase().contains(city.toLowerCase());
-            }
             return true;
         }).collect(Collectors.toList());
     }

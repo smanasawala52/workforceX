@@ -3,6 +3,7 @@ package com.workforcex.worker.ui.worker;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,13 +13,23 @@ import java.util.List;
 
 public class BrowseJobsAdapter extends RecyclerView.Adapter<BrowseJobsAdapter.JobViewHolder> {
 
-    private List<JobBrowseItem> jobs;
+    public interface OnApplyClick { void onApply(JobBrowseItem job, int position); }
 
-    public BrowseJobsAdapter(List<JobBrowseItem> jobs) { this.jobs = jobs; }
+    private List<JobBrowseItem> jobs;
+    private final OnApplyClick onApplyClick;
+
+    public BrowseJobsAdapter(List<JobBrowseItem> jobs, OnApplyClick onApplyClick) {
+        this.jobs = jobs;
+        this.onApplyClick = onApplyClick;
+    }
 
     public void update(List<JobBrowseItem> newJobs) {
         this.jobs = newJobs;
         notifyDataSetChanged();
+    }
+
+    public void markApplied(int position) {
+        notifyItemChanged(position);
     }
 
     @NonNull
@@ -35,22 +46,20 @@ public class BrowseJobsAdapter extends RecyclerView.Adapter<BrowseJobsAdapter.Jo
         h.tvTitle.setText(job.title);
         h.tvCompany.setText(job.companyName != null ? job.companyName : "");
         h.tvLocation.setText("📍 " + (job.location != null ? job.location : "Not specified"));
-        h.tvSkills.setText("Skills needed: " + (job.skillsRequired != null ? job.skillsRequired : "Any"));
+        h.tvSkills.setText("Skills: " + (job.skillsRequired != null ? job.skillsRequired : "Any"));
 
-        // Salary range
         if (job.salaryMin != null && job.salaryMax != null) {
             h.tvSalary.setText("₹" + job.salaryMin.intValue() + " – ₹" + job.salaryMax.intValue() + "/month");
         } else if (job.salaryMin != null) {
             h.tvSalary.setText("₹" + job.salaryMin.intValue() + "+/month");
         } else {
-            h.tvSalary.setText("Salary: Not specified");
+            h.tvSalary.setText("");
         }
 
-        if (job.openPositions != null && job.openPositions > 0) {
-            h.tvOpenings.setText(job.openPositions + " opening" + (job.openPositions > 1 ? "s" : ""));
-        } else {
-            h.tvOpenings.setText("");
-        }
+        h.tvOpenings.setText(job.openPositions != null && job.openPositions > 0
+                ? job.openPositions + " opening" + (job.openPositions > 1 ? "s" : "") : "");
+
+        h.btnApply.setOnClickListener(v -> onApplyClick.onApply(job, h.getAdapterPosition()));
     }
 
     @Override
@@ -58,6 +67,8 @@ public class BrowseJobsAdapter extends RecyclerView.Adapter<BrowseJobsAdapter.Jo
 
     static class JobViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvCompany, tvLocation, tvSkills, tvSalary, tvOpenings;
+        Button btnApply;
+
         JobViewHolder(View v) {
             super(v);
             tvTitle    = v.findViewById(R.id.tvTitle);
@@ -66,6 +77,7 @@ public class BrowseJobsAdapter extends RecyclerView.Adapter<BrowseJobsAdapter.Jo
             tvSkills   = v.findViewById(R.id.tvSkills);
             tvSalary   = v.findViewById(R.id.tvSalary);
             tvOpenings = v.findViewById(R.id.tvOpenings);
+            btnApply   = v.findViewById(R.id.btnApply);
         }
     }
 }

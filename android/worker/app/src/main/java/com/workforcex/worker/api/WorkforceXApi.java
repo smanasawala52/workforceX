@@ -28,6 +28,14 @@ public interface WorkforceXApi {
     @POST("api/worker/resume")
     Call<ResumeParseResult> uploadResume(
             @Header("Authorization") String token,
-            @Part MultipartBody.Part file
-    );
+            @Part MultipartBody.Part file);
+
+    // Applications
+    @POST("api/applications/{jobId}")
+    Call<JobApplication> applyToJob(
+            @Header("Authorization") String token,
+            @Path("jobId") String jobId);
+
+    @GET("api/applications/my")
+    Call<List<JobApplication>> getMyApplications(@Header("Authorization") String token);
 }

@@ -55,7 +55,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:textColor="#2E7D32"/>
+            android:textColor="#2E7D32"
+            android:layout_marginBottom="10dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnApply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Apply Now"
+            android:textSize="13sp"/>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

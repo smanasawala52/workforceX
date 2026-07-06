@@ -5,9 +5,22 @@
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    { "key": "baseUrl", "value": "http://localhost:8080" },
-    { "key": "token", "value": "" },
-    { "key": "jobId", "value": "" }
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "jobId",
+      "value": ""
+    },
+    {
+      "key": "applicationId",
+      "value": ""
+    }
   ],
   "item": [
     {
@@ -15,43 +28,147 @@
       "item": [
         {
           "name": "Register Worker",
-          "request": { "method": "POST",
-            "header": [{"key":"Content-Type","value":"application/json"}],
-            "url": {"raw":"{{baseUrl}}/api/auth/register","host":["{{baseUrl}}"],"path":["api","auth","register"]},
-            "body": {"mode":"raw","raw":"{\n  \"mobileNumber\": \"9876543210\",\n  \"role\": \"WORKER\",\n  \"countryCode\": \"+91\"\n}"}
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobileNumber\": \"9876543210\",\n  \"role\": \"WORKER\",\n  \"countryCode\": \"+91\"\n}"
+            }
           }
         },
         {
           "name": "Register Employer",
-          "request": { "method": "POST",
-            "header": [{"key":"Content-Type","value":"application/json"}],
-            "url": {"raw":"{{baseUrl}}/api/auth/register","host":["{{baseUrl}}"],"path":["api","auth","register"]},
-            "body": {"mode":"raw","raw":"{\n  \"mobileNumber\": \"9123456780\",\n  \"role\": \"EMPLOYER\",\n  \"countryCode\": \"+91\"\n}"}
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobileNumber\": \"9123456780\",\n  \"role\": \"EMPLOYER\",\n  \"countryCode\": \"+91\"\n}"
+            }
           }
         },
         {
           "name": "Login (auto-saves token)",
-          "event": [{"listen":"test","script":{"exec":["const d=pm.response.json(); if(d.token){pm.collectionVariables.set('token',d.token);}"]}}],
-          "request": { "method": "POST",
-            "header": [{"key":"Content-Type","value":"application/json"}],
-            "url": {"raw":"{{baseUrl}}/api/auth/login","host":["{{baseUrl}}"],"path":["api","auth","login"]},
-            "body": {"mode":"raw","raw":"{\n  \"mobileNumber\": \"9876543210\",\n  \"password\": \"9876543210\"\n}"}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const d=pm.response.json(); if(d.token){pm.collectionVariables.set('token',d.token);}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobileNumber\": \"9876543210\",\n  \"password\": \"9876543210\"\n}"
+            }
           }
         },
         {
           "name": "Register - Duplicate Mobile (expect 400)",
-          "request": { "method": "POST",
-            "header": [{"key":"Content-Type","value":"application/json"}],
-            "url": {"raw":"{{baseUrl}}/api/auth/register","host":["{{baseUrl}}"],"path":["api","auth","register"]},
-            "body": {"mode":"raw","raw":"{\n  \"mobileNumber\": \"9876543210\",\n  \"role\": \"WORKER\",\n  \"countryCode\": \"+91\"\n}"}
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobileNumber\": \"9876543210\",\n  \"role\": \"WORKER\",\n  \"countryCode\": \"+91\"\n}"
+            }
           }
         },
         {
           "name": "Register - Invalid Mobile (expect 400)",
-          "request": { "method": "POST",
-            "header": [{"key":"Content-Type","value":"application/json"}],
-            "url": {"raw":"{{baseUrl}}/api/auth/register","host":["{{baseUrl}}"],"path":["api","auth","register"]},
-            "body": {"mode":"raw","raw":"{\n  \"mobileNumber\": \"12345\",\n  \"role\": \"WORKER\"\n}"}
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobileNumber\": \"12345\",\n  \"role\": \"WORKER\"\n}"
+            }
           }
         }
       ]
@@ -61,23 +178,73 @@
       "item": [
         {
           "name": "Save / Update My Profile",
-          "request": { "method": "PUT",
-            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}],
-            "url": {"raw":"{{baseUrl}}/api/worker/profile","host":["{{baseUrl}}"],"path":["api","worker","profile"]},
-            "body": {"mode":"raw","raw":"{\n  \"name\": \"Ramesh Kumar\",\n  \"gender\": \"Male\",\n  \"dateOfBirth\": \"1995-04-12\",\n  \"email\": \"ramesh@example.com\",\n  \"address\": \"123 MG Road\",\n  \"city\": \"Ahmedabad\",\n  \"state\": \"Gujarat\",\n  \"skills\": \"driving,security\",\n  \"experience\": 5,\n  \"preferredSalary\": 18000\n}"}
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/worker/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "worker",
+                "profile"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ramesh Kumar\",\n  \"gender\": \"Male\",\n  \"dateOfBirth\": \"1995-04-12\",\n  \"email\": \"ramesh@example.com\",\n  \"address\": \"123 MG Road\",\n  \"city\": \"Ahmedabad\",\n  \"state\": \"Gujarat\",\n  \"skills\": \"driving,security\",\n  \"experience\": 5,\n  \"preferredSalary\": 18000\n}"
+            }
           }
         },
         {
           "name": "Get My Profile",
-          "request": { "method": "GET",
-            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
-            "url": {"raw":"{{baseUrl}}/api/worker/profile","host":["{{baseUrl}}"],"path":["api","worker","profile"]}
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/worker/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "worker",
+                "profile"
+              ]
+            }
           }
         },
         {
           "name": "Get My Profile - No Token (expect 401)",
-          "request": { "method": "GET",
-            "url": {"raw":"{{baseUrl}}/api/worker/profile","host":["{{baseUrl}}"],"path":["api","worker","profile"]}
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/worker/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "worker",
+                "profile"
+              ]
+            }
           }
         }
       ]
@@ -87,10 +254,35 @@
       "item": [
         {
           "name": "Upload Resume PDF",
-          "request": { "method": "POST",
-            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
-            "url": {"raw":"{{baseUrl}}/api/worker/resume","host":["{{baseUrl}}"],"path":["api","worker","resume"]},
-            "body": {"mode":"formdata","formdata":[{"key":"file","type":"file","description":"Select a PDF resume from your machine"}]}
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/worker/resume",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "worker",
+                "resume"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "description": "Select a PDF resume from your machine"
+                }
+              ]
+            }
           }
         }
       ]
@@ -100,17 +292,56 @@
       "item": [
         {
           "name": "Save / Update Employer Profile",
-          "request": { "method": "PUT",
-            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}],
-            "url": {"raw":"{{baseUrl}}/api/employer/profile","host":["{{baseUrl}}"],"path":["api","employer","profile"]},
-            "body": {"mode":"raw","raw":"{\n  \"companyName\": \"Acme Facility Services\",\n  \"contactPerson\": \"Priya Shah\",\n  \"email\": \"priya@acme.example\",\n  \"address\": \"SG Highway, Ahmedabad\"\n}"}
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/employer/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "employer",
+                "profile"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"companyName\": \"Acme Facility Services\",\n  \"contactPerson\": \"Priya Shah\",\n  \"email\": \"priya@acme.example\",\n  \"address\": \"SG Highway, Ahmedabad\"\n}"
+            }
           }
         },
         {
           "name": "Get My Employer Profile",
-          "request": { "method": "GET",
-            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
-            "url": {"raw":"{{baseUrl}}/api/employer/profile","host":["{{baseUrl}}"],"path":["api","employer","profile"]}
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/employer/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "employer",
+                "profile"
+              ]
+            }
           }
         }
       ]
@@ -120,47 +351,164 @@
       "item": [
         {
           "name": "Create Job",
-          "event": [{"listen":"test","script":{"exec":["const d=pm.response.json(); if(d.id){pm.collectionVariables.set('jobId',d.id);}"]}}],
-          "request": { "method": "POST",
-            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}],
-            "url": {"raw":"{{baseUrl}}/api/jobs","host":["{{baseUrl}}"],"path":["api","jobs"]},
-            "body": {"mode":"raw","raw":"{\n  \"title\": \"Security Guard\",\n  \"skillsRequired\": \"security,patrolling\",\n  \"experienceRequired\": 2,\n  \"location\": \"Mumbai,Pune,Thane\",\n  \"salaryMin\": 15000,\n  \"salaryMax\": 18000,\n  \"openPositions\": 3,\n  \"description\": \"Night shift security guard for residential complex\"\n}"}
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const d=pm.response.json(); if(d.id){pm.collectionVariables.set('jobId',d.id);}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "jobs"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Security Guard\",\n  \"skillsRequired\": \"security,patrolling\",\n  \"experienceRequired\": 2,\n  \"location\": \"Mumbai,Pune,Thane\",\n  \"salaryMin\": 15000,\n  \"salaryMax\": 18000,\n  \"openPositions\": 3,\n  \"description\": \"Night shift security guard for residential complex\"\n}"
+            }
           }
         },
         {
           "name": "Get My Jobs",
-          "request": { "method": "GET",
-            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
-            "url": {"raw":"{{baseUrl}}/api/jobs","host":["{{baseUrl}}"],"path":["api","jobs"]}
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "jobs"
+              ]
+            }
           }
         },
         {
           "name": "Get Job by ID",
-          "request": { "method": "GET",
-            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
-            "url": {"raw":"{{baseUrl}}/api/jobs/{{jobId}}","host":["{{baseUrl}}"],"path":["api","jobs","{{jobId}}"]}
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs/{{jobId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "jobs",
+                "{{jobId}}"
+              ]
+            }
           }
         },
         {
           "name": "Update Job",
-          "request": { "method": "PUT",
-            "header": [{"key":"Content-Type","value":"application/json"},{"key":"Authorization","value":"Bearer {{token}}"}],
-            "url": {"raw":"{{baseUrl}}/api/jobs/{{jobId}}","host":["{{baseUrl}}"],"path":["api","jobs","{{jobId}}"]},
-            "body": {"mode":"raw","raw":"{\n  \"title\": \"Senior Security Guard\",\n  \"skillsRequired\": \"security,patrolling\",\n  \"experienceRequired\": 5,\n  \"location\": \"Mumbai,Pune\",\n  \"salaryMin\": 19000,\n  \"salaryMax\": 22000,\n  \"openPositions\": 1,\n  \"description\": \"Updated description\"\n}"}
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs/{{jobId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "jobs",
+                "{{jobId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Senior Security Guard\",\n  \"skillsRequired\": \"security,patrolling\",\n  \"experienceRequired\": 5,\n  \"location\": \"Mumbai,Pune\",\n  \"salaryMin\": 19000,\n  \"salaryMax\": 22000,\n  \"openPositions\": 1,\n  \"description\": \"Updated description\"\n}"
+            }
           }
         },
         {
           "name": "Delete Job",
-          "request": { "method": "DELETE",
-            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
-            "url": {"raw":"{{baseUrl}}/api/jobs/{{jobId}}","host":["{{baseUrl}}"],"path":["api","jobs","{{jobId}}"]}
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs/{{jobId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "jobs",
+                "{{jobId}}"
+              ]
+            }
           }
         },
         {
           "name": "Worker - Browse All Jobs",
-          "request": { "method": "GET",
-            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
-            "url": {"raw":"{{baseUrl}}/api/jobs/browse","host":["{{baseUrl}}"],"path":["api","jobs","browse"]}
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs/browse",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "jobs",
+                "browse"
+              ]
+            }
           }
         }
       ]
@@ -170,9 +518,25 @@
       "item": [
         {
           "name": "Get Matched Workers for Job",
-          "request": { "method": "GET",
-            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
-            "url": {"raw":"{{baseUrl}}/api/matching/{{jobId}}","host":["{{baseUrl}}"],"path":["api","matching","{{jobId}}"]}
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/matching/{{jobId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matching",
+                "{{jobId}}"
+              ]
+            }
           }
         }
       ]
@@ -182,47 +546,276 @@
       "item": [
         {
           "name": "Search All Candidates",
-          "request": { "method": "GET",
-            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
-            "url": {"raw":"{{baseUrl}}/api/matching/search","host":["{{baseUrl}}"],"path":["api","matching","search"]}
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/matching/search",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matching",
+                "search"
+              ]
+            }
           }
         },
         {
           "name": "Search by Skills",
-          "request": { "method": "GET",
-            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/matching/search?skills=security,driving",
-              "host":["{{baseUrl}}"],"path":["api","matching","search"],
-              "query":[{"key":"skills","value":"security,driving"}]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matching",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "skills",
+                  "value": "security,driving"
+                }
+              ]
             }
           }
         },
         {
           "name": "Search by City",
-          "request": { "method": "GET",
-            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/matching/search?city=Mumbai",
-              "host":["{{baseUrl}}"],"path":["api","matching","search"],
-              "query":[{"key":"city","value":"Mumbai"}]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matching",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "city",
+                  "value": "Mumbai"
+                }
+              ]
             }
           }
         },
         {
           "name": "Search with All Filters",
-          "request": { "method": "GET",
-            "header": [{"key":"Authorization","value":"Bearer {{token}}"}],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/matching/search?skills=security&city=Mumbai&experienceMin=2&experienceMax=10&salaryMin=10000&salaryMax=20000",
-              "host":["{{baseUrl}}"],"path":["api","matching","search"],
-              "query":[
-                {"key":"skills","value":"security"},
-                {"key":"city","value":"Mumbai"},
-                {"key":"experienceMin","value":"2"},
-                {"key":"experienceMax","value":"10"},
-                {"key":"salaryMin","value":"10000"},
-                {"key":"salaryMax","value":"20000"}
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matching",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "skills",
+                  "value": "security"
+                },
+                {
+                  "key": "city",
+                  "value": "Mumbai"
+                },
+                {
+                  "key": "experienceMin",
+                  "value": "2"
+                },
+                {
+                  "key": "experienceMax",
+                  "value": "10"
+                },
+                {
+                  "key": "salaryMin",
+                  "value": "10000"
+                },
+                {
+                  "key": "salaryMax",
+                  "value": "20000"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Applications (Spiral 2)",
+      "item": [
+        {
+          "name": "Worker - Apply to Job",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const d=pm.response.json();",
+                  "if(d.applicationId){pm.collectionVariables.set('applicationId',d.applicationId);}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{jobId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "applications",
+                "{{jobId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Worker - My Applications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/my",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "applications",
+                "my"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Employer - View Applicants for Job",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/job/{{jobId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "applications",
+                "job",
+                "{{jobId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Employer - Shortlist Applicant",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{applicationId}}/status?status=SHORTLISTED",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "applications",
+                "{{applicationId}}",
+                "status"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "SHORTLISTED"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Employer - Reject Applicant",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{applicationId}}/status?status=REJECTED",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "applications",
+                "{{applicationId}}",
+                "status"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "REJECTED"
+                }
               ]
             }
           }

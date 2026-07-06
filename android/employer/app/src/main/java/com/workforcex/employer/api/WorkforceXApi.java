@@ -14,8 +14,7 @@ public interface WorkforceXApi {
 
     @PUT("api/employer/profile")
     Call<EmployerProfileResponse> saveEmployerProfile(
-            @Header("Authorization") String token,
-            @Body EmployerProfileRequest request);
+            @Header("Authorization") String token, @Body EmployerProfileRequest request);
 
     @GET("api/employer/profile")
     Call<EmployerProfileResponse> getEmployerProfile(@Header("Authorization") String token);
@@ -30,15 +29,15 @@ public interface WorkforceXApi {
     Call<JobResponse> getJobById(@Header("Authorization") String token, @Path("jobId") String jobId);
 
     @PUT("api/jobs/{jobId}")
-    Call<JobResponse> updateJob(@Header("Authorization") String token, @Path("jobId") String jobId, @Body JobRequest request);
+    Call<JobResponse> updateJob(@Header("Authorization") String token,
+            @Path("jobId") String jobId, @Body JobRequest request);
 
     @DELETE("api/jobs/{jobId}")
     Call<Void> deleteJob(@Header("Authorization") String token, @Path("jobId") String jobId);
 
     @GET("api/matching/{jobId}")
-    Call<List<MatchedWorker>> getMatchedWorkers(@Header("Authorization") String token, @Path("jobId") String jobId);
-
-    // ── Spiral 2: candidate search ────────────────────────────────────────────
+    Call<List<MatchedWorker>> getMatchedWorkers(@Header("Authorization") String token,
+            @Path("jobId") String jobId);
 
     @GET("api/matching/search")
     Call<List<CandidateSearchResult>> searchCandidates(
@@ -48,6 +47,16 @@ public interface WorkforceXApi {
             @Query("experienceMin") Integer experienceMin,
             @Query("experienceMax") Integer experienceMax,
             @Query("salaryMin") Double salaryMin,
-            @Query("salaryMax") Double salaryMax
-    );
+            @Query("salaryMax") Double salaryMax);
+
+    // Applications
+    @GET("api/applications/job/{jobId}")
+    Call<List<JobApplicationItem>> getApplicationsForJob(
+            @Header("Authorization") String token, @Path("jobId") String jobId);
+
+    @PUT("api/applications/{applicationId}/status")
+    Call<JobApplicationItem> updateApplicationStatus(
+            @Header("Authorization") String token,
+            @Path("applicationId") String applicationId,
+            @Query("status") String status);
 }

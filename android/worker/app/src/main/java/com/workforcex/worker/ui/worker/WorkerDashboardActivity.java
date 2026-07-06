@@ -48,7 +48,11 @@ public class WorkerDashboardActivity extends AppCompatActivity {
         binding.btnBrowseJobs.setOnClickListener(v ->
                 startActivity(new Intent(this, BrowseJobsActivity.class)));
 
+        binding.btnMyApplications.setOnClickListener(v ->
+                startActivity(new Intent(this, MyApplicationsActivity.class)));
+
         binding.btnEditProfile.setOnClickListener(v ->
+
                 startActivity(new Intent(this, WorkerProfileActivity.class)));
 
         binding.btnUploadResume.setOnClickListener(v ->
