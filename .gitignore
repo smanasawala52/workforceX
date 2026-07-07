@@ -8,3 +8,6 @@ build/
 local.properties
 .cxx/
 *.apk
+
+# Ignore local override properties files
+application-local.properties

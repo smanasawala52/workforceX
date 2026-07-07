@@ -16,9 +16,15 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
 
     public Notification createNotification(User user, String message) {
+        return createNotification(user, message, null, null);
+    }
+
+    public Notification createNotification(User user, String message, String linkType, UUID linkId) {
         Notification notification = new Notification();
         notification.setUser(user);
         notification.setMessage(message);
+        notification.setLinkType(linkType);
+        notification.setLinkId(linkId);
         return notificationRepository.save(notification);
     }
 

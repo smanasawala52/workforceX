@@ -21,9 +21,9 @@ public class AuthService {
         }
 
         User user = new User();
-        user.setCountryCode(request.countryCode()); // defaults to +91 via DTO constructor
+        user.setCountryCode(request.countryCode());
         user.setMobileNumber(request.mobileNumber());
-        user.setPassword(passwordEncoder.encode(request.mobileNumber())); // dev: password = mobile number
+        user.setPassword(passwordEncoder.encode(request.mobileNumber()));
         user.setRole(request.role());
 
         return userRepository.save(user);

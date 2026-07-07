@@ -8,27 +8,22 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.chip.Chip;
-import com.workforcex.worker.api.JobBrowseItem;
 import com.workforcex.worker.api.RetrofitClient;
 import com.workforcex.worker.api.WorkerProfileRequest;
 import com.workforcex.worker.api.WorkerProfileResponse;
 import com.workforcex.worker.databinding.ActivityWorkerProfileBinding;
 import com.workforcex.worker.utils.TokenManager;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
 public class WorkerProfileActivity extends AppCompatActivity {
 
     private ActivityWorkerProfileBinding binding;
     private TokenManager tokenManager;
 
-    // All supported skills for autocomplete
     private static final String[] ALL_SKILLS = {
         "security", "patrolling", "surveillance", "cctv", "access-control",
         "driving", "car", "truck", "bus", "bike", "hcv", "lmv", "delivery",
@@ -44,7 +39,6 @@ public class WorkerProfileActivity extends AppCompatActivity {
         "supervision", "leadership", "reporting", "watchman", "cleaner"
     };
 
-    // Currently selected skills (ordered set to avoid duplicates)
     private final Set<String> selectedSkills = new LinkedHashSet<>();
 
     @Override
@@ -65,14 +59,12 @@ public class WorkerProfileActivity extends AppCompatActivity {
                 this, android.R.layout.simple_dropdown_item_1line, ALL_SKILLS);
         binding.acSkills.setAdapter(adapter);
 
-        // When user selects a suggestion from dropdown
         binding.acSkills.setOnItemClickListener((parent, view, position, id) -> {
             String skill = (String) parent.getItemAtPosition(position);
             addSkillChip(skill);
             binding.acSkills.setText("");
         });
 
-        // When user presses Done on keyboard — add whatever they typed
         binding.acSkills.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 String typed = binding.acSkills.getText().toString().trim().toLowerCase();
@@ -126,6 +118,8 @@ public class WorkerProfileActivity extends AppCompatActivity {
                             if (p.skills != null) addSkillsFromCsv(p.skills);
                             if (p.experience != null) binding.etExperience.setText(String.valueOf(p.experience));
                             if (p.preferredSalary != null) binding.etSalary.setText(String.valueOf(p.preferredSalary.intValue()));
+                            if (p.availability != null) binding.etAvailability.setText(p.availability);
+                            if (p.languages != null) binding.etLanguages.setText(p.languages);
                         }
                     }
                     @Override
@@ -139,6 +133,8 @@ public class WorkerProfileActivity extends AppCompatActivity {
         request.city = binding.etCity.getText().toString().trim();
         request.state = binding.etState.getText().toString().trim();
         request.skills = getSkillsCsv();
+        request.availability = binding.etAvailability.getText().toString().trim();
+        request.languages = binding.etLanguages.getText().toString().trim();
 
         String expStr = binding.etExperience.getText().toString().trim();
         request.experience = expStr.isEmpty() ? null : Integer.parseInt(expStr);
@@ -154,7 +150,6 @@ public class WorkerProfileActivity extends AppCompatActivity {
                     public void onResponse(Call<WorkerProfileResponse> call, Response<WorkerProfileResponse> response) {
                         setLoading(false);
                         if (response.isSuccessful()) {
-                            // After saving, show matched jobs based on their skills
                             showMatchedJobs(request.skills, request.city);
                         } else {
                             Toast.makeText(WorkerProfileActivity.this, "Failed to save profile", Toast.LENGTH_SHORT).show();
@@ -169,7 +164,6 @@ public class WorkerProfileActivity extends AppCompatActivity {
     }
 
     private void showMatchedJobs(String skills, String city) {
-        // Navigate to BrowseJobsActivity with skills filter pre-applied
         Intent intent = new Intent(this, BrowseJobsActivity.class);
         intent.putExtra("filterSkills", skills);
         intent.putExtra("filterCity", city);

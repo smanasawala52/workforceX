@@ -1,4 +1,6 @@
 package com.workforcex.employer.api;
+
+// This class must exactly match the fields from the backend's JobResponse record.
 public class JobResponse {
     public String id;
     public String employerId;

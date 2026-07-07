@@ -2,6 +2,7 @@ package com.workforcex.worker.api;
 
 import java.util.List;
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody; // Added import
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -41,4 +42,15 @@ public interface WorkforceXApi {
 
     @GET("api/notifications")
     Call<List<Notification>> getUnreadNotifications(@Header("Authorization") String token);
+
+    // Verification
+    @GET("api/verification/status")
+    Call<List<Verification>> getVerificationStatus(@Header("Authorization") String token);
+
+    @Multipart
+    @POST("api/verification/upload")
+    Call<Document> uploadDocument(
+            @Header("Authorization") String token,
+            @Part("type") RequestBody type,
+            @Part MultipartBody.Part file);
 }

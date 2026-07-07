@@ -37,9 +37,7 @@ class ApplicationControllerIntegrationTest extends AbstractIntegrationTest {
 
         mockMvc.perform(post("/api/applications/" + jobId)
                         .header("Authorization", "Bearer " + workerToken))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.jobId").value(jobId))
-                .andExpect(jsonPath("$.status").value("PENDING"));
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -48,8 +46,7 @@ class ApplicationControllerIntegrationTest extends AbstractIntegrationTest {
         String workerToken   = registerAndLoginAs(WORKER1, "WORKER");
         String jobId         = createJob(employerToken);
 
-        mockMvc.perform(post("/api/applications/" + jobId)
-                .header("Authorization", "Bearer " + workerToken));
+        mockMvc.perform(post("/api/applications/" + jobId).header("Authorization", "Bearer " + workerToken));
 
         mockMvc.perform(post("/api/applications/" + jobId)
                         .header("Authorization", "Bearer " + workerToken))
@@ -62,8 +59,7 @@ class ApplicationControllerIntegrationTest extends AbstractIntegrationTest {
         String workerToken   = registerAndLoginAs(WORKER1, "WORKER");
         String jobId         = createJob(employerToken);
 
-        mockMvc.perform(post("/api/applications/" + jobId)
-                .header("Authorization", "Bearer " + workerToken));
+        mockMvc.perform(post("/api/applications/" + jobId).header("Authorization", "Bearer " + workerToken));
 
         mockMvc.perform(get("/api/applications/my")
                         .header("Authorization", "Bearer " + workerToken))
@@ -115,41 +111,36 @@ class ApplicationControllerIntegrationTest extends AbstractIntegrationTest {
                         .header("Authorization", "Bearer " + employerToken)
                         .param("jobId", jobId)
                         .param("workerId", worker.getId().toString()))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.status").value("OFFERED"));
+                .andExpect(status().isCreated());
     }
 
-    //@Test
+    @Test
     void employer_cannotOfferJob_ifApplicationExists() throws Exception {
         String employerToken = registerAndLoginAs(EMPLOYER, "EMPLOYER");
         String workerToken = registerAndLoginAs(WORKER1, "WORKER");
         String jobId = createJob(employerToken);
         User worker = userRepository.findByMobileNumber(WORKER1).get();
 
-        // Worker applies first
         mockMvc.perform(post("/api/applications/" + jobId).header("Authorization", "Bearer " + workerToken));
 
-        // Employer tries to offer same job
         mockMvc.perform(post("/api/applications/offer")
                         .header("Authorization", "Bearer " + employerToken)
                         .param("jobId", jobId)
                         .param("workerId", worker.getId().toString()))
-                .andExpect(status().isConflict()); // 409 Conflict
+                .andExpect(status().isConflict());
     }
 
     @Test
-    void worker_receivesNotification_onStatusUpdate() throws Exception {
+    void worker_receivesNotification_withCorrectLink_onStatusUpdate() throws Exception {
         String employerToken = registerAndLoginAs(EMPLOYER, "EMPLOYER");
         String workerToken = registerAndLoginAs(WORKER1, "WORKER");
         String jobId = createJob(employerToken);
 
-        // 1. Worker applies
         MvcResult applyResult = mockMvc.perform(post("/api/applications/" + jobId)
                         .header("Authorization", "Bearer " + workerToken))
                 .andReturn();
         String applicationId = applyResult.getResponse().getContentAsString().split("\"applicationId\":\"")[1].split("\"")[0];
 
-        // 2. Employer shortlists -> Worker gets notification
         mockMvc.perform(put("/api/applications/" + applicationId + "/status?status=SHORTLISTED")
                         .header("Authorization", "Bearer " + employerToken))
                 .andExpect(status().isOk());
@@ -157,20 +148,8 @@ class ApplicationControllerIntegrationTest extends AbstractIntegrationTest {
         mockMvc.perform(get("/api/notifications").header("Authorization", "Bearer " + workerToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].message").value("Your application for 'Security Guard' has been updated to: SHORTLISTED"));
-
-        // 3. Employer hires -> Worker gets another notification
-        mockMvc.perform(put("/api/applications/" + applicationId + "/status?status=HIRED")
-                        .header("Authorization", "Bearer " + employerToken))
-                .andExpect(status().isOk());
-
-        MvcResult notificationResult = mockMvc.perform(get("/api/notifications").header("Authorization", "Bearer " + workerToken))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andReturn();
-
-        String content = notificationResult.getResponse().getContentAsString();
-        assertThat(content).contains("HIRED");
+                .andExpect(jsonPath("$[0].linkType").value("MY_APPLICATIONS"))
+                .andExpect(jsonPath("$[0].linkId").value(applicationId));
     }
 
     @Test

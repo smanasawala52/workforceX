@@ -2,77 +2,88 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tvWelcome"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Welcome"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="4dp"/>
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <TextView
-        android:id="@+id/tvSkills"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Skills: —"
-        android:textSize="14sp"
-        android:layout_marginBottom="2dp"/>
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tvExperience"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Experience: —"
-        android:textSize="14sp"
-        android:layout_marginBottom="24dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnBrowseJobs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Browse Available Jobs"
-        android:layout_marginBottom="12dp"/>
+            <TextView
+                android:id="@+id/tvWelcome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Welcome"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp"/>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnMyApplications"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="My Applications"
-        android:layout_marginBottom="12dp"/>
+            <TextView
+                android:id="@+id/tvSkills"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Skills: —"
+                android:textSize="14sp"
+                android:layout_marginBottom="2dp"/>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnNotifications"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Notifications"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_marginBottom="12dp"/>
+            <TextView
+                android:id="@+id/tvExperience"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Experience: —"
+                android:textSize="14sp"
+                android:layout_marginBottom="24dp"/>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnEditProfile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Edit My Profile"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_marginBottom="12dp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBrowseJobs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Browse Available Jobs"
+                android:layout_marginBottom="12dp"/>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnUploadResume"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Upload Resume (PDF)"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_marginBottom="12dp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMyApplications"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="My Applications"
+                android:layout_marginBottom="12dp"/>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnLogout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Logout"
-        style="@style/Widget.MaterialComponents.Button.TextButton"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEditProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Edit My Profile"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_marginBottom="12dp"/>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnVerification"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Verification Center"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_marginBottom="12dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLogout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Logout"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_marginTop="12dp"/>
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

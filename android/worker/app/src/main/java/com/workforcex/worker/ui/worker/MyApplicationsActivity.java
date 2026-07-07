@@ -1,10 +1,14 @@
 package com.workforcex.worker.ui.worker;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -16,6 +20,7 @@ import com.workforcex.worker.api.JobApplication;
 import com.workforcex.worker.api.RetrofitClient;
 import com.workforcex.worker.databinding.ActivityMyApplicationsBinding;
 import com.workforcex.worker.utils.TokenManager;
+import java.net.URLEncoder;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -93,18 +98,50 @@ public class MyApplicationsActivity extends AppCompatActivity {
                 default:
                     h.tvStatus.setTextColor(Color.parseColor("#1565C0"));
             }
+
+            if ("OFFERED".equals(app.status)) {
+                h.contactLayout.setVisibility(View.VISIBLE);
+
+                h.btnCall.setOnClickListener(v -> {
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:" + app.employerMobile));
+                    v.getContext().startActivity(intent);
+                });
+
+                h.btnWhatsApp.setOnClickListener(v -> {
+                    try {
+                        String message = URLEncoder.encode(
+                            "Hello, I'm interested in the job offer for the '" + app.jobTitle + "' position.",
+                            "UTF-8"
+                        );
+                        String url = "https://wa.me/+91" + app.employerMobile + "?text=" + message;
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(url));
+                        v.getContext().startActivity(intent);
+                    } catch (Exception e) {
+                        Toast.makeText(v.getContext(), "WhatsApp not installed or error.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                h.contactLayout.setVisibility(View.GONE);
+            }
         }
 
         @Override public int getItemCount() { return items.size(); }
 
         static class VH extends RecyclerView.ViewHolder {
             TextView tvJobTitle, tvCompany, tvAppliedAt, tvStatus;
+            LinearLayout contactLayout;
+            Button btnCall, btnWhatsApp;
             VH(View v) {
                 super(v);
                 tvJobTitle  = v.findViewById(R.id.tvJobTitle);
                 tvCompany   = v.findViewById(R.id.tvCompany);
                 tvAppliedAt = v.findViewById(R.id.tvAppliedAt);
                 tvStatus    = v.findViewById(R.id.tvStatus);
+                contactLayout = v.findViewById(R.id.contactLayout);
+                btnCall = v.findViewById(R.id.btnCall);
+                btnWhatsApp = v.findViewById(R.id.btnWhatsApp);
             }
         }
     }

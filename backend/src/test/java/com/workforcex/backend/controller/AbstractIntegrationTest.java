@@ -9,18 +9,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-/**
- * Base class for all integration tests.
- * - ActiveProfiles("test") disables DataInitializer so 200 dummy jobs
- *   are NOT seeded during test runs, keeping tests fast and isolated.
- * - cleanAllTables() deletes in FK-safe order before every test.
- * - registerAndLoginAs() is a shared helper so each test class doesn't
- *   repeat the register+login boilerplate.
- */
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
@@ -33,11 +25,15 @@ abstract class AbstractIntegrationTest {
     @Autowired protected JobRepository jobRepository;
     @Autowired protected JobApplicationRepository applicationRepository;
     @Autowired protected NotificationRepository notificationRepository;
+    @Autowired protected DocumentRepository documentRepository;
+    @Autowired protected VerificationRepository verificationRepository;
 
     @BeforeEach
     void cleanAllTables() {
-        applicationRepository.deleteAll(); // must be before jobs and users
-        notificationRepository.deleteAll(); // must be before users
+        applicationRepository.deleteAll();
+        notificationRepository.deleteAll();
+        documentRepository.deleteAll();
+        verificationRepository.deleteAll();
         jobRepository.deleteAll();
         workerProfileRepository.deleteAll();
         employerProfileRepository.deleteAll();
@@ -45,16 +41,20 @@ abstract class AbstractIntegrationTest {
     }
 
     protected String registerAndLoginAs(String mobileNumber, String role) throws Exception {
-        String registerBody = """
-                { "mobileNumber": "%s", "role": "%s", "countryCode": "+91" }
-                """.formatted(mobileNumber, role);
+        String registerBody = String.format(
+            "{ \"mobileNumber\": \"%s\", \"password\": \"%s\", \"role\": \"%s\" }",
+            mobileNumber, mobileNumber, role
+        );
+
+        // Allow registration to fail if user already exists (e.g. from previous test)
         mockMvc.perform(post("/api/auth/register")
                 .contentType(APPLICATION_JSON)
                 .content(registerBody));
 
-        String loginBody = """
-                { "mobileNumber": "%s", "password": "%s" }
-                """.formatted(mobileNumber, mobileNumber);
+        String loginBody = String.format(
+            "{ \"mobileNumber\": \"%s\", \"password\": \"%s\" }",
+            mobileNumber, mobileNumber
+        );
         MvcResult result = mockMvc.perform(post("/api/auth/login")
                         .contentType(APPLICATION_JSON)
                         .content(loginBody))

@@ -1,7 +1,7 @@
 package com.workforcex.employer.api;
 
 public class CandidateSearchResult {
-    public String workerId;
+    public String workerId; // Changed to String to match JSON
     public String name;
     public String mobileNumber;
     public String skills;

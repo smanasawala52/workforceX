@@ -28,6 +28,8 @@
         <activity android:name=".ui.worker.BrowseJobsActivity" android:exported="false"/>
         <activity android:name=".ui.worker.MyApplicationsActivity" android:exported="false"/>
         <activity android:name=".ui.worker.JobDetailsActivity" android:exported="false"/>
+        <activity android:name=".ui.worker.NotificationsActivity" android:exported="false"/>
+        <activity android:name=".ui.worker.VerificationActivity" android:exported="false"/>
 
     </application>
 

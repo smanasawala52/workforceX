@@ -39,15 +39,10 @@ public interface WorkforceXApi {
     Call<List<MatchedWorker>> getMatchedWorkers(@Header("Authorization") String token,
             @Path("jobId") String jobId);
 
-    @GET("api/matching/search")
+    @POST("api/matching/search") // Changed to POST
     Call<List<CandidateSearchResult>> searchCandidates(
             @Header("Authorization") String token,
-            @Query("skills") String skills,
-            @Query("city") String city,
-            @Query("experienceMin") Integer experienceMin,
-            @Query("experienceMax") Integer experienceMax,
-            @Query("salaryMin") Double salaryMin,
-            @Query("salaryMax") Double salaryMax);
+            @Body CandidateSearchRequest request); // Changed to @Body
 
     // Applications
     @GET("api/applications/job/{jobId}")

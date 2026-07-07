@@ -1,4 +1,5 @@
 package com.workforcex.worker.api;
+
 public class WorkerProfileResponse {
     public String id;
     public String mobileNumber;
@@ -9,4 +10,6 @@ public class WorkerProfileResponse {
     public String skills;
     public Integer experience;
     public Double preferredSalary;
+    public String availability;
+    public String languages;
 }

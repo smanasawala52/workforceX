@@ -5,15 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "notifications")
+@Table(name = "verifications")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Notification {
+public class Verification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -23,16 +22,13 @@ public class Notification {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String message;
+    private VerificationType verificationType;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private boolean isRead = false;
+    private VerificationStatus status = VerificationStatus.PENDING;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    // For deep linking
-    private String linkType; // e.g., "JOB_APPLICATION", "JOB_DETAILS"
-    private UUID linkId;
+    private String reviewerComments;
 }

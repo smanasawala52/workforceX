@@ -14,4 +14,10 @@ public class Notification {
 
     @SerializedName("createdAt")
     public String createdAt;
+
+    @SerializedName("linkType")
+    public String linkType;
+
+    @SerializedName("linkId")
+    public String linkId;
 }

@@ -29,7 +29,8 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
     }
 
     public void updateJobs(List<JobResponse> newJobs) {
-        this.jobs = newJobs;
+        this.jobs.clear();
+        this.jobs.addAll(newJobs);
         notifyDataSetChanged();
     }
 

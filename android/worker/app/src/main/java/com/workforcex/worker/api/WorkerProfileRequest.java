@@ -1,4 +1,5 @@
 package com.workforcex.worker.api;
+
 public class WorkerProfileRequest {
     public String name;
     public String gender;
@@ -7,4 +8,6 @@ public class WorkerProfileRequest {
     public String skills;
     public Integer experience;
     public Double preferredSalary;
+    public String availability;
+    public String languages;
 }
