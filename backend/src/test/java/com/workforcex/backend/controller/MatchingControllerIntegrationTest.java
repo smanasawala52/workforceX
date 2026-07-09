@@ -50,7 +50,7 @@ class MatchingControllerIntegrationTest extends AbstractIntegrationTest {
                         .header("Authorization", "Bearer " + employerToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"title":"Security Guard","skillsRequired":"security,patrolling","experienceRequired":3,"location":"Ahmedabad,Surat","salaryMin":14000,"salaryMax":16000,"openPositions":3}
+                                {"title":"Security Guard","companyName":"Test Company 5","skillsRequired":"security,patrolling","experienceRequired":3,"location":"Ahmedabad,Surat","salaryMin":14000,"salaryMax":16000,"openPositions":3}
                                 """))
                 .andExpect(status().isCreated())
                 .andReturn();

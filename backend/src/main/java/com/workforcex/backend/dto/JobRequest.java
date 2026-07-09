@@ -20,6 +20,7 @@ public record JobRequest(
         @Min(value = 1, message = "At least 1 position required")
         Integer openPositions,
 
-        String description
+        String description,
+        String companyName
 ) {
 }

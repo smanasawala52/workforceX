@@ -20,7 +20,7 @@ class ApplicationControllerIntegrationTest extends AbstractIntegrationTest {
                         .header("Authorization", "Bearer " + employerToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                            {"title":"Security Guard","skillsRequired":"security",
+                            {"title":"Security Guard","companyName":"Test Company 1","skillsRequired":"security",
                              "location":"Mumbai","salaryMin":14000,"salaryMax":16000,"openPositions":3}
                             """))
                 .andExpect(status().isCreated())

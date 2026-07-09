@@ -26,11 +26,13 @@ public class JobBrowseService {
         return jobRepository.findAll().stream()
                 .map(job -> {
                     // Look up the employer's company name if they filled in a profile
-                    String companyName = employerProfileRepository
+                    /*String companyName = employerProfileRepository
                             .findByUserId(job.getEmployer().getId())
                             .map(EmployerProfile::getCompanyName)
                             .filter(name -> name != null && !name.isBlank())
-                            .orElse("Unknown Company");
+                            .orElse("Unknown Company");*/
+
+                    String companyName=job.getCompanyName() !=null?job.getCompanyName():"Unknown Company";
                     return JobBrowseResponse.fromEntity(job, companyName);
                 })
                 .collect(Collectors.toList());

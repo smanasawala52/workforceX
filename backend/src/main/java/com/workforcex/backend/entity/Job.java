@@ -30,6 +30,8 @@ public class Job {
     @Column(nullable = false)
     private String title;
 
+    private String companyName;
+
     private String skillsRequired;      // comma-separated, e.g. "security,patrolling"
 
     private Integer experienceRequired; // years

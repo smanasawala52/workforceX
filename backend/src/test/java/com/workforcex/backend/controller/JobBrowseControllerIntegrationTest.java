@@ -21,7 +21,7 @@ class JobBrowseControllerIntegrationTest extends AbstractIntegrationTest {
                 .header("Authorization", "Bearer " + employerToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
-                    {"title":"Security Guard","skillsRequired":"security","experienceRequired":2,
+                    {"title":"Security Guard","companyName":"Test Company 2","skillsRequired":"security","experienceRequired":2,
                      "location":"Mumbai","salaryMin":14000,"salaryMax":16000,"openPositions":3,
                      "description":"Night shift"}
                     """))
@@ -31,7 +31,7 @@ class JobBrowseControllerIntegrationTest extends AbstractIntegrationTest {
                 .header("Authorization", "Bearer " + employerToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
-                    {"title":"Driver","skillsRequired":"driving","experienceRequired":1,
+                    {"title":"Driver","companyName":"Test Company 3","skillsRequired":"driving","experienceRequired":1,
                      "location":"Pune","salaryMin":12000,"salaryMax":15000,"openPositions":2,
                      "description":"Day shift delivery"}
                     """))
@@ -75,7 +75,7 @@ class JobBrowseControllerIntegrationTest extends AbstractIntegrationTest {
                 .header("Authorization", "Bearer " + employerToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
-                    {"title":"Guard","skillsRequired":"security","salaryMin":14000,"salaryMax":16000,"openPositions":1}
+                    {"title":"Guard","skillsRequired":"security","salaryMin":14000,"salaryMax":16000,"openPositions":1,"companyName":"Acme Security Ltd"}
                     """))
                 .andExpect(status().isCreated());
 

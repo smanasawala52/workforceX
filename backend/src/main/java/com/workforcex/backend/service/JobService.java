@@ -1,8 +1,11 @@
 package com.workforcex.backend.service;
 
 import com.workforcex.backend.dto.JobRequest;
+import com.workforcex.backend.entity.EmployerProfile;
 import com.workforcex.backend.entity.Job;
 import com.workforcex.backend.entity.User;
+import com.workforcex.backend.repository.DocumentRepository;
+import com.workforcex.backend.repository.EmployerProfileRepository;
 import com.workforcex.backend.repository.JobRepository;
 import com.workforcex.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +20,50 @@ public class JobService {
 
     private final JobRepository jobRepository;
     private final UserRepository userRepository;
+    private EmployerProfileRepository employerProfileRepository;
 
     public Job createJob(String employerMobileNumber, JobRequest request) {
         User employer = userRepository.findByMobileNumber(employerMobileNumber)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
+        /*EmployerProfile profile = employerProfileRepository.findByUserId(employer.getId())
+                .orElseGet(() -> {
+                    EmployerProfile p = new EmployerProfile();
+                    p.setUser(employer);
+                    return p;
+                });
+        String companyName = profile.getCompanyName();
+
         Job job = new Job();
+        job.setCompanyName("Unknown Company");
+
+        if (companyName != null && !companyName.isBlank()) {
+            job.setCompanyName(companyName);
+        } else if (profile.getContactPerson() != null && !profile.getContactPerson().isBlank()) {
+            job.setCompanyName(profile.getContactPerson());
+        } else {
+            job.setCompanyName("Unknown Company");
+        }
+*/
+        Job job = new Job();
+        String companyName = request.companyName();
+        if (companyName != null && !companyName.isBlank()) {
+            job.setCompanyName(companyName);
+        } else {
+            EmployerProfile profile = employerProfileRepository.findByUserId(employer.getId())
+                    .orElseGet(() -> {
+                        EmployerProfile p = new EmployerProfile();
+                        p.setUser(employer);
+                        return p;
+                    });
+            if (companyName != null && !companyName.isBlank()) {
+                job.setCompanyName(companyName);
+            } else if (profile.getContactPerson() != null && !profile.getContactPerson().isBlank()) {
+                job.setCompanyName(profile.getContactPerson());
+            } else {
+                job.setCompanyName("Unknown Company");
+            }
+        }
         job.setEmployer(employer);
         applyRequest(job, request);
         return jobRepository.save(job);

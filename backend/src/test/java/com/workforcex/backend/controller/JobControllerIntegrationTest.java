@@ -17,6 +17,7 @@ class JobControllerIntegrationTest extends AbstractIntegrationTest {
         return """
                 {
                   "title": "Security Guard",
+                  "companyName":"Test Company 4",
                   "skillsRequired": "security,patrolling",
                   "experienceRequired": 2,
                   "location": "Ahmedabad",
