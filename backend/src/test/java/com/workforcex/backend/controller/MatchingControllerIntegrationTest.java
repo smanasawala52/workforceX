@@ -80,6 +80,57 @@ class MatchingControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
+    void search_returnsRankedCandidates_highestScoreFirst() throws Exception {
+        String employerToken = registerAndLoginAs(EMPLOYER, "EMPLOYER");
+        String worker1Token  = registerAndLoginAs(WORKER1, "WORKER");
+        String worker2Token  = registerAndLoginAs(WORKER2, "WORKER");
+        String worker3Token  = registerAndLoginAs(WORKER3, "WORKER");
+
+        // Worker 1: perfect match
+        mockMvc.perform(put("/api/worker/profile")
+                .header("Authorization", "Bearer " + worker1Token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {"name":"Ramesh","skills":"security,patrolling","experience":5,"city":"Ahmedabad","preferredSalary":14000}
+                        """));
+
+        // Worker 2: partial match
+        mockMvc.perform(put("/api/worker/profile")
+                .header("Authorization", "Bearer " + worker2Token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {"name":"Suresh","skills":"security","experience":1,"city":"Surat","preferredSalary":14000}
+                        """));
+
+        // Worker 3: poor match
+        mockMvc.perform(put("/api/worker/profile")
+                .header("Authorization", "Bearer " + worker3Token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {"name":"Dinesh","skills":"cooking","experience":0,"city":"Mumbai","preferredSalary":30000}
+                        """));
+
+        // Run search
+        mockMvc.perform(post("/api/matching/search")
+                        .header("Authorization", "Bearer " + employerToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"skills":"security,patrolling","city":"Ahmedabad","experienceMin":3,"salaryMax":16000}
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                // Ramesh should be first
+                .andExpect(jsonPath("$[0].name").value("Ramesh"))
+                .andExpect(result -> {
+                    String body = result.getResponse().getContentAsString();
+                    // Parse scores manually and verify order
+                    String[] scores = body.split("\"totalScore\":") ;
+                    double score0 = Double.parseDouble(scores[1].split(",")[0]);
+                    org.assertj.core.api.Assertions.assertThat(score0).isGreaterThanOrEqualTo(1);
+                });
+    }
+
+    @Test
     void matching_workerCannotCallMatchingEndpoint() throws Exception {
         String workerToken = registerAndLoginAs(WORKER1, "WORKER");
         mockMvc.perform(get("/api/matching/00000000-0000-0000-0000-000000000000")

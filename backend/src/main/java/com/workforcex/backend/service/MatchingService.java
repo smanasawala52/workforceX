@@ -118,9 +118,6 @@ public class MatchingService {
                         request.salaryMax(),
                         splitToSet(request.skills())
                 );
-        System.out.println(workers);
-
-
 
         return workers.stream()
                 .map(worker -> {

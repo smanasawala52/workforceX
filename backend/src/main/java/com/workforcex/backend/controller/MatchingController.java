@@ -35,25 +35,18 @@ public class MatchingController {
     }
 
     /**
-     * Spiral 2: GET /api/matching/search
+     * Spiral 2: POST /api/matching/search
      * Free-text candidate search with optional filters.
      * All params optional. Returns ranked workers with score breakdown.
      *
-     * Example: /api/matching/search?skills=driving,security&city=Mumbai&experienceMin=2&salaryMax=20000
+     * Example: /api/matching/search with body {"skills":"driving,security","city":"Mumbai","experienceMin":2,"salaryMax":20000}
      */
-    @GetMapping("/search")
+    @PostMapping("/search")
     @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<List<CandidateSearchResponse>> search(
             Authentication authentication,
-            @RequestParam(required = false) String skills,
-            @RequestParam(required = false) String city,
-            @RequestParam(required = false) Integer experienceMin,
-            @RequestParam(required = false) Integer experienceMax,
-            @RequestParam(required = false) Double salaryMin,
-            @RequestParam(required = false) Double salaryMax
+            @RequestBody CandidateSearchRequest request
     ) {
-        CandidateSearchRequest request = new CandidateSearchRequest(
-                skills, city, experienceMin, experienceMax, salaryMin, salaryMax);
         return ResponseEntity.ok(matchingService.search(request));
     }
 }

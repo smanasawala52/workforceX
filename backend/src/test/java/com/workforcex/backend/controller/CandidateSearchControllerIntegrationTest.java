@@ -2,10 +2,11 @@ package com.workforcex.backend.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class CandidateSearchControllerIntegrationTest extends AbstractIntegrationTest {
 
@@ -14,7 +15,7 @@ class CandidateSearchControllerIntegrationTest extends AbstractIntegrationTest {
     private static final String WORKER2  = "9000066663"; // Pune, driving, 2yrs, 12000
     private static final String WORKER3  = "9000066664"; // Mumbai, security+driving, 8yrs, 25000
 
-    private void setupWorkers(String employerToken) throws Exception {
+    private void setupWorkers() throws Exception {
         String w1Token = registerAndLoginAs(WORKER1, "WORKER");
         mockMvc.perform(put("/api/worker/profile")
                 .header("Authorization", "Bearer " + w1Token)
@@ -46,10 +47,12 @@ class CandidateSearchControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     void search_noFilters_returnsAllWorkersRanked() throws Exception {
         String employerToken = registerAndLoginAs(EMPLOYER, "EMPLOYER");
-        setupWorkers(employerToken);
+        setupWorkers();
 
-        mockMvc.perform(get("/api/matching/search")
-                        .header("Authorization", "Bearer " + employerToken))
+        mockMvc.perform(post("/api/matching/search")
+                        .header("Authorization", "Bearer " + employerToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(3));
     }
@@ -57,10 +60,12 @@ class CandidateSearchControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     void search_filterByCity_returnsOnlyMumbaiWorkers() throws Exception {
         String employerToken = registerAndLoginAs(EMPLOYER, "EMPLOYER");
-        setupWorkers(employerToken);
+        setupWorkers();
 
-        mockMvc.perform(get("/api/matching/search?city=Mumbai")
-                        .header("Authorization", "Bearer " + employerToken))
+        mockMvc.perform(post("/api/matching/search")
+                        .header("Authorization", "Bearer " + employerToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"city\":\"Mumbai\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
     }
@@ -68,10 +73,12 @@ class CandidateSearchControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     void search_filterBySkill_returnsOnlyMatchingWorkers() throws Exception {
         String employerToken = registerAndLoginAs(EMPLOYER, "EMPLOYER");
-        setupWorkers(employerToken);
+        setupWorkers();
 
-        mockMvc.perform(get("/api/matching/search?skills=driving")
-                        .header("Authorization", "Bearer " + employerToken))
+        mockMvc.perform(post("/api/matching/search")
+                        .header("Authorization", "Bearer " + employerToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"skills\":\"driving\"}"))
                 .andExpect(status().isOk())
                 // Worker2 (driving only) and Worker3 (security+driving) both match
                 .andExpect(jsonPath("$.length()").value(2));
@@ -80,11 +87,13 @@ class CandidateSearchControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     void search_filterByExperienceRange_returnsCorrectWorkers() throws Exception {
         String employerToken = registerAndLoginAs(EMPLOYER, "EMPLOYER");
-        setupWorkers(employerToken);
+        setupWorkers();
 
         // experienceMin=3 should return Worker1 (5yrs) and Worker3 (8yrs), not Worker2 (2yrs)
-        mockMvc.perform(get("/api/matching/search?experienceMin=3")
-                        .header("Authorization", "Bearer " + employerToken))
+        mockMvc.perform(post("/api/matching/search")
+                        .header("Authorization", "Bearer " + employerToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"experienceMin\":3}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
     }
@@ -92,11 +101,13 @@ class CandidateSearchControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     void search_filterBySalaryMax_excludesHighExpectationWorkers() throws Exception {
         String employerToken = registerAndLoginAs(EMPLOYER, "EMPLOYER");
-        setupWorkers(employerToken);
+        setupWorkers();
 
         // salaryMax=20000 excludes Worker3 (expects 25000)
-        mockMvc.perform(get("/api/matching/search?salaryMax=20000")
-                        .header("Authorization", "Bearer " + employerToken))
+        mockMvc.perform(post("/api/matching/search")
+                        .header("Authorization", "Bearer " + employerToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"salaryMax\":20000}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
     }
@@ -104,11 +115,13 @@ class CandidateSearchControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     void search_multipleFilters_narrowsResults() throws Exception {
         String employerToken = registerAndLoginAs(EMPLOYER, "EMPLOYER");
-        setupWorkers(employerToken);
+        setupWorkers();
 
         // city=Mumbai + skills=security + experienceMin=3 → only Ramesh (Worker1) matches
-        mockMvc.perform(get("/api/matching/search?city=Mumbai&skills=security&experienceMin=3&salaryMax=20000")
-                        .header("Authorization", "Bearer " + employerToken))
+        mockMvc.perform(post("/api/matching/search")
+                        .header("Authorization", "Bearer " + employerToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"city\":\"Mumbai\",\"skills\":\"security\",\"experienceMin\":3,\"salaryMax\":20000}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].name").value("Ramesh"))
@@ -119,10 +132,12 @@ class CandidateSearchControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     void search_resultsIncludeScoreBreakdown() throws Exception {
         String employerToken = registerAndLoginAs(EMPLOYER, "EMPLOYER");
-        setupWorkers(employerToken);
+        setupWorkers();
 
-        mockMvc.perform(get("/api/matching/search?skills=security&city=Mumbai")
-                        .header("Authorization", "Bearer " + employerToken))
+        mockMvc.perform(post("/api/matching/search")
+                        .header("Authorization", "Bearer " + employerToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"skills\":\"security\",\"city\":\"Mumbai\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].totalScore").isNumber())
                 .andExpect(jsonPath("$[0].skillScore").isNumber())
@@ -134,8 +149,10 @@ class CandidateSearchControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     void search_workerCannotCallSearchEndpoint() throws Exception {
         String workerToken = registerAndLoginAs(WORKER1, "WORKER");
-        mockMvc.perform(get("/api/matching/search")
-                        .header("Authorization", "Bearer " + workerToken))
+        mockMvc.perform(post("/api/matching/search")
+                        .header("Authorization", "Bearer " + workerToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
                 .andExpect(status().isForbidden());
     }
 }
