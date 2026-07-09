@@ -9,17 +9,17 @@ import com.workforcex.backend.repository.JobRepository;
 import com.workforcex.backend.repository.UserRepository;
 import com.workforcex.backend.repository.WorkerProfileRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MatchingService {
 
     private static final double WEIGHT_SKILLS     = 0.40;
@@ -32,60 +32,141 @@ public class MatchingService {
     private final WorkerProfileRepository workerProfileRepository;
     private final JobApplicationRepository applicationRepository;
 
-    public List<MatchedWorkerResponse> getMatchedWorkers(String employerMobileNumber, UUID jobId) {
+    public List<MatchedWorkerResponse> getMatchedWorkers(
+            String employerMobileNumber,
+            UUID jobId
+    ) {
+
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new IllegalArgumentException("Job not found"));
+
         User employer = userRepository.findById(job.getEmployerId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
         if (!employer.getMobileNumber().equals(employerMobileNumber)) {
-            throw new IllegalArgumentException("You do not have permission to access this job");
+            throw new IllegalArgumentException(
+                    "You do not have permission to access this job"
+            );
         }
-
-        return workerProfileRepository.findAll().stream()
+        // Fetch only possible candidates from database
+        List<WorkerProfile> workers =
+                workerProfileRepository.findMatchingWorkers(
+                        splitToSet(job.getLocation()),
+                        job.getExperienceRequired(),
+                        job.getSalaryMin(),
+                        job.getSalaryMax(),
+                        getMergedSkillsSet(job.getSkillsRequired1(),
+                                job.getSkillsRequired2(),
+                                job.getSkillsRequired3(),
+                                job.getSkillsRequired4(),
+                                job.getSkillsRequired5())
+                );
+        return workers.stream()
                 .map(worker -> {
+
                     Scores s = score(
-                            job.getSkillsRequired(), worker.getSkills(),
-                            job.getExperienceRequired(), worker.getExperience(),
-                            job.getLocation(), worker.getCity(),
-                            job.getSalaryMin(), job.getSalaryMax(), worker.getPreferredSalary()
+                            getMergedSkillsSet(job.getSkillsRequired1(),
+                                    job.getSkillsRequired2(),
+                                    job.getSkillsRequired3(),
+                                    job.getSkillsRequired4(),
+                                    job.getSkillsRequired5()),
+                            getMergedSkillsSet(worker.getSkill1(),
+                                    worker.getSkill2(),
+                                    worker.getSkill3(),
+                                    worker.getSkill4(),
+                                    worker.getSkill5()),
+                            job.getExperienceRequired(),
+                            worker.getExperience(),
+                            job.getLocation(),
+                            worker.getCity(),
+                            job.getSalaryMin(),
+                            job.getSalaryMax(),
+                            worker.getPreferredSalary()
                     );
 
-                    ApplicationStatus status = applicationRepository
-                        .findByJobIdAndWorkerId(jobId, worker.getUser().getId())
-                        .map(JobApplication::getStatus)
-                        .orElse(null);
 
-                    return MatchedWorkerResponse.fromProfile(worker, s.total(), status);
+                    /*ApplicationStatus status = applicationRepository
+                            .findByJobIdAndWorkerId(jobId, worker.getUserId())
+                            .map(JobApplication::getStatus)
+                            .orElse(null);
+
+                     */
+
+
+                    return MatchedWorkerResponse.fromProfile(
+                            worker,
+                            s.total(),
+                            ApplicationStatus.PENDING
+                    );
                 })
-                .filter(r -> r.score() > 0)
-                .sorted((a, b) -> Double.compare(b.score(), a.score()))
+                .filter(worker -> worker.score() > 0)
+                .sorted(
+                        Comparator.comparingDouble(
+                                MatchedWorkerResponse::score
+                        ).reversed()
+                )
                 .collect(Collectors.toList());
     }
-
     public List<CandidateSearchResponse> search(CandidateSearchRequest request) {
-        return workerProfileRepository.findAll().stream()
-                .filter(worker -> passesHardFilters(worker, request))
+
+        List<WorkerProfile> workers =
+                workerProfileRepository.searchCandidates(
+                        splitToSet(request.city()),
+                        request.experienceMin(),
+                        request.experienceMax(),
+                        request.salaryMin(),
+                        request.salaryMax(),
+                        splitToSet(request.skills())
+                );
+        System.out.println(workers);
+
+
+
+        return workers.stream()
                 .map(worker -> {
+
                     Scores s = score(
-                            request.skills(), worker.getSkills(),
-                            request.experienceMin(), worker.getExperience(),
-                            request.city(), worker.getCity(),
-                            request.salaryMin(), request.salaryMax(), worker.getPreferredSalary()
+                            splitToSet(request.skills()),
+                            getMergedSkillsSet(worker.getSkill1(),
+                                    worker.getSkill2(),
+                                    worker.getSkill3(),
+                                    worker.getSkill4(),
+                                    worker.getSkill5()),
+                            request.experienceMin(),
+                            worker.getExperience(),
+                            request.city(),
+                            worker.getCity(),
+                            request.salaryMin(),
+                            request.salaryMax(),
+                            worker.getPreferredSalary()
                     );
+
                     return CandidateSearchResponse.fromProfile(
-                            worker, s.total(), s.skill(), s.experience(), s.location(), s.salary()
+                            worker,
+                            s.total(),
+                            s.skill(),
+                            s.experience(),
+                            s.location(),
+                            s.salary()
                     );
                 })
-                .filter(r -> r.totalScore() > 0)
-                .sorted((a, b) -> Double.compare(b.totalScore(), a.totalScore()))
-                .collect(Collectors.toList());
+                .sorted((a,b) ->
+                        Double.compare(
+                                b.totalScore(),
+                                a.totalScore()
+                        )
+                )
+                .toList();
     }
-
     private boolean passesHardFilters(WorkerProfile worker, CandidateSearchRequest req) {
         if (req.skills() != null && !req.skills().isBlank()) {
-            if (worker.getSkills() == null || worker.getSkills().isBlank()) return false;
+            Set<String> has = getMergedSkillsSet(worker.getSkill1(),
+                    worker.getSkill2(),
+                    worker.getSkill3(),
+                    worker.getSkill4(),
+                    worker.getSkill5());
+            if (has.isEmpty()) return false;
             Set<String> required = splitToSet(req.skills());
-            Set<String> has = splitToSet(worker.getSkills());
             boolean anyMatch = required.stream().anyMatch(has::contains);
             if (!anyMatch) return false;
         }
@@ -113,8 +194,7 @@ public class MatchingService {
         }
     }
 
-    private Scores score(
-            String jobSkills, String workerSkills,
+    private Scores score(Set<String> jobSkills, Set<String> workerSkills,
             Integer requiredExp, Integer workerExp,
             String jobLocation, String workerCity,
             Double salaryMin, Double salaryMax, Double workerExpectedSalary
@@ -127,13 +207,11 @@ public class MatchingService {
         );
     }
 
-    private double skillScore(String jobSkills, String workerSkills) {
-        if (jobSkills == null || jobSkills.isBlank()) return 100.0;
-        if (workerSkills == null || workerSkills.isBlank()) return 0.0;
-        Set<String> required = splitToSet(jobSkills);
-        Set<String> has = splitToSet(workerSkills);
-        long matched = required.stream().filter(has::contains).count();
-        return (double) matched / required.size() * 100.0;
+    private double skillScore(Set<String> jobSkills, Set<String> workerSkills) {
+        if (jobSkills == null || jobSkills.isEmpty()) return 100.0;
+        if (workerSkills == null || workerSkills.isEmpty()) return 0.0;
+        long matched = jobSkills.stream().filter(workerSkills::contains).count();
+        return (double) matched / jobSkills.size() * 100.0;
     }
 
     private double experienceScore(Integer required, Integer workerExp) {
@@ -159,9 +237,18 @@ public class MatchingService {
     }
 
     private Set<String> splitToSet(String csv) {
+        if (csv == null || csv.isBlank()) return null;
+        csv=csv.replace("[","").replace("]","");
         return Arrays.stream(csv.toLowerCase().split(","))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
+                .collect(Collectors.toSet());
+    }
+
+    // Helper method to merge skills from WorkerProfile
+    private Set<String> getMergedSkillsSet(String skill1, String skill2, String skill3, String skill4, String skill5) {
+        return Stream.of(skill1, skill2, skill3, skill4, skill5)
+                .filter(s -> s != null && !s.isEmpty()) // Ignore empty or null skills
                 .collect(Collectors.toSet());
     }
 }

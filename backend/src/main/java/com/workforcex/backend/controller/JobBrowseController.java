@@ -18,11 +18,6 @@ public class JobBrowseController {
 
     private final JobBrowseService jobBrowseService;
 
-    /**
-     * GET /api/jobs/browse
-     * Returns all posted jobs. Accessible to WORKER role.
-     * Includes company name so workers know who posted the job.
-     */
     @GetMapping("/browse")
     @PreAuthorize("hasRole('WORKER')")
     public ResponseEntity<List<JobBrowseResponse>> browseJobs() {

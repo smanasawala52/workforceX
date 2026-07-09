@@ -3,16 +3,14 @@ package com.workforcex.backend.service;
 import com.workforcex.backend.dto.JobRequest;
 import com.workforcex.backend.entity.EmployerProfile;
 import com.workforcex.backend.entity.Job;
+import com.workforcex.backend.entity.Skill;
 import com.workforcex.backend.entity.User;
-import com.workforcex.backend.repository.DocumentRepository;
-import com.workforcex.backend.repository.EmployerProfileRepository;
-import com.workforcex.backend.repository.JobRepository;
-import com.workforcex.backend.repository.UserRepository;
+import com.workforcex.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +18,7 @@ public class JobService {
 
     private final JobRepository jobRepository;
     private final UserRepository userRepository;
+    private final SkillRepository skillRepository;
     private EmployerProfileRepository employerProfileRepository;
 
     public Job createJob(String employerMobileNumber, JobRequest request) {
@@ -84,12 +83,54 @@ public class JobService {
 
     private void applyRequest(Job job, JobRequest request) {
         job.setTitle(request.title());
-        job.setSkillsRequired(request.skillsRequired());
+        List<String> skills = new ArrayList<>(splitToSet(request.skillsRequired()));
+        int size = skills.size();
+        if (size > 0) job.setSkillsRequired1(skills.get(0));
+        if (size > 1) job.setSkillsRequired2(skills.get(1));
+        if (size > 2) job.setSkillsRequired3(skills.get(2));
+        if (size > 3) job.setSkillsRequired4(skills.get(3));
+        if (size > 4) job.setSkillsRequired5(skills.get(4));
+        Set<String> allSkillsFromData = new HashSet<>(skills);
+        seedSkills(allSkillsFromData);
         job.setExperienceRequired(request.experienceRequired());
         job.setLocation(request.location());
         job.setSalaryMin(request.salaryMin());
         job.setSalaryMax(request.salaryMax());
         job.setOpenPositions(request.openPositions());
         job.setDescription(request.description());
+    }
+
+    private Set<String> splitToSet(String csv) {
+        if (csv == null || csv.isBlank()) return null;
+        return Arrays.stream(csv.toLowerCase().split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toSet());
+    }
+    private void seedSkills(Set<String> allSkillsFromData) {
+        try {
+            // 1. Get all names currently in the DB
+            List<String> existingSkills = skillRepository.findAll()
+                    .stream()
+                    .map(Skill::getName)
+                    .toList();
+
+            // 2. Filter out skills that already exist
+            List<Skill> newSkills = allSkillsFromData.stream()
+                    .filter(name -> !existingSkills.contains(name))
+                    .map(name -> {
+                        Skill skill = new Skill();
+                        skill.setName(name);
+                        return skill;
+                    })
+                    .collect(Collectors.toList());
+
+            // 3. Batch save all new skills at once
+            if (!newSkills.isEmpty()) {
+                skillRepository.saveAll(newSkills);
+            }
+        } catch (Exception e) {
+            // ignore
+        }
     }
 }

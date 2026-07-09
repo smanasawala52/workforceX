@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -13,16 +14,20 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class WorkerProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne
+    /*@OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private User user;
+    private User user;*/
+    @Column(name = "user_id", nullable = false)
+    private UUID userId;
 
+    private String userMobileNumber;
     private String name;
     private String gender;
     private LocalDate dateOfBirth;
@@ -31,7 +36,11 @@ public class WorkerProfile {
     private String city;
     private String state;
 
-    private String skills;
+    private String skill1;
+    private String skill2;
+    private String skill3;
+    private String skill4;
+    private String skill5;
     private Integer experience;
     private Double preferredSalary;
     private String availability;

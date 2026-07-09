@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,8 +42,9 @@ class MatchingServiceTest {
 
 
         when(jobRepository.findById(jobId)).thenReturn(Optional.of(job));
-        when(workerProfileRepository.findAll()).thenReturn(Collections.emptyList());
         when(userRepository.findById(employer.getId())).thenReturn(Optional.of(employer));
+        when(workerProfileRepository.findMatchingWorkers(any(), any(), any(), any(), any()))
+                .thenReturn(Collections.emptyList());
 
         // When
         var result = matchingService.getMatchedWorkers("1234567890", jobId);

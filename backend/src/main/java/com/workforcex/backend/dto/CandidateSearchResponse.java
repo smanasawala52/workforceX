@@ -3,6 +3,8 @@ package com.workforcex.backend.dto;
 import com.workforcex.backend.entity.WorkerProfile;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A candidate returned from search — includes score breakdown so employers
@@ -34,8 +36,12 @@ public record CandidateSearchResponse(
         return new CandidateSearchResponse(
                 profile.getId(),
                 profile.getName(),
-                profile.getUser().getMobileNumber(),
-                profile.getSkills(),
+                profile.getUserMobileNumber(),
+                getMergedSkills(profile.getSkill1(),
+                        profile.getSkill2(),
+                        profile.getSkill3(),
+                        profile.getSkill4(),
+                        profile.getSkill5()),
                 profile.getExperience(),
                 profile.getCity(),
                 profile.getState(),
@@ -46,5 +52,10 @@ public record CandidateSearchResponse(
                 Math.round(locationScore * 10.0) / 10.0,
                 Math.round(salaryScore * 10.0) / 10.0
         );
+    }
+    private static String getMergedSkills(String skill1, String skill2, String skill3, String skill4, String skill5) {
+        return Stream.of(skill1, skill2, skill3, skill4, skill5)
+                .filter(s -> s != null && !s.isEmpty()) // Ignore empty or null skills
+                .collect(Collectors.joining(","));
     }
 }

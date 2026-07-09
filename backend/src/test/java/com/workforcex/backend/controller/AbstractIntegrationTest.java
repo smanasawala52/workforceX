@@ -27,6 +27,7 @@ abstract class AbstractIntegrationTest {
     @Autowired protected NotificationRepository notificationRepository;
     @Autowired protected DocumentRepository documentRepository;
     @Autowired protected VerificationRepository verificationRepository;
+    @Autowired protected SkillRepository skillRepository;
 
     @BeforeEach
     void cleanAllTables() {
@@ -38,6 +39,7 @@ abstract class AbstractIntegrationTest {
         workerProfileRepository.deleteAll();
         employerProfileRepository.deleteAll();
         userRepository.deleteAll();
+        skillRepository.deleteAll();
     }
 
     protected String registerAndLoginAs(String mobileNumber, String role) throws Exception {

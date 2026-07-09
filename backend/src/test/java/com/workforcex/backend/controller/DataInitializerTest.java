@@ -1,10 +1,7 @@
 package com.workforcex.backend.controller;
 
 import com.workforcex.backend.config.DataInitializer;
-import com.workforcex.backend.repository.EmployerProfileRepository;
-import com.workforcex.backend.repository.JobRepository;
-import com.workforcex.backend.repository.UserRepository;
-import com.workforcex.backend.repository.WorkerProfileRepository;
+import com.workforcex.backend.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +26,7 @@ class DataInitializerTest {
     @Autowired private EmployerProfileRepository employerProfileRepository;
     @Autowired private WorkerProfileRepository workerProfileRepository;
     @Autowired private PasswordEncoder passwordEncoder;
+    @Autowired private SkillRepository skillRepository;
 
     @BeforeEach
     void clean() {
@@ -42,7 +40,7 @@ class DataInitializerTest {
     void dataInitializer_seedsData() throws Exception {
         DataInitializer initializer = new DataInitializer(
                 userRepository, employerProfileRepository,
-                jobRepository, workerProfileRepository, passwordEncoder);
+                jobRepository, workerProfileRepository, passwordEncoder, skillRepository);
 
         // Simulate startup
         initializer.run(null);
@@ -57,7 +55,7 @@ class DataInitializerTest {
     void dataInitializer_doesNotSeedTwice() throws Exception {
         DataInitializer initializer = new DataInitializer(
                 userRepository, employerProfileRepository,
-                jobRepository, workerProfileRepository, passwordEncoder);
+                jobRepository, workerProfileRepository, passwordEncoder,skillRepository);
 
         initializer.run(null); // first run — seeds
         initializer.run(null); // second run — should skip

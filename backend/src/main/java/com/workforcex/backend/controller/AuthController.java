@@ -36,4 +36,9 @@ public class AuthController {
         String token = jwtUtil.generateToken(user.getMobileNumber(), user.getRole().name());
         return ResponseEntity.ok(LoginResponse.fromEntity(user, token));
     }
+
+    @PostMapping("/some-protected-endpoint")
+    public ResponseEntity<String> protectedEndpoint() {
+        return ResponseEntity.ok("Access granted");
+    }
 }

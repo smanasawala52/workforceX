@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
+                        .requestMatchers("/api/auth/register", "/api/auth/login", "/h2-console/**").permitAll()
                         // Verification endpoints
                         .requestMatchers(HttpMethod.GET, "/api/verification/status").hasRole("WORKER")
                         .requestMatchers(HttpMethod.POST, "/api/verification/upload").hasRole("WORKER")

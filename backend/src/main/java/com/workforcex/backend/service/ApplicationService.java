@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -142,10 +143,16 @@ public class ApplicationService {
         return JobApplicationResponse.fromEntityWithProfile(
                 app, companyName,
                 profile.map(WorkerProfile::getName).orElse(null),
-                profile.map(WorkerProfile::getSkills).orElse(null),
+                profile.map(wp -> this.getMergedSkills(wp.getSkill1(), wp.getSkill2(), wp.getSkill3(), wp.getSkill4(), wp.getSkill5())).orElse(null),
                 profile.map(WorkerProfile::getExperience).orElse(null),
                 profile.map(WorkerProfile::getCity).orElse(null),
                 profile.map(WorkerProfile::getPreferredSalary).orElse(null)
         );
+    }
+    // Helper method to merge skills from WorkerProfile
+    public String getMergedSkills(String skill1, String skill2, String skill3, String skill4, String skill5) {
+        return Stream.of(skill1, skill2, skill3, skill4, skill5)
+                .filter(s -> s != null && !s.isEmpty()) // Ignore empty or null skills
+                .collect(Collectors.joining(","));
     }
 }

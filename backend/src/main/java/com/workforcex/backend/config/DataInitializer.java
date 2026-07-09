@@ -10,7 +10,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Seeds 200 realistic dummy jobs across 10 employer accounts on every startup.
@@ -27,6 +28,7 @@ public class DataInitializer implements ApplicationRunner {
     private final JobRepository jobRepository;
     private final WorkerProfileRepository workerProfileRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SkillRepository skillRepository;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -71,7 +73,7 @@ public class DataInitializer implements ApplicationRunner {
             {"9900000019", "Harish Chandra", "generator,dg-set", "7", "Vadodara", "21000"},
             {"9900000020", "Usha Rani", "construction,material-handling", "1", "Ludhiana", "12000"}
         };
-
+        Set<String> allSkillsFromData = new HashSet<>();
         for (String[] w : workers) {
             User user = userRepository.findByMobileNumber(w[0]).orElseGet(() -> {
                 User u = new User();
@@ -85,16 +87,25 @@ public class DataInitializer implements ApplicationRunner {
             WorkerProfile profile = workerProfileRepository.findByUserId(user.getId())
                     .orElseGet(() -> {
                         WorkerProfile p = new WorkerProfile();
-                        p.setUser(user);
+                        p.setUserId(user.getId());
+                        p.setUserMobileNumber(user.getMobileNumber());
                         return p;
                     });
             profile.setName(w[1]);
-            profile.setSkills(w[2]);
+            List<String> skills = new ArrayList<>(splitToSet(w[2]));
+            int size = skills.size();
+            if (size > 0) profile.setSkill1(skills.get(0));
+            if (size > 1) profile.setSkill2(skills.get(1));
+            if (size > 2) profile.setSkill3(skills.get(2));
+            if (size > 3) profile.setSkill4(skills.get(3));
+            if (size > 4) profile.setSkill5(skills.get(4));
+            allSkillsFromData.addAll(skills);
             profile.setExperience(Integer.parseInt(w[3]));
             profile.setCity(w[4]);
             profile.setPreferredSalary(Double.parseDouble(w[5]));
             workerProfileRepository.save(profile);
         }
+        seedSkills(allSkillsFromData);
     }
 
     private void createJobs() {
@@ -147,6 +158,7 @@ public class DataInitializer implements ApplicationRunner {
         };
 
         int jobIndex = 0;
+        Set<String> allSkillsFromData = new HashSet<>();
         for (String[] emp : employers) {
             User user = userRepository.findByMobileNumber(emp[0]).orElseGet(() -> {
                 User u = new User();
@@ -176,7 +188,14 @@ public class DataInitializer implements ApplicationRunner {
                 job.setCompanyName(profile.getCompanyName());
                 job.setEmployerMobileNumber(user.getMobileNumber());
                 job.setTitle(t[0]);
-                job.setSkillsRequired(t[1]);
+                List<String> skills = new ArrayList<>(splitToSet(t[1]));
+                int size = skills.size();
+                if (size > 0) job.setSkillsRequired1(skills.get(0));
+                if (size > 1) job.setSkillsRequired2(skills.get(1));
+                if (size > 2) job.setSkillsRequired3(skills.get(2));
+                if (size > 3) job.setSkillsRequired4(skills.get(3));
+                if (size > 4) job.setSkillsRequired5(skills.get(4));
+                allSkillsFromData.addAll(skills);
                 job.setExperienceRequired(Integer.parseInt(t[2]));
                 job.setLocation(t[3]);
                 job.setSalaryMin(Double.parseDouble(t[4]));
@@ -186,6 +205,36 @@ public class DataInitializer implements ApplicationRunner {
                 jobRepository.save(job);
             }
             jobIndex += 3;
+        }
+        seedSkills(allSkillsFromData);
+    }
+    private Set<String> splitToSet(String csv) {
+        if (csv == null || csv.isBlank()) return null;
+        return Arrays.stream(csv.toLowerCase().split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toSet());
+    }
+    private void seedSkills(Set<String> allSkillsFromData) {
+        // 1. Get all names currently in the DB
+        List<String> existingSkills = skillRepository.findAll()
+                .stream()
+                .map(Skill::getName)
+                .toList();
+
+        // 2. Filter out skills that already exist
+        List<Skill> newSkills = allSkillsFromData.stream()
+                .filter(name -> !existingSkills.contains(name))
+                .map(name -> {
+                    Skill skill = new Skill();
+                    skill.setName(name);
+                    return skill;
+                })
+                .collect(Collectors.toList());
+
+        // 3. Batch save all new skills at once
+        if (!newSkills.isEmpty()) {
+            skillRepository.saveAll(newSkills);
         }
     }
 }

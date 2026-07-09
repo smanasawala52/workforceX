@@ -1,8 +1,10 @@
 package com.workforcex.backend.service;
 
 import com.workforcex.backend.dto.ResumeParseResponse;
+import com.workforcex.backend.entity.Skill;
 import com.workforcex.backend.entity.User;
 import com.workforcex.backend.entity.WorkerProfile;
+import com.workforcex.backend.repository.SkillRepository;
 import com.workforcex.backend.repository.UserRepository;
 import com.workforcex.backend.repository.WorkerProfileRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,7 @@ public class ResumeService {
 
     private final UserRepository userRepository;
     private final WorkerProfileRepository workerProfileRepository;
+    private final SkillRepository skillRepository;
 
     // Master skill list for blue-collar/semi-skilled workers
     private static final List<String> SKILL_KEYWORDS = List.of(
@@ -74,7 +77,7 @@ public class ResumeService {
         }
 
         // Extract skills
-        List<String> detectedSkills = detectSkills(extractedText);
+        Set<String> detectedSkills = new HashSet<>(detectSkills(extractedText));
         String skillsCsv = String.join(",", detectedSkills);
 
         // Detect years of experience
@@ -87,7 +90,8 @@ public class ResumeService {
         WorkerProfile profile = workerProfileRepository.findByUserId(user.getId())
                 .orElseGet(() -> {
                     WorkerProfile p = new WorkerProfile();
-                    p.setUser(user);
+                    p.setUserId(user.getId());
+                    p.setUserMobileNumber(user.getMobileNumber());
                     return p;
                 });
 
@@ -97,8 +101,16 @@ public class ResumeService {
         profile.setResumeExtractedSkills(skillsCsv);
 
         // Auto-populate skills if worker hasn't set them yet
-        if (profile.getSkills() == null || profile.getSkills().isBlank()) {
-            profile.setSkills(skillsCsv);
+        if (profile.getSkill1() == null || profile.getSkill1().isBlank()) {
+            List<String> skills = new ArrayList<>(detectedSkills);
+            int size = detectedSkills.size();
+            if (size > 0) profile.setSkill1(skills.get(0));
+            if (size > 1) profile.setSkill2(skills.get(1));
+            if (size > 2) profile.setSkill3(skills.get(2));
+            if (size > 3) profile.setSkill4(skills.get(3));
+            if (size > 4) profile.setSkill5(skills.get(4));
+            Set<String> allSkillsFromData = new HashSet<>(skills);
+            seedSkills(allSkillsFromData);
         }
 
         // Auto-populate experience if not set
@@ -114,7 +126,7 @@ public class ResumeService {
         return new ResumeParseResponse(
                 file.getOriginalFilename(),
                 skillsCsv,
-                detectedSkills,
+                new ArrayList<>(detectedSkills),
                 detectedExp,
                 preview,
                 detectedSkills.isEmpty()
@@ -156,5 +168,39 @@ public class ResumeService {
             }
         }
         return found ? maxYears : null;
+    }
+
+    private Set<String> splitToSet(String csv) {
+        if (csv == null || csv.isBlank()) return null;
+        return Arrays.stream(csv.toLowerCase().split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toSet());
+    }
+    private void seedSkills(Set<String> allSkillsFromData) {
+        try {
+            // 1. Get all names currently in the DB
+            List<String> existingSkills = skillRepository.findAll()
+                    .stream()
+                    .map(Skill::getName)
+                    .toList();
+
+            // 2. Filter out skills that already exist
+            List<Skill> newSkills = allSkillsFromData.stream()
+                    .filter(name -> !existingSkills.contains(name))
+                    .map(name -> {
+                        Skill skill = new Skill();
+                        skill.setName(name);
+                        return skill;
+                    })
+                    .collect(Collectors.toList());
+
+            // 3. Batch save all new skills at once
+            if (!newSkills.isEmpty()) {
+                skillRepository.saveAll(newSkills);
+            }
+        } catch (Exception e) {
+            // ignore
+        }
     }
 }

@@ -37,7 +37,11 @@ public class Job {
     private String companyName; // used while fetching data to avoid employer table call
     private String employerMobileNumber;  // used while fetching data to avoid employer table call
 
-    private String skillsRequired;      // comma-separated, e.g. "security,patrolling"
+    private String skillsRequired1;      // comma-separated, e.g. "security,patrolling"
+    private String skillsRequired2;      // comma-separated, e.g. "security,patrolling"
+    private String skillsRequired3;      // comma-separated, e.g. "security,patrolling"
+    private String skillsRequired4;      // comma-separated, e.g. "security,patrolling"
+    private String skillsRequired5;      // comma-separated, e.g. "security,patrolling"
 
     private Integer experienceRequired; // years
 
