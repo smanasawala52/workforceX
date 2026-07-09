@@ -23,14 +23,19 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne
+    /*
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employer_id", nullable = false)
     private User employer;
+     */
+    @Column(name = "employer_id", nullable = false)
+    private UUID employerId;
 
     @Column(nullable = false)
     private String title;
 
-    private String companyName;
+    private String companyName; // used while fetching data to avoid employer table call
+    private String employerMobileNumber;  // used while fetching data to avoid employer table call
 
     private String skillsRequired;      // comma-separated, e.g. "security,patrolling"
 

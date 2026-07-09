@@ -171,8 +171,10 @@ public class DataInitializer implements ApplicationRunner {
             for (int i = 0; i < 20; i++) {
                 String[] t = jobTemplates[(jobIndex + i) % jobTemplates.length];
                 Job job = new Job();
-                job.setEmployer(user);
+                //job.setEmployer(user);
+                job.setEmployerId(user.getId());
                 job.setCompanyName(profile.getCompanyName());
+                job.setEmployerMobileNumber(user.getMobileNumber());
                 job.setTitle(t[0]);
                 job.setSkillsRequired(t[1]);
                 job.setExperienceRequired(Integer.parseInt(t[2]));

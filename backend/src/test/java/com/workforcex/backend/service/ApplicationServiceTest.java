@@ -48,7 +48,8 @@ class ApplicationServiceTest {
 
         job = new Job();
         job.setId(UUID.randomUUID());
-        job.setEmployer(employer);
+        job.setEmployerId(employer.getId());
+        job.setEmployerMobileNumber(employer.getMobileNumber());
         job.setTitle("Test Job");
         job.setOpenPositions(5);
 
@@ -67,6 +68,7 @@ class ApplicationServiceTest {
     void apply_shouldCreateApplicationAndNotifyEmployer() {
         mockProfileRepositories();
         when(userRepository.findByMobileNumber("WORKER_MOBILE")).thenReturn(Optional.of(worker));
+        when(userRepository.findById(employer.getId())).thenReturn(Optional.of(employer));
         when(jobRepository.findById(job.getId())).thenReturn(Optional.of(job));
         when(applicationRepository.existsByJobIdAndWorkerId(job.getId(), worker.getId())).thenReturn(false);
         when(applicationRepository.save(any(JobApplication.class))).thenReturn(application);
@@ -108,6 +110,7 @@ class ApplicationServiceTest {
         mockProfileRepositories();
         when(applicationRepository.findById(application.getId())).thenReturn(Optional.of(application));
         when(applicationRepository.save(any(JobApplication.class))).thenReturn(application);
+        when(userRepository.findById(employer.getId())).thenReturn(Optional.of(employer));
 
         applicationService.updateStatus("EMPLOYER_MOBILE", application.getId(), ApplicationStatus.SHORTLISTED);
 
@@ -137,7 +140,7 @@ class ApplicationServiceTest {
     void offerJob_shouldThrowException_whenEmployerDoesNotOwnJob() {
         User anotherEmployer = new User();
         anotherEmployer.setId(UUID.randomUUID());
-        job.setEmployer(anotherEmployer);
+        job.setEmployerId(anotherEmployer.getId());
 
         when(userRepository.findByMobileNumber("EMPLOYER_MOBILE")).thenReturn(Optional.of(employer));
         when(jobRepository.findById(job.getId())).thenReturn(Optional.of(job));
@@ -162,6 +165,7 @@ class ApplicationServiceTest {
         mockProfileRepositories();
         when(applicationRepository.findById(application.getId())).thenReturn(Optional.of(application));
         when(applicationRepository.save(any(JobApplication.class))).thenReturn(application);
+        when(userRepository.findById(employer.getId())).thenReturn(Optional.of(employer));
 
         applicationService.updateStatus("EMPLOYER_MOBILE", application.getId(), ApplicationStatus.HIRED);
 
@@ -174,6 +178,7 @@ class ApplicationServiceTest {
         mockProfileRepositories();
         when(applicationRepository.findById(application.getId())).thenReturn(Optional.of(application));
         when(applicationRepository.save(any(JobApplication.class))).thenReturn(application);
+        when(userRepository.findById(employer.getId())).thenReturn(Optional.of(employer));
 
         applicationService.updateStatus("EMPLOYER_MOBILE", application.getId(), ApplicationStatus.REJECTED);
 
@@ -185,6 +190,7 @@ class ApplicationServiceTest {
     void updateStatus_shouldThrowException_whenHiringForJobWithNoOpenPositions() {
         job.setOpenPositions(0);
         when(applicationRepository.findById(application.getId())).thenReturn(Optional.of(application));
+        when(userRepository.findById(employer.getId())).thenReturn(Optional.of(employer));
 
         assertThatThrownBy(() -> applicationService.updateStatus("EMPLOYER_MOBILE", application.getId(), ApplicationStatus.HIRED))
                 .isInstanceOf(ResponseStatusException.class);
@@ -194,9 +200,10 @@ class ApplicationServiceTest {
     void updateStatus_shouldThrowException_whenEmployerDoesNotOwnJob() {
         User anotherEmployer = new User();
         anotherEmployer.setMobileNumber("ANOTHER_EMPLOYER");
-        job.setEmployer(anotherEmployer);
+        job.setEmployerId(anotherEmployer.getId());
 
         when(applicationRepository.findById(application.getId())).thenReturn(Optional.of(application));
+        when(userRepository.findById(anotherEmployer.getId())).thenReturn(Optional.of(anotherEmployer));
 
         assertThatThrownBy(() -> applicationService.updateStatus("EMPLOYER_MOBILE", application.getId(), ApplicationStatus.SHORTLISTED))
                 .isInstanceOf(ResponseStatusException.class);

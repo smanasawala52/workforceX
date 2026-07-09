@@ -26,26 +26,8 @@ public class JobService {
         User employer = userRepository.findByMobileNumber(employerMobileNumber)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        /*EmployerProfile profile = employerProfileRepository.findByUserId(employer.getId())
-                .orElseGet(() -> {
-                    EmployerProfile p = new EmployerProfile();
-                    p.setUser(employer);
-                    return p;
-                });
-        String companyName = profile.getCompanyName();
-
         Job job = new Job();
-        job.setCompanyName("Unknown Company");
-
-        if (companyName != null && !companyName.isBlank()) {
-            job.setCompanyName(companyName);
-        } else if (profile.getContactPerson() != null && !profile.getContactPerson().isBlank()) {
-            job.setCompanyName(profile.getContactPerson());
-        } else {
-            job.setCompanyName("Unknown Company");
-        }
-*/
-        Job job = new Job();
+        job.setEmployerMobileNumber(employer.getMobileNumber());
         String companyName = request.companyName();
         if (companyName != null && !companyName.isBlank()) {
             job.setCompanyName(companyName);
@@ -64,7 +46,7 @@ public class JobService {
                 job.setCompanyName("Unknown Company");
             }
         }
-        job.setEmployer(employer);
+        job.setEmployerId(employer.getId());
         applyRequest(job, request);
         return jobRepository.save(job);
     }
@@ -92,7 +74,9 @@ public class JobService {
     private Job getOwnedJob(String employerMobileNumber, UUID jobId) {
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new IllegalArgumentException("Job not found"));
-        if (!job.getEmployer().getMobileNumber().equals(employerMobileNumber)) {
+        User employer = userRepository.findById(job.getEmployerId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        if (!employer.getMobileNumber().equals(employerMobileNumber)) {
             throw new IllegalArgumentException("You do not have permission to access this job");
         }
         return job;

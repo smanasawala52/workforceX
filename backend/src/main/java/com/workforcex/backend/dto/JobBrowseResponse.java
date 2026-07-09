@@ -13,6 +13,7 @@ public record JobBrowseResponse(
         UUID id,
         String title,
         String companyName,     // from employer profile (if set), else "Unknown Company"
+        String employerMobileNumber,     // from employer profile (if set), else "Unknown Company"
         String skillsRequired,
         Integer experienceRequired,
         String location,
@@ -21,11 +22,13 @@ public record JobBrowseResponse(
         Integer openPositions,
         String description
 ) {
-    public static JobBrowseResponse fromEntity(Job job, String companyName) {
+    public static JobBrowseResponse fromEntity(Job job) {
+        String companyName=job.getCompanyName() != null ? job.getCompanyName():"Unknown Company";
         return new JobBrowseResponse(
                 job.getId(),
                 job.getTitle(),
                 companyName,
+                job.getEmployerMobileNumber(),
                 job.getSkillsRequired(),
                 job.getExperienceRequired(),
                 job.getLocation(),

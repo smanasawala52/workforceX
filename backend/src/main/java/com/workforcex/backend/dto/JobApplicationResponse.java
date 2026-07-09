@@ -36,7 +36,7 @@ public record JobApplicationResponse(
                 app.getStatus(),
                 app.getAppliedAt(),
                 app.getUpdatedAt(),
-                job.getEmployer().getMobileNumber()
+                job.getEmployerMobileNumber()
         );
     }
 
@@ -67,7 +67,7 @@ public record JobApplicationResponse(
                 app.getStatus(),
                 app.getAppliedAt(),
                 app.getUpdatedAt(),
-                job.getEmployer().getMobileNumber()
+                job.getEmployerMobileNumber()
         );
     }
 }

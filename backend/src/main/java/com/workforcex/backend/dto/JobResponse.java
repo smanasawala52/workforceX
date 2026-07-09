@@ -8,6 +8,8 @@ public record JobResponse(
         UUID id,
         UUID employerId,
         String title,
+        String companyName,
+        String employerMobileNumber,
         String skillsRequired,
         Integer experienceRequired,
         String location,            // comma-separated cities
@@ -19,8 +21,10 @@ public record JobResponse(
     public static JobResponse fromEntity(Job job) {
         return new JobResponse(
                 job.getId(),
-                job.getEmployer().getId(),
+                job.getEmployerId(),
                 job.getTitle(),
+                job.getCompanyName(),
+                job.getEmployerMobileNumber(),
                 job.getSkillsRequired(),
                 job.getExperienceRequired(),
                 job.getLocation(),

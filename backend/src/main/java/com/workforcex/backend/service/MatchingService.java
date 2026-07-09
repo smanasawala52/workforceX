@@ -3,14 +3,13 @@ package com.workforcex.backend.service;
 import com.workforcex.backend.dto.CandidateSearchRequest;
 import com.workforcex.backend.dto.CandidateSearchResponse;
 import com.workforcex.backend.dto.MatchedWorkerResponse;
-import com.workforcex.backend.entity.ApplicationStatus;
-import com.workforcex.backend.entity.Job;
-import com.workforcex.backend.entity.JobApplication;
-import com.workforcex.backend.entity.WorkerProfile;
+import com.workforcex.backend.entity.*;
 import com.workforcex.backend.repository.JobApplicationRepository;
 import com.workforcex.backend.repository.JobRepository;
+import com.workforcex.backend.repository.UserRepository;
 import com.workforcex.backend.repository.WorkerProfileRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -29,14 +28,16 @@ public class MatchingService {
     private static final double WEIGHT_SALARY     = 0.10;
 
     private final JobRepository jobRepository;
+    private final UserRepository userRepository;
     private final WorkerProfileRepository workerProfileRepository;
     private final JobApplicationRepository applicationRepository;
 
     public List<MatchedWorkerResponse> getMatchedWorkers(String employerMobileNumber, UUID jobId) {
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new IllegalArgumentException("Job not found"));
-
-        if (!job.getEmployer().getMobileNumber().equals(employerMobileNumber)) {
+        User employer = userRepository.findById(job.getEmployerId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        if (!employer.getMobileNumber().equals(employerMobileNumber)) {
             throw new IllegalArgumentException("You do not have permission to access this job");
         }
 

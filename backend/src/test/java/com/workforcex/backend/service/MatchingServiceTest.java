@@ -4,6 +4,7 @@ import com.workforcex.backend.entity.Job;
 import com.workforcex.backend.entity.User;
 import com.workforcex.backend.repository.JobApplicationRepository;
 import com.workforcex.backend.repository.JobRepository;
+import com.workforcex.backend.repository.UserRepository;
 import com.workforcex.backend.repository.WorkerProfileRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MatchingServiceTest {
 
     @Mock private JobRepository jobRepository;
+    @Mock private UserRepository userRepository;
     @Mock private WorkerProfileRepository workerProfileRepository;
     @Mock private JobApplicationRepository applicationRepository;
 
@@ -34,10 +36,13 @@ class MatchingServiceTest {
         User employer = new User();
         employer.setMobileNumber("1234567890");
         Job job = new Job();
-        job.setEmployer(employer);
+        job.setEmployerId(employer.getId());
+        job.setEmployerMobileNumber(employer.getMobileNumber());
+
 
         when(jobRepository.findById(jobId)).thenReturn(Optional.of(job));
         when(workerProfileRepository.findAll()).thenReturn(Collections.emptyList());
+        when(userRepository.findById(employer.getId())).thenReturn(Optional.of(employer));
 
         // When
         var result = matchingService.getMatchedWorkers("1234567890", jobId);

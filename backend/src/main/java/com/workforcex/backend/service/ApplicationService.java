@@ -39,9 +39,10 @@ public class ApplicationService {
         applicationToSave.setWorker(worker);
         applicationToSave.setStatus(ApplicationStatus.PENDING);
         JobApplication savedApplication = applicationRepository.save(applicationToSave);
-
+        User employer = userRepository.findById(job.getEmployerId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
         notificationService.createNotification(
-            job.getEmployer(),
+                employer,
             "A new candidate has applied for your job: " + job.getTitle(),
             "JOB_APPLICANTS",
             job.getId()
@@ -55,7 +56,7 @@ public class ApplicationService {
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job not found"));
 
-        if (!job.getEmployer().getId().equals(employer.getId())) {
+        if (!job.getEmployerId().equals(employer.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to offer this job");
         }
 
@@ -91,7 +92,9 @@ public class ApplicationService {
     public List<JobApplicationResponse> getApplicationsForJob(String employerMobile, UUID jobId) {
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job not found"));
-        if (!job.getEmployer().getMobileNumber().equals(employerMobile)) {
+        User employer = userRepository.findById(job.getEmployerId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        if (!employer.getMobileNumber().equals(employerMobile)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You do not have permission to view this job's applications");
         }
         return applicationRepository.findAllByJobId(jobId).stream()
@@ -103,7 +106,9 @@ public class ApplicationService {
         JobApplication application = applicationRepository.findById(applicationId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Application not found"));
 
-        if (!application.getJob().getEmployer().getMobileNumber().equals(employerMobile)) {
+        User employer = userRepository.findById(application.getJob().getEmployerId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        if (!employer.getMobileNumber().equals(employerMobile)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to update this application");
         }
 
@@ -121,7 +126,7 @@ public class ApplicationService {
         application.setUpdatedAt(LocalDateTime.now());
         JobApplication savedApplication = applicationRepository.save(application);
 
-        String companyName = employerProfileRepository.findByUserId(savedApplication.getJob().getEmployer().getId())
+        String companyName = employerProfileRepository.findByUserId(savedApplication.getJob().getEmployerId())
                 .map(EmployerProfile::getCompanyName).orElse("a company");
         String message = String.format("Your application for '%s' at %s has been updated to: %s",
                 savedApplication.getJob().getTitle(), companyName, newStatus.toString());
@@ -131,7 +136,7 @@ public class ApplicationService {
     }
 
     private JobApplicationResponse buildResponse(JobApplication app) {
-        String companyName = employerProfileRepository.findByUserId(app.getJob().getEmployer().getId())
+        String companyName = employerProfileRepository.findByUserId(app.getJob().getEmployerId())
                 .map(EmployerProfile::getCompanyName).orElse("Unknown Company");
         var profile = workerProfileRepository.findByUserId(app.getWorker().getId());
         return JobApplicationResponse.fromEntityWithProfile(

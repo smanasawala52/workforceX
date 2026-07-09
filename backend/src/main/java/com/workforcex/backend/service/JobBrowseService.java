@@ -23,18 +23,9 @@ public class JobBrowseService {
     private final EmployerProfileRepository employerProfileRepository;
 
     public List<JobBrowseResponse> getAllJobs() {
+        // Look up the employer's company name if they filled in a profile
         return jobRepository.findAll().stream()
-                .map(job -> {
-                    // Look up the employer's company name if they filled in a profile
-                    /*String companyName = employerProfileRepository
-                            .findByUserId(job.getEmployer().getId())
-                            .map(EmployerProfile::getCompanyName)
-                            .filter(name -> name != null && !name.isBlank())
-                            .orElse("Unknown Company");*/
-
-                    String companyName=job.getCompanyName() !=null?job.getCompanyName():"Unknown Company";
-                    return JobBrowseResponse.fromEntity(job, companyName);
-                })
+                .map(JobBrowseResponse::fromEntity)
                 .collect(Collectors.toList());
     }
 }
