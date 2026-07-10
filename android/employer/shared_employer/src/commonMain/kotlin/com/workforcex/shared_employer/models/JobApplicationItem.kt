@@ -12,7 +12,7 @@ data class JobApplicationItem(
     val workerExperience: Int,
     val workerCity: String,
     val workerPreferredSalary: Double,
-    val status: String, // PENDING, SHORTLISTED, REJECTED
+    var status: String, // PENDING, SHORTLISTED, REJECTED
     val appliedAt: String,
     val updatedAt: String
 )
