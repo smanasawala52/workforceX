@@ -1,0 +1,2183 @@
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/api/CandidateSearchRequest.java b/android/employer/app/src/main/java/com/workforcex/employer/api/CandidateSearchRequest.java
+deleted file mode 100644
+index 830f11e..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/api/CandidateSearchRequest.java
++++ /dev/null
+@@ -1,10 +0,0 @@
+-package com.workforcex.employer.api;
+-
+-public class CandidateSearchRequest {
+-    public String skills;
+-    public String city;
+-    public Integer experienceMin;
+-    public Integer experienceMax;
+-    public Double salaryMin;
+-    public Double salaryMax;
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/api/CandidateSearchResult.java b/android/employer/app/src/main/java/com/workforcex/employer/api/CandidateSearchResult.java
+deleted file mode 100644
+index db9d5ad..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/api/CandidateSearchResult.java
++++ /dev/null
+@@ -1,17 +0,0 @@
+-package com.workforcex.employer.api;
+-
+-public class CandidateSearchResult {
+-    public String workerId; // Changed to String to match JSON
+-    public String name;
+-    public String mobileNumber;
+-    public String skills;
+-    public Integer experience;
+-    public String city;
+-    public String state;
+-    public Double preferredSalary;
+-    public double totalScore;
+-    public double skillScore;
+-    public double experienceScore;
+-    public double locationScore;
+-    public double salaryScore;
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/api/EmployerProfileRequest.java b/android/employer/app/src/main/java/com/workforcex/employer/api/EmployerProfileRequest.java
+deleted file mode 100644
+index 00d80d5..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/api/EmployerProfileRequest.java
++++ /dev/null
+@@ -1,7 +0,0 @@
+-package com.workforcex.employer.api;
+-public class EmployerProfileRequest {
+-    public String companyName;
+-    public String contactPerson;
+-    public String email;
+-    public String address;
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/api/EmployerProfileResponse.java b/android/employer/app/src/main/java/com/workforcex/employer/api/EmployerProfileResponse.java
+deleted file mode 100644
+index 3e41483..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/api/EmployerProfileResponse.java
++++ /dev/null
+@@ -1,9 +0,0 @@
+-package com.workforcex.employer.api;
+-public class EmployerProfileResponse {
+-    public String id;
+-    public String mobileNumber;
+-    public String companyName;
+-    public String contactPerson;
+-    public String email;
+-    public String address;
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/api/JobApplicationItem.java b/android/employer/app/src/main/java/com/workforcex/employer/api/JobApplicationItem.java
+deleted file mode 100644
+index cd89540..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/api/JobApplicationItem.java
++++ /dev/null
+@@ -1,18 +0,0 @@
+-package com.workforcex.employer.api;
+-
+-public class JobApplicationItem {
+-    public String applicationId;
+-    public String jobId;
+-    public String jobTitle;
+-    public String companyName;
+-    public String workerId;
+-    public String workerName;
+-    public String workerMobile;
+-    public String workerSkills;
+-    public Integer workerExperience;
+-    public String workerCity;
+-    public Double workerPreferredSalary;
+-    public String status; // PENDING, SHORTLISTED, REJECTED
+-    public String appliedAt;
+-    public String updatedAt;
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/api/JobApplicationResponse.java b/android/employer/app/src/main/java/com/workforcex/employer/api/JobApplicationResponse.java
+deleted file mode 100644
+index 408baa3..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/api/JobApplicationResponse.java
++++ /dev/null
+@@ -1,17 +0,0 @@
+-package com.workforcex.employer.api;
+-
+-public class JobApplicationResponse {
+-    public String applicationId;
+-    public String jobId;
+-    public String jobTitle;
+-    public String companyName;
+-    public String workerId;
+-    public String workerName;
+-    public String workerMobile;
+-    public String workerSkills;
+-    public Integer workerExperience;
+-    public String workerCity;
+-    public Double workerPreferredSalary;
+-    public String status; // PENDING, SHORTLISTED, REJECTED
+-    public String appliedAt;
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/api/JobRequest.java b/android/employer/app/src/main/java/com/workforcex/employer/api/JobRequest.java
+deleted file mode 100644
+index 2fac3db..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/api/JobRequest.java
++++ /dev/null
+@@ -1,11 +0,0 @@
+-package com.workforcex.employer.api;
+-public class JobRequest {
+-    public String title;
+-    public String skillsRequired;
+-    public Integer experienceRequired;
+-    public String location;
+-    public Double salaryMin;
+-    public Double salaryMax;
+-    public Integer openPositions;
+-    public String description;
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/api/JobResponse.java b/android/employer/app/src/main/java/com/workforcex/employer/api/JobResponse.java
+deleted file mode 100644
+index 449c507..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/api/JobResponse.java
++++ /dev/null
+@@ -1,15 +0,0 @@
+-package com.workforcex.employer.api;
+-
+-// This class must exactly match the fields from the backend's JobResponse record.
+-public class JobResponse {
+-    public String id;
+-    public String employerId;
+-    public String title;
+-    public String skillsRequired;
+-    public Integer experienceRequired;
+-    public String location;
+-    public Double salaryMin;
+-    public Double salaryMax;
+-    public Integer openPositions;
+-    public String description;
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/api/LoginRequest.java b/android/employer/app/src/main/java/com/workforcex/employer/api/LoginRequest.java
+deleted file mode 100644
+index 0f777c7..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/api/LoginRequest.java
++++ /dev/null
+@@ -1,9 +0,0 @@
+-package com.workforcex.employer.api;
+-public class LoginRequest {
+-    public String mobileNumber;
+-    public String password;
+-    public LoginRequest(String mobileNumber, String password) {
+-        this.mobileNumber = mobileNumber;
+-        this.password = password;
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/api/LoginResponse.java b/android/employer/app/src/main/java/com/workforcex/employer/api/LoginResponse.java
+deleted file mode 100644
+index 9e13e66..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/api/LoginResponse.java
++++ /dev/null
+@@ -1,9 +0,0 @@
+-package com.workforcex.employer.api;
+-public class LoginResponse {
+-    public String id;
+-    public String countryCode;
+-    public String mobileNumber;
+-    public String fullMobileNumber;
+-    public String role;
+-    public String token;
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/api/MatchedWorker.java b/android/employer/app/src/main/java/com/workforcex/employer/api/MatchedWorker.java
+deleted file mode 100644
+index 39c2b65..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/api/MatchedWorker.java
++++ /dev/null
+@@ -1,13 +0,0 @@
+-package com.workforcex.employer.api;
+-
+-public class MatchedWorker {
+-    public String workerId;
+-    public String name;
+-    public String mobileNumber;
+-    public String skills;
+-    public Integer experience;
+-    public String city;
+-    public Double preferredSalary;
+-    public Double score;
+-    public String applicationStatus;
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/api/Notification.java b/android/employer/app/src/main/java/com/workforcex/employer/api/Notification.java
+deleted file mode 100644
+index 63825a5..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/api/Notification.java
++++ /dev/null
+@@ -1,26 +0,0 @@
+-package com.workforcex.employer.api;
+-
+-import com.google.gson.annotations.SerializedName;
+-
+-public class Notification {
+-    @SerializedName("id")
+-    public String id;
+-
+-    @SerializedName("message")
+-    public String message;
+-
+-    @SerializedName("read")
+-    public boolean isRead;
+-
+-    @SerializedName("createdAt")
+-    public String createdAt;
+-
+-    @SerializedName("linkType")
+-    public String linkType;
+-
+-    @SerializedName("linkId")
+-    public String linkId;
+-
+-    @SerializedName("jobTitle")
+-    public String jobTitle;
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/api/RegisterRequest.java b/android/employer/app/src/main/java/com/workforcex/employer/api/RegisterRequest.java
+deleted file mode 100644
+index 3190b2c..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/api/RegisterRequest.java
++++ /dev/null
+@@ -1,11 +0,0 @@
+-package com.workforcex.employer.api;
+-public class RegisterRequest {
+-    public String mobileNumber;
+-    public String role;
+-    public String countryCode;
+-    public RegisterRequest(String mobileNumber, String role, String countryCode) {
+-        this.mobileNumber = mobileNumber;
+-        this.role = role;
+-        this.countryCode = countryCode;
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/api/RegisterResponse.java b/android/employer/app/src/main/java/com/workforcex/employer/api/RegisterResponse.java
+deleted file mode 100644
+index a65d0c5..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/api/RegisterResponse.java
++++ /dev/null
+@@ -1,8 +0,0 @@
+-package com.workforcex.employer.api;
+-public class RegisterResponse {
+-    public String id;
+-    public String countryCode;
+-    public String mobileNumber;
+-    public String fullMobileNumber;
+-    public String role;
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/api/RetrofitClient.java b/android/employer/app/src/main/java/com/workforcex/employer/api/RetrofitClient.java
+deleted file mode 100644
+index 9c85375..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/api/RetrofitClient.java
++++ /dev/null
+@@ -1,37 +0,0 @@
+-package com.workforcex.employer.api;
+-
+-import com.workforcex.employer.BuildConfig;
+-import okhttp3.OkHttpClient;
+-import okhttp3.logging.HttpLoggingInterceptor;
+-import retrofit2.Retrofit;
+-import retrofit2.converter.gson.GsonConverterFactory;
+-
+-/**
+- * Singleton Retrofit client.
+- * BASE_URL comes from BuildConfig (set per build type in app/build.gradle).
+- * - Debug:   http://10.0.2.2:8080/ (emulator localhost)
+- * - Release: your Railway URL
+- */
+-public class RetrofitClient {
+-
+-    private static WorkforceXApi instance;
+-
+-    public static WorkforceXApi get() {
+-        if (instance == null) {
+-            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+-            logging.setLevel(HttpLoggingInterceptor.Level.BODY); // show full request/response in Logcat
+-
+-            OkHttpClient client = new OkHttpClient.Builder()
+-                    .addInterceptor(logging)
+-                    .build();
+-
+-            instance = new Retrofit.Builder()
+-                    .baseUrl(BuildConfig.BASE_URL)
+-                    .client(client)
+-                    .addConverterFactory(GsonConverterFactory.create())
+-                    .build()
+-                    .create(WorkforceXApi.class);
+-        }
+-        return instance;
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/api/Skill.java b/android/employer/app/src/main/java/com/workforcex/employer/api/Skill.java
+deleted file mode 100644
+index fad70f0..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/api/Skill.java
++++ /dev/null
+@@ -1,8 +0,0 @@
+-package com.workforcex.employer.api;
+-
+-import com.google.gson.annotations.SerializedName;
+-
+-public class Skill {
+-    @SerializedName("name")
+-    public String name;
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/api/Verification.java b/android/employer/app/src/main/java/com/workforcex/employer/api/Verification.java
+deleted file mode 100644
+index 3accc89..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/api/Verification.java
++++ /dev/null
+@@ -1,22 +0,0 @@
+-package com.workforcex.employer.api;
+-
+-import com.google.gson.annotations.SerializedName;
+-
+-public class Verification {
+-    @SerializedName("id")
+-    public String id;
+-
+-    @SerializedName("user")
+-    public User user;
+-
+-    @SerializedName("verificationType")
+-    public String verificationType;
+-
+-    @SerializedName("status")
+-    public String status;
+-
+-    public static class User {
+-        @SerializedName("mobileNumber")
+-        public String mobileNumber;
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/api/WorkforceXApi.java b/android/employer/app/src/main/java/com/workforcex/employer/api/WorkforceXApi.java
+deleted file mode 100644
+index 554210b..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/api/WorkforceXApi.java
++++ /dev/null
+@@ -1,88 +0,0 @@
+-package com.workforcex.employer.api;
+-
+-import java.util.List;
+-import retrofit2.Call;
+-import retrofit2.http.*;
+-
+-public interface WorkforceXApi {
+-
+-    @POST("api/auth/register")
+-    Call<RegisterResponse> register(@Body RegisterRequest request);
+-
+-    @POST("api/auth/login")
+-    Call<LoginResponse> login(@Body LoginRequest request);
+-
+-    @PUT("api/employer/profile")
+-    Call<EmployerProfileResponse> saveEmployerProfile(
+-            @Header("Authorization") String token, @Body EmployerProfileRequest request);
+-
+-    @GET("api/employer/profile")
+-    Call<EmployerProfileResponse> getEmployerProfile(@Header("Authorization") String token);
+-
+-    @POST("api/jobs")
+-    Call<JobResponse> createJob(@Header("Authorization") String token, @Body JobRequest request);
+-
+-    @GET("api/jobs")
+-    Call<List<JobResponse>> getMyJobs(@Header("Authorization") String token);
+-
+-    @GET("api/jobs/{jobId}")
+-    Call<JobResponse> getJobById(@Header("Authorization") String token, @Path("jobId") String jobId);
+-
+-    @PUT("api/jobs/{jobId}")
+-    Call<JobResponse> updateJob(@Header("Authorization") String token,
+-            @Path("jobId") String jobId, @Body JobRequest request);
+-
+-    @DELETE("api/jobs/{jobId}")
+-    Call<Void> deleteJob(@Header("Authorization") String token, @Path("jobId") String jobId);
+-
+-    @GET("api/matching/{jobId}")
+-    Call<List<MatchedWorker>> getMatchedWorkers(@Header("Authorization") String token,
+-            @Path("jobId") String jobId);
+-
+-    @POST("api/matching/search") // Changed to POST
+-    Call<List<CandidateSearchResult>> searchCandidates(
+-            @Header("Authorization") String token,
+-            @Body CandidateSearchRequest request); // Changed to @Body
+-
+-    // Applications
+-    @GET("api/applications/job/{jobId}")
+-    Call<List<JobApplicationItem>> getApplicationsForJob(
+-            @Header("Authorization") String token, @Path("jobId") String jobId);
+-
+-    @PUT("api/applications/{applicationId}/status")
+-    Call<JobApplicationItem> updateApplicationStatus(
+-            @Header("Authorization") String token,
+-            @Path("applicationId") String applicationId,
+-            @Query("status") String status);
+-
+-    @POST("api/applications/offer")
+-    Call<JobApplicationItem> offerJob(
+-            @Header("Authorization") String token,
+-            @Query("jobId") String jobId,
+-            @Query("workerId") String workerId);
+-
+-    // Notifications
+-    @GET("api/notifications")
+-    Call<List<Notification>> getUnreadNotifications(@Header("Authorization") String token);
+-
+-    @PUT("api/notifications/{notificationId}/read")
+-    Call<Void> markAsRead(@Header("Authorization") String token, @Path("notificationId") String notificationId);
+-
+-    // Verification
+-    @GET("api/verification/pending")
+-    Call<List<Verification>> getPendingVerifications(@Header("Authorization") String token);
+-
+-    @GET("api/verification/worker/{workerId}")
+-    Call<List<Verification>> getWorkerDocuments(@Header("Authorization") String token, @Path("workerId") String workerId);
+-
+-    @PUT("api/verification/{verificationId}/status")
+-    Call<Void> updateEmployerVerificationStatus(
+-            @Header("Authorization") String token,
+-            @Path("verificationId") String verificationId,
+-            @Query("status") String status,
+-            @Body String comments);
+-
+-    // Skills
+-    @GET("api/skills")
+-    Call<List<Skill>> getSkills();
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/ui/auth/LoginActivity.java b/android/employer/app/src/main/java/com/workforcex/employer/ui/auth/LoginActivity.java
+deleted file mode 100644
+index cddac70..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/ui/auth/LoginActivity.java
++++ /dev/null
+@@ -1,73 +0,0 @@
+-package com.workforcex.employer.ui.auth;
+-
+-import android.content.Intent;
+-import android.os.Bundle;
+-import android.view.View;
+-import android.widget.Toast;
+-import androidx.appcompat.app.AppCompatActivity;
+-import com.workforcex.employer.api.LoginRequest;
+-import com.workforcex.employer.api.LoginResponse;
+-import com.workforcex.employer.api.RetrofitClient;
+-import com.workforcex.employer.databinding.ActivityLoginBinding;
+-import com.workforcex.employer.ui.employer.EmployerDashboardActivity;
+-import com.workforcex.employer.utils.TokenManager;
+-import retrofit2.Call;
+-import retrofit2.Callback;
+-import retrofit2.Response;
+-
+-public class LoginActivity extends AppCompatActivity {
+-
+-    private ActivityLoginBinding binding;
+-    private TokenManager tokenManager;
+-
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        binding = ActivityLoginBinding.inflate(getLayoutInflater());
+-        setContentView(binding.getRoot());
+-        tokenManager = new TokenManager(this);
+-        binding.btnLogin.setOnClickListener(v -> attemptLogin());
+-        binding.tvGoToRegister.setOnClickListener(v ->
+-                startActivity(new Intent(this, RegisterActivity.class)));
+-    }
+-
+-    private void attemptLogin() {
+-        String mobile = binding.etMobile.getText().toString().trim();
+-        String password = binding.etPassword.getText().toString().trim();
+-        if (mobile.length() != 10) { binding.etMobile.setError("Enter a valid 10-digit mobile number"); return; }
+-        if (password.isEmpty()) { binding.etPassword.setError("Password is required"); return; }
+-        setLoading(true);
+-        RetrofitClient.get().login(new LoginRequest(mobile, password))
+-                .enqueue(new Callback<LoginResponse>() {
+-                    @Override
+-                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+-                        setLoading(false);
+-                        if (response.isSuccessful() && response.body() != null) {
+-                            LoginResponse body = response.body();
+-                            if (!"EMPLOYER".equals(body.role)) {
+-                                Toast.makeText(LoginActivity.this,
+-                                        "Please use the Worker app to login as a Worker",
+-                                        Toast.LENGTH_LONG).show();
+-                                return;
+-                            }
+-                            tokenManager.save(body.token, body.role, body.mobileNumber);
+-                            Intent intent = new Intent(LoginActivity.this, EmployerDashboardActivity.class);
+-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+-                            startActivity(intent);
+-                        } else {
+-                            Toast.makeText(LoginActivity.this, "Invalid mobile number or password", Toast.LENGTH_SHORT).show();
+-                        }
+-                    }
+-                    @Override
+-                    public void onFailure(Call<LoginResponse> call, Throwable t) {
+-                        setLoading(false);
+-                        Toast.makeText(LoginActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+-                    }
+-                });
+-    }
+-
+-    private void setLoading(boolean loading) {
+-        binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+-        binding.btnLogin.setEnabled(!loading);
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/ui/auth/RegisterActivity.java b/android/employer/app/src/main/java/com/workforcex/employer/ui/auth/RegisterActivity.java
+deleted file mode 100644
+index b2efa81..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/ui/auth/RegisterActivity.java
++++ /dev/null
+@@ -1,62 +0,0 @@
+-package com.workforcex.employer.ui.auth;
+-
+-import android.content.Intent;
+-import android.os.Bundle;
+-import android.view.View;
+-import android.widget.Toast;
+-import androidx.appcompat.app.AppCompatActivity;
+-import com.workforcex.employer.api.RegisterRequest;
+-import com.workforcex.employer.api.RegisterResponse;
+-import com.workforcex.employer.api.RetrofitClient;
+-import com.workforcex.employer.databinding.ActivityRegisterBinding;
+-import retrofit2.Call;
+-import retrofit2.Callback;
+-import retrofit2.Response;
+-
+-public class RegisterActivity extends AppCompatActivity {
+-
+-    private ActivityRegisterBinding binding;
+-
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        binding = ActivityRegisterBinding.inflate(getLayoutInflater());
+-        setContentView(binding.getRoot());
+-        binding.btnRegister.setOnClickListener(v -> attemptRegister());
+-        binding.tvGoToLogin.setOnClickListener(v -> finish());
+-    }
+-
+-    private void attemptRegister() {
+-        String mobile = binding.etMobile.getText().toString().trim();
+-        if (mobile.length() != 10) {
+-            binding.etMobile.setError("Enter a valid 10-digit mobile number");
+-            return;
+-        }
+-        setLoading(true);
+-        // Employer app always registers as EMPLOYER — no role selector needed
+-        RetrofitClient.get().register(new RegisterRequest(mobile, "EMPLOYER", "+91"))
+-                .enqueue(new Callback<RegisterResponse>() {
+-                    @Override
+-                    public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
+-                        setLoading(false);
+-                        if (response.isSuccessful()) {
+-                            Toast.makeText(RegisterActivity.this, "Account created! Please login.", Toast.LENGTH_SHORT).show();
+-                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+-                            finish();
+-                        } else {
+-                            Toast.makeText(RegisterActivity.this, "Mobile number already registered", Toast.LENGTH_SHORT).show();
+-                        }
+-                    }
+-                    @Override
+-                    public void onFailure(Call<RegisterResponse> call, Throwable t) {
+-                        setLoading(false);
+-                        Toast.makeText(RegisterActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+-                    }
+-                });
+-    }
+-
+-    private void setLoading(boolean loading) {
+-        binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+-        binding.btnRegister.setEnabled(!loading);
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/ui/auth/SplashActivity.java b/android/employer/app/src/main/java/com/workforcex/employer/ui/auth/SplashActivity.java
+deleted file mode 100644
+index 4f6f293..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/ui/auth/SplashActivity.java
++++ /dev/null
+@@ -1,21 +0,0 @@
+-package com.workforcex.employer.ui.auth;
+-
+-import android.content.Intent;
+-import android.os.Bundle;
+-import androidx.appcompat.app.AppCompatActivity;
+-import com.workforcex.employer.ui.employer.EmployerDashboardActivity;
+-import com.workforcex.employer.utils.TokenManager;
+-
+-public class SplashActivity extends AppCompatActivity {
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        TokenManager tokenManager = new TokenManager(this);
+-        if (tokenManager.isLoggedIn()) {
+-            startActivity(new Intent(this, EmployerDashboardActivity.class));
+-        } else {
+-            startActivity(new Intent(this, LoginActivity.class));
+-        }
+-        finish();
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/CandidateAdapter.java b/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/CandidateAdapter.java
+deleted file mode 100644
+index d230a15..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/CandidateAdapter.java
++++ /dev/null
+@@ -1,57 +0,0 @@
+-package com.workforcex.employer.ui.employer;
+-
+-import android.view.LayoutInflater;
+-import android.view.View;
+-import android.view.ViewGroup;
+-import android.widget.TextView;
+-import androidx.annotation.NonNull;
+-import androidx.recyclerview.widget.RecyclerView;
+-import com.workforcex.employer.R;
+-import com.workforcex.employer.api.MatchedWorker;
+-import java.util.List;
+-
+-public class CandidateAdapter extends RecyclerView.Adapter<CandidateAdapter.CandidateViewHolder> {
+-
+-    private final List<MatchedWorker> workers;
+-
+-    public CandidateAdapter(List<MatchedWorker> workers) {
+-        this.workers = workers;
+-    }
+-
+-    @NonNull
+-    @Override
+-    public CandidateViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_candidate, parent, false);
+-        return new CandidateViewHolder(view);
+-    }
+-
+-    @Override
+-    public void onBindViewHolder(@NonNull CandidateViewHolder holder, int position) {
+-        MatchedWorker w = workers.get(position);
+-        holder.tvRank.setText("#" + (position + 1));
+-        holder.tvName.setText(w.name != null ? w.name : w.mobileNumber);
+-        holder.tvScore.setText(String.format("Score: %.0f%%", w.score));
+-        holder.tvSkills.setText("Skills: " + (w.skills != null ? w.skills : "—"));
+-        holder.tvExperience.setText("Experience: " + (w.experience != null ? w.experience + " yrs" : "—"));
+-        holder.tvCity.setText("Location: " + (w.city != null ? w.city : "—"));
+-        holder.tvSalary.setText(w.preferredSalary != null ? "Expected: ₹" + w.preferredSalary.intValue() : "");
+-    }
+-
+-    @Override
+-    public int getItemCount() { return workers.size(); }
+-
+-    static class CandidateViewHolder extends RecyclerView.ViewHolder {
+-        TextView tvRank, tvName, tvScore, tvSkills, tvExperience, tvCity, tvSalary;
+-
+-        CandidateViewHolder(View itemView) {
+-            super(itemView);
+-            tvRank = itemView.findViewById(R.id.tvRank);
+-            tvName = itemView.findViewById(R.id.tvName);
+-            tvScore = itemView.findViewById(R.id.tvScore);
+-            tvSkills = itemView.findViewById(R.id.tvSkills);
+-            tvExperience = itemView.findViewById(R.id.tvExperience);
+-            tvCity = itemView.findViewById(R.id.tvCity);
+-            tvSalary = itemView.findViewById(R.id.tvSalary);
+-        }
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/DocumentAdapter.java b/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/DocumentAdapter.java
+deleted file mode 100644
+index 8c2b1fb..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/DocumentAdapter.java
++++ /dev/null
+@@ -1,62 +0,0 @@
+-package com.workforcex.employer.ui.employer;
+-
+-import android.view.LayoutInflater;
+-import android.view.View;
+-import android.view.ViewGroup;
+-import android.widget.Button;
+-import android.widget.TextView;
+-import androidx.annotation.NonNull;
+-import androidx.recyclerview.widget.RecyclerView;
+-import com.workforcex.employer.R;
+-import com.workforcex.employer.api.Verification;
+-import java.util.List;
+-
+-public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.VH> {
+-
+-    private final List<Verification> items;
+-    private final OnVerificationAction onAction;
+-
+-    public interface OnVerificationAction {
+-        void onUpdate(String verificationId, String status, String comments);
+-    }
+-
+-    public DocumentAdapter(List<Verification> items, OnVerificationAction onAction) {
+-        this.items = items;
+-        this.onAction = onAction;
+-    }
+-
+-    @NonNull
+-    @Override
+-    public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_document, parent, false);
+-        return new VH(v);
+-    }
+-
+-    @Override
+-    public void onBindViewHolder(@NonNull VH h, int pos) {
+-        Verification item = items.get(pos);
+-        h.tvDocumentType.setText(item.verificationType);
+-        h.tvStatus.setText(item.status);
+-
+-        h.btnApprove.setOnClickListener(v -> onAction.onUpdate(item.id, "VERIFIED", ""));
+-        h.btnReject.setOnClickListener(v -> onAction.onUpdate(item.id, "REJECTED", ""));
+-    }
+-
+-    @Override
+-    public int getItemCount() {
+-        return items.size();
+-    }
+-
+-    static class VH extends RecyclerView.ViewHolder {
+-        TextView tvDocumentType, tvStatus;
+-        Button btnApprove, btnReject;
+-
+-        VH(View v) {
+-            super(v);
+-            tvDocumentType = v.findViewById(R.id.tvDocumentType);
+-            tvStatus = v.findViewById(R.id.tvStatus);
+-            btnApprove = v.findViewById(R.id.btnApprove);
+-            btnReject = v.findViewById(R.id.btnReject);
+-        }
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/EmployerDashboardActivity.java b/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/EmployerDashboardActivity.java
+deleted file mode 100644
+index 7c2c830..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/EmployerDashboardActivity.java
++++ /dev/null
+@@ -1,129 +0,0 @@
+-package com.workforcex.employer.ui.employer;
+-
+-import android.content.Intent;
+-import android.os.Bundle;
+-import android.view.Menu;
+-import android.view.MenuItem;
+-import android.view.View;
+-import android.widget.TextView;
+-import android.widget.Toast;
+-import androidx.annotation.NonNull;
+-import androidx.appcompat.app.AppCompatActivity;
+-import com.workforcex.employer.R;
+-import com.workforcex.employer.api.EmployerProfileResponse;
+-import com.workforcex.employer.api.Notification;
+-import com.workforcex.employer.api.RetrofitClient;
+-import com.workforcex.employer.databinding.ActivityEmployerDashboardBinding;
+-import com.workforcex.employer.ui.auth.LoginActivity;
+-import com.workforcex.employer.utils.TokenManager;
+-import java.util.List;
+-import retrofit2.Call;
+-import retrofit2.Callback;
+-import retrofit2.Response;
+-
+-public class EmployerDashboardActivity extends AppCompatActivity {
+-
+-    private ActivityEmployerDashboardBinding binding;
+-    private TokenManager tokenManager;
+-    private TextView badge;
+-
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        binding = ActivityEmployerDashboardBinding.inflate(getLayoutInflater());
+-        setContentView(binding.getRoot());
+-        tokenManager = new TokenManager(this);
+-
+-        setSupportActionBar(binding.toolbar);
+-
+-        binding.btnMyJobs.setOnClickListener(v ->
+-                startActivity(new Intent(this, JobsActivity.class)));
+-
+-        binding.btnSearchCandidates.setOnClickListener(v ->
+-                startActivity(new Intent(this, SearchCandidatesActivity.class)));
+-
+-        binding.btnLogout.setOnClickListener(v -> logout());
+-
+-        loadProfile();
+-    }
+-
+-    @Override
+-    protected void onResume() {
+-        super.onResume();
+-        // Refresh notification count when returning to the screen
+-        if (badge != null) {
+-            loadNotificationCount();
+-        }
+-    }
+-
+-    @Override
+-    public boolean onCreateOptionsMenu(Menu menu) {
+-        getMenuInflater().inflate(R.menu.dashboard_menu, menu);
+-        final MenuItem menuItem = menu.findItem(R.id.action_notifications);
+-        View actionView = menuItem.getActionView();
+-        badge = actionView.findViewById(R.id.badge);
+-
+-        actionView.setOnClickListener(v -> onOptionsItemSelected(menuItem));
+-
+-        loadNotificationCount();
+-        return true;
+-    }
+-
+-    @Override
+-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+-        if (item.getItemId() == R.id.action_notifications) {
+-            startActivity(new Intent(this, NotificationsActivity.class));
+-            return true;
+-        }
+-        return super.onOptionsItemSelected(item);
+-    }
+-
+-    private void loadProfile() {
+-        RetrofitClient.get().getEmployerProfile(tokenManager.getBearerToken())
+-                .enqueue(new Callback<EmployerProfileResponse>() {
+-                    @Override
+-                    public void onResponse(Call<EmployerProfileResponse> call, Response<EmployerProfileResponse> response) {
+-                        if (response.isSuccessful() && response.body() != null) {
+-                            EmployerProfileResponse p = response.body();
+-                            String company = p.companyName != null ? p.companyName : tokenManager.getMobile();
+-                            binding.tvWelcome.setText("Welcome, " + company);
+-                        } else {
+-                            binding.tvWelcome.setText("Welcome, " + tokenManager.getMobile());
+-                        }
+-                    }
+-                    @Override
+-                    public void onFailure(Call<EmployerProfileResponse> call, Throwable t) {
+-                        binding.tvWelcome.setText("Welcome, " + tokenManager.getMobile());
+-                    }
+-                });
+-    }
+-
+-    private void loadNotificationCount() {
+-        RetrofitClient.get().getUnreadNotifications(tokenManager.getBearerToken())
+-                .enqueue(new Callback<List<Notification>>() {
+-                    @Override
+-                    public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
+-                        if (response.isSuccessful() && response.body() != null) {
+-                            int count = response.body().size();
+-                            if (badge != null) {
+-                                if (count > 0) {
+-                                    badge.setText(String.valueOf(count));
+-                                    badge.setVisibility(View.VISIBLE);
+-                                } else {
+-                                    badge.setVisibility(View.GONE);
+-                                }
+-                            }
+-                        }
+-                    }
+-                    @Override
+-                    public void onFailure(Call<List<Notification>> call, Throwable t) {}
+-                });
+-    }
+-
+-    private void logout() {
+-        tokenManager.clear();
+-        Intent intent = new Intent(this, LoginActivity.class);
+-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+-        startActivity(intent);
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/JobAdapter.java b/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/JobAdapter.java
+deleted file mode 100644
+index 7caf2f5..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/JobAdapter.java
++++ /dev/null
+@@ -1,80 +0,0 @@
+-package com.workforcex.employer.ui.employer;
+-
+-import android.view.LayoutInflater;
+-import android.view.View;
+-import android.view.ViewGroup;
+-import android.widget.Button;
+-import android.widget.TextView;
+-import androidx.annotation.NonNull;
+-import androidx.recyclerview.widget.RecyclerView;
+-import com.workforcex.employer.R;
+-import com.workforcex.employer.api.JobResponse;
+-import java.util.List;
+-
+-public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
+-
+-    public interface OnJobAction { void onAction(JobResponse job); }
+-
+-    private List<JobResponse> jobs;
+-    private final OnJobAction onFindCandidates;
+-    private final OnJobAction onViewApplicants;
+-    private final OnJobAction onEdit;
+-
+-    public JobAdapter(List<JobResponse> jobs, OnJobAction onFindCandidates,
+-                      OnJobAction onViewApplicants, OnJobAction onEdit) {
+-        this.jobs = jobs;
+-        this.onFindCandidates = onFindCandidates;
+-        this.onViewApplicants = onViewApplicants;
+-        this.onEdit = onEdit;
+-    }
+-
+-    public void updateJobs(List<JobResponse> newJobs) {
+-        this.jobs.clear();
+-        this.jobs.addAll(newJobs);
+-        notifyDataSetChanged();
+-    }
+-
+-    @NonNull @Override
+-    public JobViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+-        View view = LayoutInflater.from(parent.getContext())
+-                .inflate(R.layout.item_job, parent, false);
+-        return new JobViewHolder(view);
+-    }
+-
+-    @Override
+-    public void onBindViewHolder(@NonNull JobViewHolder h, int position) {
+-        JobResponse job = jobs.get(position);
+-        h.tvTitle.setText(job.title);
+-        h.tvLocation.setText("📍 " + (job.location != null ? job.location : "Not specified"));
+-        h.tvSkills.setText("Skills: " + (job.skillsRequired != null ? job.skillsRequired : "Any"));
+-
+-        String salaryText = "";
+-        if (job.salaryMin != null && job.salaryMax != null)
+-            salaryText = "₹" + job.salaryMin.intValue() + " - ₹" + job.salaryMax.intValue() + "/month";
+-        if (job.openPositions != null && job.openPositions > 0)
+-            salaryText += (salaryText.isEmpty() ? "" : "  ·  ") + job.openPositions + " openings";
+-        h.tvSalary.setText(salaryText);
+-
+-        h.btnFindCandidates.setOnClickListener(v -> onFindCandidates.onAction(job));
+-        h.btnApplicants.setOnClickListener(v -> onViewApplicants.onAction(job));
+-        h.btnEdit.setOnClickListener(v -> onEdit.onAction(job));
+-    }
+-
+-    @Override public int getItemCount() { return jobs.size(); }
+-
+-    static class JobViewHolder extends RecyclerView.ViewHolder {
+-        TextView tvTitle, tvLocation, tvSkills, tvSalary;
+-        Button btnFindCandidates, btnApplicants, btnEdit;
+-
+-        JobViewHolder(View v) {
+-            super(v);
+-            tvTitle          = v.findViewById(R.id.tvTitle);
+-            tvLocation       = v.findViewById(R.id.tvLocation);
+-            tvSkills         = v.findViewById(R.id.tvSkills);
+-            tvSalary         = v.findViewById(R.id.tvSalary);
+-            btnFindCandidates = v.findViewById(R.id.btnFindCandidates);
+-            btnApplicants    = v.findViewById(R.id.btnApplicants);
+-            btnEdit          = v.findViewById(R.id.btnEdit);
+-        }
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/JobApplicantsActivity.java b/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/JobApplicantsActivity.java
+deleted file mode 100644
+index e564794..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/JobApplicantsActivity.java
++++ /dev/null
+@@ -1,184 +0,0 @@
+-package com.workforcex.employer.ui.employer;
+-
+-import android.graphics.Color;
+-import android.os.Bundle;
+-import android.view.LayoutInflater;
+-import android.view.View;
+-import android.view.ViewGroup;
+-import android.widget.Button;
+-import android.widget.TextView;
+-import android.widget.Toast;
+-import androidx.annotation.NonNull;
+-import androidx.appcompat.app.AppCompatActivity;
+-import androidx.recyclerview.widget.LinearLayoutManager;
+-import androidx.recyclerview.widget.RecyclerView;
+-import com.workforcex.employer.R;
+-import com.workforcex.employer.api.JobApplicationItem;
+-import com.workforcex.employer.api.RetrofitClient;
+-import com.workforcex.employer.databinding.ActivityJobApplicantsBinding;
+-import com.workforcex.employer.utils.TokenManager;
+-import retrofit2.Call;
+-import retrofit2.Callback;
+-import retrofit2.Response;
+-import java.util.List;
+-
+-public class JobApplicantsActivity extends AppCompatActivity {
+-
+-    private ActivityJobApplicantsBinding binding;
+-    private TokenManager tokenManager;
+-    private String jobId;
+-    private ApplicantAdapter adapter;
+-
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        binding = ActivityJobApplicantsBinding.inflate(getLayoutInflater());
+-        setContentView(binding.getRoot());
+-        tokenManager = new TokenManager(this);
+-
+-        jobId = getIntent().getStringExtra("jobId");
+-        String jobTitle = getIntent().getStringExtra("jobTitle");
+-        setTitle("Applicants");
+-        binding.tvTitle.setText("Applicants for: " + jobTitle);
+-        binding.rvApplicants.setLayoutManager(new LinearLayoutManager(this));
+-        loadApplicants();
+-    }
+-
+-    private void loadApplicants() {
+-        binding.progressBar.setVisibility(View.VISIBLE);
+-        RetrofitClient.get().getApplicationsForJob(tokenManager.getBearerToken(), jobId)
+-                .enqueue(new Callback<List<JobApplicationItem>>() {
+-                    @Override
+-                    public void onResponse(Call<List<JobApplicationItem>> call,
+-                                           Response<List<JobApplicationItem>> response) {
+-                        binding.progressBar.setVisibility(View.GONE);
+-                        if (response.isSuccessful() && response.body() != null) {
+-                            List<JobApplicationItem> items = response.body();
+-                            binding.tvCount.setText(items.size() + " applicant(s)");
+-                            binding.tvEmpty.setVisibility(items.isEmpty() ? View.VISIBLE : View.GONE);
+-                            adapter = new ApplicantAdapter(items, JobApplicantsActivity.this::updateStatus);
+-                            binding.rvApplicants.setAdapter(adapter);
+-                        }
+-                    }
+-                    @Override
+-                    public void onFailure(Call<List<JobApplicationItem>> call, Throwable t) {
+-                        binding.progressBar.setVisibility(View.GONE);
+-                        Toast.makeText(JobApplicantsActivity.this,
+-                                "Network error", Toast.LENGTH_SHORT).show();
+-                    }
+-                });
+-    }
+-
+-    private void updateStatus(JobApplicationItem item, String status, int position) {
+-        RetrofitClient.get().updateApplicationStatus(
+-                tokenManager.getBearerToken(), item.applicationId, status)
+-                .enqueue(new Callback<JobApplicationItem>() {
+-                    @Override
+-                    public void onResponse(Call<JobApplicationItem> call,
+-                                           Response<JobApplicationItem> response) {
+-                        if (response.isSuccessful() && response.body() != null) {
+-                            item.status = response.body().status;
+-                            adapter.notifyItemChanged(position);
+-                            Toast.makeText(JobApplicantsActivity.this,
+-                                    (item.workerName != null ? item.workerName : "Applicant")
+-                                            + " " + status.toLowerCase() + "d", Toast.LENGTH_SHORT).show();
+-                        }
+-                    }
+-                    @Override
+-                    public void onFailure(Call<JobApplicationItem> call, Throwable t) {
+-                        Toast.makeText(JobApplicantsActivity.this,
+-                                "Network error", Toast.LENGTH_SHORT).show();
+-                    }
+-                });
+-    }
+-
+-    interface OnStatusAction { void onAction(JobApplicationItem item, String status, int position); }
+-
+-    static class ApplicantAdapter extends RecyclerView.Adapter<ApplicantAdapter.VH> {
+-        private final List<JobApplicationItem> items;
+-        private final OnStatusAction onAction;
+-
+-        ApplicantAdapter(List<JobApplicationItem> items, OnStatusAction onAction) {
+-            this.items = items;
+-            this.onAction = onAction;
+-        }
+-
+-        @NonNull @Override
+-        public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+-            View v = LayoutInflater.from(parent.getContext())
+-                    .inflate(R.layout.item_applicant, parent, false);
+-            return new VH(v);
+-        }
+-
+-        @Override
+-        public void onBindViewHolder(@NonNull VH h, int pos) {
+-            JobApplicationItem item = items.get(pos);
+-
+-            h.tvName.setText(item.workerName != null ? item.workerName : item.workerMobile);
+-            h.tvMobile.setText("📞 " + (item.workerMobile != null ? item.workerMobile : ""));
+-            h.tvSkills.setText("Skills: " + (item.workerSkills != null ? item.workerSkills : "—"));
+-
+-            String details = "";
+-            if (item.workerExperience != null) details += item.workerExperience + " yrs";
+-            if (item.workerCity != null) details += (details.isEmpty() ? "" : " · ") + item.workerCity;
+-            if (item.workerPreferredSalary != null)
+-                details += "  ₹" + item.workerPreferredSalary.intValue();
+-            h.tvDetails.setText(details);
+-
+-            String status = item.status != null ? item.status : "PENDING";
+-            h.tvStatus.setText(status);
+-            switch (status) {
+-                case "SHORTLISTED":
+-                    h.tvStatus.setTextColor(Color.parseColor("#1B5E20")); break;
+-                case "REJECTED":
+-                    h.tvStatus.setTextColor(Color.parseColor("#B71C1C")); break;
+-                case "INTERVIEW":
+-                    h.tvStatus.setTextColor(Color.parseColor("#FFC107")); break;
+-                case "OFFERED":
+-                    h.tvStatus.setTextColor(Color.parseColor("#FF9800")); break;
+-                case "HIRED":
+-                    h.tvStatus.setTextColor(Color.parseColor("#4CAF50")); break;
+-                default:
+-                    h.tvStatus.setTextColor(Color.parseColor("#1565C0"));
+-            }
+-
+-            boolean actionable = !"REJECTED".equals(status) && !"HIRED".equals(status);
+-            h.btnShortlist.setEnabled("PENDING".equals(status));
+-            h.btnInterview.setEnabled("SHORTLISTED".equals(status));
+-            h.btnOffer.setEnabled("INTERVIEW".equals(status));
+-            h.btnHire.setEnabled("OFFERED".equals(status));
+-            h.btnReject.setEnabled(actionable);
+-
+-            h.btnShortlist.setOnClickListener(v ->
+-                    onAction.onAction(item, "SHORTLISTED", h.getAdapterPosition()));
+-            h.btnReject.setOnClickListener(v ->
+-                    onAction.onAction(item, "REJECTED", h.getAdapterPosition()));
+-            h.btnInterview.setOnClickListener(v ->
+-                    onAction.onAction(item, "INTERVIEW", h.getAdapterPosition()));
+-            h.btnOffer.setOnClickListener(v ->
+-                    onAction.onAction(item, "OFFERED", h.getAdapterPosition()));
+-            h.btnHire.setOnClickListener(v ->
+-                    onAction.onAction(item, "HIRED", h.getAdapterPosition()));
+-        }
+-
+-        @Override public int getItemCount() { return items.size(); }
+-
+-        static class VH extends RecyclerView.ViewHolder {
+-            TextView tvName, tvMobile, tvSkills, tvDetails, tvStatus;
+-            Button btnShortlist, btnReject, btnInterview, btnOffer, btnHire;
+-            VH(View v) {
+-                super(v);
+-                tvName      = v.findViewById(R.id.tvName);
+-                tvMobile    = v.findViewById(R.id.tvMobile);
+-                tvSkills    = v.findViewById(R.id.tvSkills);
+-                tvDetails   = v.findViewById(R.id.tvDetails);
+-                tvStatus    = v.findViewById(R.id.tvStatus);
+-                btnShortlist = v.findViewById(R.id.btnShortlist);
+-                btnReject    = v.findViewById(R.id.btnReject);
+-                btnInterview = v.findViewById(R.id.btnInterview);
+-                btnOffer     = v.findViewById(R.id.btnOffer);
+-                btnHire      = v.findViewById(R.id.btnHire);
+-            }
+-        }
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/JobCreateEditActivity.java b/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/JobCreateEditActivity.java
+deleted file mode 100644
+index 4729967..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/JobCreateEditActivity.java
++++ /dev/null
+@@ -1,189 +0,0 @@
+-package com.workforcex.employer.ui.employer;
+-
+-import android.os.Bundle;
+-import android.view.View;
+-import android.view.inputmethod.EditorInfo;
+-import android.widget.ArrayAdapter;
+-import android.widget.Toast;
+-import androidx.appcompat.app.AppCompatActivity;
+-import com.google.android.material.chip.Chip;
+-import com.workforcex.employer.api.JobRequest;
+-import com.workforcex.employer.api.JobResponse;
+-import com.workforcex.employer.api.RetrofitClient;
+-import com.workforcex.employer.api.Skill;
+-import com.workforcex.employer.databinding.ActivityJobCreateEditBinding;
+-import com.workforcex.employer.utils.TokenManager;
+-import java.util.ArrayList;
+-import java.util.LinkedHashSet;
+-import java.util.List;
+-import java.util.Set;
+-import java.util.stream.Collectors;
+-import retrofit2.Call;
+-import retrofit2.Callback;
+-import retrofit2.Response;
+-
+-public class JobCreateEditActivity extends AppCompatActivity {
+-
+-    private ActivityJobCreateEditBinding binding;
+-    private TokenManager tokenManager;
+-    private String jobId;
+-
+-    private final Set<String> selectedSkills = new LinkedHashSet<>();
+-    private List<String> allSkills = new ArrayList<>();
+-
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        binding = ActivityJobCreateEditBinding.inflate(getLayoutInflater());
+-        setContentView(binding.getRoot());
+-        tokenManager = new TokenManager(this);
+-
+-        jobId = getIntent().getStringExtra("jobId");
+-        boolean isEditing = jobId != null;
+-        setTitle(isEditing ? "Edit Job" : "Create Job");
+-
+-        fetchSkillsAndSetupAutocomplete();
+-
+-        if (isEditing) {
+-            binding.etTitle.setText(getIntent().getStringExtra("jobTitle"));
+-            addSkillsFromCsv(getIntent().getStringExtra("jobSkills"));
+-            int exp = getIntent().getIntExtra("jobExperience", 0);
+-            if (exp > 0) binding.etExperience.setText(String.valueOf(exp));
+-            binding.etLocation.setText(getIntent().getStringExtra("jobLocation"));
+-            double salMin = getIntent().getDoubleExtra("jobSalaryMin", 0);
+-            double salMax = getIntent().getDoubleExtra("jobSalaryMax", 0);
+-            if (salMin > 0) binding.etSalaryMin.setText(String.valueOf((int) salMin));
+-            if (salMax > 0) binding.etSalaryMax.setText(String.valueOf((int) salMax));
+-            int positions = getIntent().getIntExtra("jobOpenPositions", 0);
+-            if (positions > 0) binding.etOpenPositions.setText(String.valueOf(positions));
+-            binding.etDescription.setText(getIntent().getStringExtra("jobDescription"));
+-        }
+-
+-        binding.btnSave.setText(isEditing ? "Update Job" : "Post Job");
+-        binding.btnSave.setOnClickListener(v -> saveJob());
+-    }
+-
+-    private void fetchSkillsAndSetupAutocomplete() {
+-        RetrofitClient.get().getSkills().enqueue(new Callback<List<Skill>>() {
+-            @Override
+-            public void onResponse(Call<List<Skill>> call, Response<List<Skill>> response) {
+-                if (response.isSuccessful() && response.body() != null) {
+-                    allSkills = response.body().stream().map(s -> s.name).collect(Collectors.toList());
+-                    setupSkillsAutocomplete();
+-                }
+-            }
+-            @Override
+-            public void onFailure(Call<List<Skill>> call, Throwable t) {}
+-        });
+-    }
+-
+-    private void setupSkillsAutocomplete() {
+-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+-                this, android.R.layout.simple_dropdown_item_1line, allSkills);
+-        binding.acSkills.setAdapter(adapter);
+-
+-        binding.acSkills.setOnItemClickListener((parent, view, position, id) -> {
+-            String skill = (String) parent.getItemAtPosition(position);
+-            addSkillChip(skill);
+-            binding.acSkills.setText("");
+-        });
+-
+-        binding.acSkills.setOnEditorActionListener((v, actionId, event) -> {
+-            if (actionId == EditorInfo.IME_ACTION_DONE) {
+-                String typed = binding.acSkills.getText().toString().trim().toLowerCase();
+-                if (!typed.isEmpty()) {
+-                    addSkillChip(typed);
+-                    binding.acSkills.setText("");
+-                }
+-                return true;
+-            }
+-            return false;
+-        });
+-    }
+-
+-    private void addSkillChip(String skill) {
+-        if (selectedSkills.size() >= 5) {
+-            Toast.makeText(this, "You can add a maximum of 5 skills", Toast.LENGTH_SHORT).show();
+-            return;
+-        }
+-        String clean = skill.trim().toLowerCase();
+-        if (clean.isEmpty() || selectedSkills.contains(clean)) return;
+-
+-        selectedSkills.add(clean);
+-
+-        Chip chip = new Chip(this);
+-        chip.setText(clean);
+-        chip.setCloseIconVisible(true);
+-        chip.setOnCloseIconClickListener(v -> {
+-            selectedSkills.remove(clean);
+-            binding.chipGroupSkills.removeView(chip);
+-        });
+-        binding.chipGroupSkills.addView(chip);
+-    }
+-
+-    private void addSkillsFromCsv(String csv) {
+-        if (csv == null || csv.isBlank()) return;
+-        for (String skill : csv.split(",")) {
+-            addSkillChip(skill.trim());
+-        }
+-    }
+-
+-    private String getSkillsCsv() {
+-        return String.join(",", selectedSkills);
+-    }
+-
+-    private void saveJob() {
+-        String title = binding.etTitle.getText().toString().trim();
+-        if (title.isEmpty()) { binding.etTitle.setError("Title is required"); return; }
+-
+-        JobRequest request = new JobRequest();
+-        request.title = title;
+-        request.skillsRequired = getSkillsCsv();
+-        request.location = binding.etLocation.getText().toString().trim();
+-        request.description = binding.etDescription.getText().toString().trim();
+-
+-        String expStr = binding.etExperience.getText().toString().trim();
+-        request.experienceRequired = expStr.isEmpty() ? null : Integer.parseInt(expStr);
+-
+-        String salMinStr = binding.etSalaryMin.getText().toString().trim();
+-        request.salaryMin = salMinStr.isEmpty() ? null : Double.parseDouble(salMinStr);
+-
+-        String salMaxStr = binding.etSalaryMax.getText().toString().trim();
+-        request.salaryMax = salMaxStr.isEmpty() ? null : Double.parseDouble(salMaxStr);
+-
+-        String posStr = binding.etOpenPositions.getText().toString().trim();
+-        request.openPositions = posStr.isEmpty() ? null : Integer.parseInt(posStr);
+-
+-        setLoading(true);
+-
+-        Callback<JobResponse> callback = new Callback<JobResponse>() {
+-            @Override
+-            public void onResponse(Call<JobResponse> call, Response<JobResponse> response) {
+-                setLoading(false);
+-                if (response.isSuccessful()) {
+-                    Toast.makeText(JobCreateEditActivity.this,
+-                            jobId != null ? "Job updated!" : "Job posted!", Toast.LENGTH_SHORT).show();
+-                    finish();
+-                } else {
+-                    Toast.makeText(JobCreateEditActivity.this, "Failed to save job", Toast.LENGTH_SHORT).show();
+-                }
+-            }
+-            @Override
+-            public void onFailure(Call<JobResponse> call, Throwable t) {
+-                setLoading(false);
+-                Toast.makeText(JobCreateEditActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+-            }
+-        };
+-
+-        if (jobId != null) {
+-            RetrofitClient.get().updateJob(tokenManager.getBearerToken(), jobId, request).enqueue(callback);
+-        } else {
+-            RetrofitClient.get().createJob(tokenManager.getBearerToken(), request).enqueue(callback);
+-        }
+-    }
+-
+-    private void setLoading(boolean loading) {
+-        binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+-        binding.btnSave.setEnabled(!loading);
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/JobsActivity.java b/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/JobsActivity.java
+deleted file mode 100644
+index d71c39e..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/JobsActivity.java
++++ /dev/null
+@@ -1,103 +0,0 @@
+-package com.workforcex.employer.ui.employer;
+-
+-import android.content.Intent;
+-import android.os.Bundle;
+-import android.view.View;
+-import android.widget.Toast;
+-import androidx.appcompat.app.AppCompatActivity;
+-import androidx.recyclerview.widget.LinearLayoutManager;
+-import com.workforcex.employer.api.JobResponse;
+-import com.workforcex.employer.api.RetrofitClient;
+-import com.workforcex.employer.databinding.ActivityJobsBinding;
+-import com.workforcex.employer.utils.TokenManager;
+-import retrofit2.Call;
+-import retrofit2.Callback;
+-import retrofit2.Response;
+-import java.util.ArrayList;
+-import java.util.List;
+-
+-public class JobsActivity extends AppCompatActivity {
+-
+-    private ActivityJobsBinding binding;
+-    private TokenManager tokenManager;
+-    private JobAdapter adapter;
+-
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        binding = ActivityJobsBinding.inflate(getLayoutInflater());
+-        setContentView(binding.getRoot());
+-        setTitle("My Jobs");
+-        tokenManager = new TokenManager(this);
+-
+-        adapter = new JobAdapter(
+-                new ArrayList<>(),
+-                this::onFindCandidates,
+-                this::onViewApplicants,
+-                this::onEditJob
+-        );
+-        binding.rvJobs.setLayoutManager(new LinearLayoutManager(this));
+-        binding.rvJobs.setAdapter(adapter);
+-
+-        binding.btnCreateJob.setOnClickListener(v ->
+-                startActivity(new Intent(this, JobCreateEditActivity.class)));
+-    }
+-
+-    @Override
+-    protected void onResume() {
+-        super.onResume();
+-        loadJobs();
+-    }
+-
+-    private void loadJobs() {
+-        binding.progressBar.setVisibility(View.VISIBLE);
+-        RetrofitClient.get().getMyJobs(tokenManager.getBearerToken())
+-                .enqueue(new Callback<List<JobResponse>>() {
+-                    @Override
+-                    public void onResponse(Call<List<JobResponse>> call,
+-                                           Response<List<JobResponse>> response) {
+-                        binding.progressBar.setVisibility(View.GONE);
+-                        if (response.isSuccessful() && response.body() != null) {
+-                            List<JobResponse> jobs = response.body();
+-                            adapter.updateJobs(jobs);
+-                            binding.tvEmpty.setVisibility(
+-                                    jobs.isEmpty() ? View.VISIBLE : View.GONE);
+-                        }
+-                    }
+-                    @Override
+-                    public void onFailure(Call<List<JobResponse>> call, Throwable t) {
+-                        binding.progressBar.setVisibility(View.GONE);
+-                        Toast.makeText(JobsActivity.this,
+-                                "Failed to load jobs", Toast.LENGTH_SHORT).show();
+-                    }
+-                });
+-    }
+-
+-    private void onFindCandidates(JobResponse job) {
+-        Intent intent = new Intent(this, MatchingResultsActivity.class);
+-        intent.putExtra("jobId", job.id);
+-        intent.putExtra("jobTitle", job.title);
+-        startActivity(intent);
+-    }
+-
+-    private void onViewApplicants(JobResponse job) {
+-        Intent intent = new Intent(this, JobApplicantsActivity.class);
+-        intent.putExtra("jobId", job.id);
+-        intent.putExtra("jobTitle", job.title);
+-        startActivity(intent);
+-    }
+-
+-    private void onEditJob(JobResponse job) {
+-        Intent intent = new Intent(this, JobCreateEditActivity.class);
+-        intent.putExtra("jobId", job.id);
+-        intent.putExtra("jobTitle", job.title);
+-        intent.putExtra("jobSkills", job.skillsRequired);
+-        intent.putExtra("jobExperience", job.experienceRequired != null ? job.experienceRequired : 0);
+-        intent.putExtra("jobLocation", job.location);
+-        intent.putExtra("jobSalaryMin", job.salaryMin != null ? job.salaryMin : 0.0);
+-        intent.putExtra("jobSalaryMax", job.salaryMax != null ? job.salaryMax : 0.0);
+-        intent.putExtra("jobOpenPositions", job.openPositions != null ? job.openPositions : 0);
+-        intent.putExtra("jobDescription", job.description);
+-        startActivity(intent);
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/MatchingResultsActivity.java b/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/MatchingResultsActivity.java
+deleted file mode 100644
+index 960434e..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/MatchingResultsActivity.java
++++ /dev/null
+@@ -1,187 +0,0 @@
+-package com.workforcex.employer.ui.employer;
+-
+-import android.content.Intent;
+-import android.net.Uri;
+-import android.os.Bundle;
+-import android.view.LayoutInflater;
+-import android.view.View;
+-import android.view.ViewGroup;
+-import android.widget.Button;
+-import android.widget.TextView;
+-import android.widget.Toast;
+-import androidx.annotation.NonNull;
+-import androidx.appcompat.app.AppCompatActivity;
+-import androidx.recyclerview.widget.LinearLayoutManager;
+-import androidx.recyclerview.widget.RecyclerView;
+-import com.workforcex.employer.R;
+-import com.workforcex.employer.api.JobApplicationItem;
+-import com.workforcex.employer.api.MatchedWorker;
+-import com.workforcex.employer.api.RetrofitClient;
+-import com.workforcex.employer.databinding.ActivityMatchingResultsBinding;
+-import com.workforcex.employer.utils.TokenManager;
+-import java.net.URLEncoder;
+-import java.util.List;
+-import retrofit2.Call;
+-import retrofit2.Callback;
+-import retrofit2.Response;
+-
+-public class MatchingResultsActivity extends AppCompatActivity {
+-
+-    private ActivityMatchingResultsBinding binding;
+-    private TokenManager tokenManager;
+-    private String jobId;
+-    private String jobTitle;
+-
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        binding = ActivityMatchingResultsBinding.inflate(getLayoutInflater());
+-        setContentView(binding.getRoot());
+-        tokenManager = new TokenManager(this);
+-
+-        this.jobId = getIntent().getStringExtra("jobId");
+-        this.jobTitle = getIntent().getStringExtra("jobTitle");
+-
+-        setTitle("Candidates: " + jobTitle);
+-        binding.tvJobTitle.setText("Ranked candidates for: " + jobTitle);
+-
+-        binding.rvCandidates.setLayoutManager(new LinearLayoutManager(this));
+-
+-        loadCandidates(this.jobId);
+-    }
+-
+-    private void loadCandidates(String jobId) {
+-        binding.progressBar.setVisibility(View.VISIBLE);
+-        RetrofitClient.get().getMatchedWorkers(tokenManager.getBearerToken(), jobId)
+-                .enqueue(new Callback<List<MatchedWorker>>() {
+-                    @Override
+-                    public void onResponse(Call<List<MatchedWorker>> call, Response<List<MatchedWorker>> response) {
+-                        binding.progressBar.setVisibility(View.GONE);
+-                        if (response.isSuccessful() && response.body() != null) {
+-                            List<MatchedWorker> workers = response.body();
+-                            binding.tvEmpty.setVisibility(workers.isEmpty() ? View.VISIBLE : View.GONE);
+-                            binding.rvCandidates.setAdapter(new CandidateAdapter(workers, MatchingResultsActivity.this::offerJob, jobTitle));
+-                        } else {
+-                            Toast.makeText(MatchingResultsActivity.this, "Failed to load candidates", Toast.LENGTH_SHORT).show();
+-                        }
+-                    }
+-                    @Override
+-                    public void onFailure(Call<List<MatchedWorker>> call, Throwable t) {
+-                        binding.progressBar.setVisibility(View.GONE);
+-                        Toast.makeText(MatchingResultsActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+-                    }
+-                });
+-    }
+-
+-    private void offerJob(MatchedWorker worker, Button button) {
+-        button.setEnabled(false);
+-        button.setText("Offering...");
+-
+-        RetrofitClient.get().offerJob(tokenManager.getBearerToken(), this.jobId, worker.workerId)
+-                .enqueue(new Callback<JobApplicationItem>() {
+-                    @Override
+-                    public void onResponse(Call<JobApplicationItem> call, Response<JobApplicationItem> response) {
+-                        if (response.isSuccessful()) {
+-                            button.setText("Offered");
+-                            Toast.makeText(MatchingResultsActivity.this, "Offer sent to " + worker.name, Toast.LENGTH_SHORT).show();
+-                        } else {
+-                            button.setEnabled(true);
+-                            button.setText("Offer Job");
+-                            Toast.makeText(MatchingResultsActivity.this, "Failed to send offer. The worker may have already applied.", Toast.LENGTH_LONG).show();
+-                        }
+-                    }
+-                    @Override
+-                    public void onFailure(Call<JobApplicationItem> call, Throwable t) {
+-                        button.setEnabled(true);
+-                        button.setText("Offer Job");
+-                        Toast.makeText(MatchingResultsActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+-                    }
+-                });
+-    }
+-
+-    static class CandidateAdapter extends RecyclerView.Adapter<CandidateAdapter.VH> {
+-        private final List<MatchedWorker> items;
+-        private final OnOfferClick onOfferClick;
+-        private final String jobTitle;
+-
+-        interface OnOfferClick { void onOffer(MatchedWorker worker, Button button); }
+-
+-        CandidateAdapter(List<MatchedWorker> items, OnOfferClick onOfferClick, String jobTitle) {
+-            this.items = items;
+-            this.onOfferClick = onOfferClick;
+-            this.jobTitle = jobTitle;
+-        }
+-
+-        @NonNull @Override
+-        public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+-            View v = LayoutInflater.from(parent.getContext())
+-                    .inflate(R.layout.item_candidate, parent, false);
+-            return new VH(v);
+-        }
+-
+-        @Override
+-        public void onBindViewHolder(@NonNull VH h, int pos) {
+-            MatchedWorker item = items.get(pos);
+-            h.tvRank.setText(String.valueOf(pos + 1));
+-            h.tvName.setText(item.name);
+-            h.tvScore.setText(String.format("%.0f%% Match", item.score));
+-            h.tvSkills.setText("Skills: " + item.skills);
+-            h.tvExperience.setText("Experience: " + item.experience + " yrs");
+-            h.tvCity.setText("City: " + item.city);
+-            h.tvSalary.setText("Prefers: ₹" + item.preferredSalary.intValue());
+-            h.tvMobile.setText("📞 " + item.mobileNumber);
+-
+-            // boolean hasBeenContacted = item.applicationStatus != null;
+-            // if (hasBeenContacted) {
+-            //     h.btnOfferJob.setEnabled(false);
+-            //     h.btnOfferJob.setText(item.applicationStatus);
+-            // } else {
+-            //     h.btnOfferJob.setEnabled(true);
+-            //     h.btnOfferJob.setText("Offer Job");
+-            // }
+-            h.btnOfferJob.setOnClickListener(v -> onOfferClick.onOffer(item, h.btnOfferJob));
+-
+-            h.btnCall.setOnClickListener(v -> {
+-                Intent intent = new Intent(Intent.ACTION_DIAL);
+-                intent.setData(Uri.parse("tel:" + item.mobileNumber));
+-                v.getContext().startActivity(intent);
+-            });
+-
+-            h.btnWhatsApp.setOnClickListener(v -> {
+-                try {
+-                    String message = URLEncoder.encode(
+-                        "Hello " + item.name + ", we have a job offer for you for the position of '" + this.jobTitle + "'. Are you interested?",
+-                        "UTF-8"
+-                    );
+-                    String url = "https://wa.me/+91" + item.mobileNumber + "?text=" + message;
+-                    Intent intent = new Intent(Intent.ACTION_VIEW);
+-                    intent.setData(Uri.parse(url));
+-                    v.getContext().startActivity(intent);
+-                } catch (Exception e) {
+-                    Toast.makeText(v.getContext(), "WhatsApp not installed or error.", Toast.LENGTH_SHORT).show();
+-                }
+-            });
+-        }
+-
+-        @Override public int getItemCount() { return items.size(); }
+-
+-        static class VH extends RecyclerView.ViewHolder {
+-            TextView tvRank, tvName, tvScore, tvSkills, tvExperience, tvCity, tvSalary, tvMobile;
+-            Button btnOfferJob, btnCall, btnWhatsApp;
+-            VH(View v) {
+-                super(v);
+-                tvRank = v.findViewById(R.id.tvRank);
+-                tvName = v.findViewById(R.id.tvName);
+-                tvScore = v.findViewById(R.id.tvScore);
+-                tvSkills = v.findViewById(R.id.tvSkills);
+-                tvExperience = v.findViewById(R.id.tvExperience);
+-                tvCity = v.findViewById(R.id.tvCity);
+-                tvSalary = v.findViewById(R.id.tvSalary);
+-                tvMobile = v.findViewById(R.id.tvMobile);
+-                btnOfferJob = v.findViewById(R.id.btnOfferJob);
+-                btnCall = v.findViewById(R.id.btnCall);
+-                btnWhatsApp = v.findViewById(R.id.btnWhatsApp);
+-            }
+-        }
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/NotificationsActivity.java b/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/NotificationsActivity.java
+deleted file mode 100644
+index 2c344f2..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/NotificationsActivity.java
++++ /dev/null
+@@ -1,107 +0,0 @@
+-package com.workforcex.employer.ui.employer;
+-
+-import android.content.Intent;
+-import android.os.Bundle;
+-import android.view.LayoutInflater;
+-import android.view.View;
+-import android.view.ViewGroup;
+-import android.widget.TextView;
+-import android.widget.Toast;
+-import androidx.annotation.NonNull;
+-import androidx.appcompat.app.AppCompatActivity;
+-import androidx.recyclerview.widget.LinearLayoutManager;
+-import androidx.recyclerview.widget.RecyclerView;
+-import com.workforcex.employer.api.Notification;
+-import com.workforcex.employer.api.RetrofitClient;
+-import com.workforcex.employer.databinding.ActivityNotificationsBinding;
+-import com.workforcex.employer.utils.TokenManager;
+-import java.util.List;
+-import retrofit2.Call;
+-import retrofit2.Callback;
+-import retrofit2.Response;
+-
+-public class NotificationsActivity extends AppCompatActivity {
+-
+-    private ActivityNotificationsBinding binding;
+-    private TokenManager tokenManager;
+-
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        binding = ActivityNotificationsBinding.inflate(getLayoutInflater());
+-        setContentView(binding.getRoot());
+-        tokenManager = new TokenManager(this);
+-
+-        setSupportActionBar(binding.toolbar);
+-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+-        setTitle("Notifications");
+-
+-        binding.rvNotifications.setLayoutManager(new LinearLayoutManager(this));
+-        loadNotifications();
+-    }
+-
+-    private void loadNotifications() {
+-        RetrofitClient.get().getUnreadNotifications(tokenManager.getBearerToken())
+-                .enqueue(new Callback<List<Notification>>() {
+-                    @Override
+-                    public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
+-                        if (response.isSuccessful() && response.body() != null) {
+-                            binding.rvNotifications.setAdapter(new NotificationAdapter(response.body(), NotificationsActivity.this::onNotificationClicked));
+-                        }
+-                    }
+-                    @Override
+-                    public void onFailure(Call<List<Notification>> call, Throwable t) {
+-                        Toast.makeText(NotificationsActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+-                    }
+-                });
+-    }
+-
+-    private void onNotificationClicked(Notification notification) {
+-        if ("JOB_APPLICANTS".equals(notification.linkType) && notification.linkId != null) {
+-            Intent intent = new Intent(this, JobApplicantsActivity.class);
+-            intent.putExtra("jobId", notification.linkId);
+-            // We don't have the job title here, so the title will be generic
+-            intent.putExtra("jobTitle", notification.jobTitle);
+-            startActivity(intent);
+-        }
+-    }
+-
+-    @Override
+-    public boolean onSupportNavigateUp() {
+-        onBackPressed();
+-        return true;
+-    }
+-
+-    interface OnNotificationClick { void onNotification(Notification notification); }
+-
+-    static class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.VH> {
+-        private final List<Notification> items;
+-        private final OnNotificationClick onClick;
+-
+-        NotificationAdapter(List<Notification> items, OnNotificationClick onClick) {
+-            this.items = items;
+-            this.onClick = onClick;
+-        }
+-
+-        @NonNull
+-        @Override
+-        public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+-            View v = LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
+-            return new VH(v);
+-        }
+-
+-        @Override
+-        public void onBindViewHolder(@NonNull VH h, int pos) {
+-            Notification item = items.get(pos);
+-            h.text.setText(item.message);
+-            h.itemView.setOnClickListener(v -> onClick.onNotification(item));
+-        }
+-
+-        @Override public int getItemCount() { return items.size(); }
+-
+-        static class VH extends RecyclerView.ViewHolder {
+-            TextView text;
+-            VH(View v) { super(v); text = v.findViewById(android.R.id.text1); }
+-        }
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/ReviewVerificationsActivity.java b/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/ReviewVerificationsActivity.java
+deleted file mode 100644
+index 5ddb6ce..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/ReviewVerificationsActivity.java
++++ /dev/null
+@@ -1,75 +0,0 @@
+-package com.workforcex.employer.ui.employer;
+-
+-import android.os.Bundle;
+-import android.view.View;
+-import android.widget.Toast;
+-import androidx.appcompat.app.AppCompatActivity;
+-import androidx.recyclerview.widget.LinearLayoutManager;
+-import com.workforcex.employer.api.RetrofitClient;
+-import com.workforcex.employer.api.Verification;
+-import com.workforcex.employer.databinding.ActivityReviewVerificationsBinding;
+-import com.workforcex.employer.utils.TokenManager;
+-import java.util.List;
+-import retrofit2.Call;
+-import retrofit2.Callback;
+-import retrofit2.Response;
+-
+-public class ReviewVerificationsActivity extends AppCompatActivity {
+-
+-    private ActivityReviewVerificationsBinding binding;
+-    private TokenManager tokenManager;
+-
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        binding = ActivityReviewVerificationsBinding.inflate(getLayoutInflater());
+-        setContentView(binding.getRoot());
+-        tokenManager = new TokenManager(this);
+-
+-        setTitle("Review Verifications");
+-        binding.rvVerifications.setLayoutManager(new LinearLayoutManager(this));
+-        loadPendingVerifications();
+-    }
+-
+-    private void loadPendingVerifications() {
+-        binding.progressBar.setVisibility(View.VISIBLE);
+-        RetrofitClient.get().getPendingVerifications(tokenManager.getBearerToken())
+-                .enqueue(new Callback<List<Verification>>() {
+-                    @Override
+-                    public void onResponse(Call<List<Verification>> call, Response<List<Verification>> response) {
+-                        binding.progressBar.setVisibility(View.GONE);
+-                        if (response.isSuccessful() && response.body() != null) {
+-                            binding.rvVerifications.setAdapter(new VerificationAdapter(response.body(), ReviewVerificationsActivity.this::updateVerificationStatus));
+-                        } else {
+-                            Toast.makeText(ReviewVerificationsActivity.this, "Failed to load verifications", Toast.LENGTH_SHORT).show();
+-                        }
+-                    }
+-
+-                    @Override
+-                    public void onFailure(Call<List<Verification>> call, Throwable t) {
+-                        binding.progressBar.setVisibility(View.GONE);
+-                        Toast.makeText(ReviewVerificationsActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+-                    }
+-                });
+-    }
+-
+-    private void updateVerificationStatus(String verificationId, String status, String comments) {
+-        RetrofitClient.get().updateEmployerVerificationStatus(tokenManager.getBearerToken(), verificationId, status, comments)
+-                .enqueue(new Callback<Void>() {
+-                    @Override
+-                    public void onResponse(Call<Void> call, Response<Void> response) {
+-                        if (response.isSuccessful()) {
+-                            Toast.makeText(ReviewVerificationsActivity.this, "Verification status updated", Toast.LENGTH_SHORT).show();
+-                            loadPendingVerifications(); // Refresh the list
+-                        } else {
+-                            Toast.makeText(ReviewVerificationsActivity.this, "Failed to update status", Toast.LENGTH_SHORT).show();
+-                        }
+-                    }
+-
+-                    @Override
+-                    public void onFailure(Call<Void> call, Throwable t) {
+-                        Toast.makeText(ReviewVerificationsActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+-                    }
+-                });
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/SearchCandidateAdapter.java b/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/SearchCandidateAdapter.java
+deleted file mode 100644
+index 83d0fe6..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/SearchCandidateAdapter.java
++++ /dev/null
+@@ -1,73 +0,0 @@
+-package com.workforcex.employer.ui.employer;
+-
+-import android.view.LayoutInflater;
+-import android.view.View;
+-import android.view.ViewGroup;
+-import android.widget.TextView;
+-import androidx.annotation.NonNull;
+-import androidx.recyclerview.widget.RecyclerView;
+-import com.workforcex.employer.R;
+-import com.workforcex.employer.api.CandidateSearchResult;
+-import java.util.List;
+-
+-public class SearchCandidateAdapter extends RecyclerView.Adapter<SearchCandidateAdapter.ViewHolder> {
+-
+-    private List<CandidateSearchResult> candidates;
+-
+-    public SearchCandidateAdapter(List<CandidateSearchResult> candidates) {
+-        this.candidates = candidates;
+-    }
+-
+-    public void update(List<CandidateSearchResult> newList) {
+-        this.candidates = newList;
+-        notifyDataSetChanged();
+-    }
+-
+-    @NonNull
+-    @Override
+-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+-        View v = LayoutInflater.from(parent.getContext())
+-                .inflate(R.layout.item_search_candidate, parent, false);
+-        return new ViewHolder(v);
+-    }
+-
+-    @Override
+-    public void onBindViewHolder(@NonNull ViewHolder h, int position) {
+-        CandidateSearchResult c = candidates.get(position);
+-
+-        h.tvName.setText((position + 1) + ". " + (c.name != null ? c.name : c.mobileNumber));
+-        h.tvTotalScore.setText(String.format("%.0f%%", c.totalScore));
+-        h.tvSkills.setText("Skills: " + (c.skills != null ? c.skills : "—"));
+-
+-        String details = "";
+-        if (c.experience != null) details += c.experience + " yrs exp";
+-        if (c.city != null)       details += (details.isEmpty() ? "" : " · ") + c.city;
+-        if (c.preferredSalary != null) details += "  ₹" + c.preferredSalary.intValue();
+-        h.tvDetails.setText(details);
+-
+-        h.tvSkillScore.setText(String.format("%.0f%%", c.skillScore));
+-        h.tvExpScore.setText(String.format("%.0f%%", c.experienceScore));
+-        h.tvLocScore.setText(String.format("%.0f%%", c.locationScore));
+-        h.tvSalScore.setText(String.format("%.0f%%", c.salaryScore));
+-    }
+-
+-    @Override
+-    public int getItemCount() { return candidates.size(); }
+-
+-    static class ViewHolder extends RecyclerView.ViewHolder {
+-        TextView tvName, tvTotalScore, tvSkills, tvDetails;
+-        TextView tvSkillScore, tvExpScore, tvLocScore, tvSalScore;
+-
+-        ViewHolder(View v) {
+-            super(v);
+-            tvName       = v.findViewById(R.id.tvName);
+-            tvTotalScore = v.findViewById(R.id.tvTotalScore);
+-            tvSkills     = v.findViewById(R.id.tvSkills);
+-            tvDetails    = v.findViewById(R.id.tvDetails);
+-            tvSkillScore = v.findViewById(R.id.tvSkillScore);
+-            tvExpScore   = v.findViewById(R.id.tvExpScore);
+-            tvLocScore   = v.findViewById(R.id.tvLocScore);
+-            tvSalScore   = v.findViewById(R.id.tvSalScore);
+-        }
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/SearchCandidatesActivity.java b/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/SearchCandidatesActivity.java
+deleted file mode 100644
+index ef1be77..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/SearchCandidatesActivity.java
++++ /dev/null
+@@ -1,94 +0,0 @@
+-package com.workforcex.employer.ui.employer;
+-
+-import android.os.Bundle;
+-import android.view.View;
+-import android.widget.Toast;
+-import androidx.appcompat.app.AppCompatActivity;
+-import androidx.recyclerview.widget.LinearLayoutManager;
+-import com.workforcex.employer.api.CandidateSearchRequest;
+-import com.workforcex.employer.api.CandidateSearchResult;
+-import com.workforcex.employer.api.RetrofitClient;
+-import com.workforcex.employer.databinding.ActivitySearchCandidatesBinding;
+-import com.workforcex.employer.utils.TokenManager;
+-import java.util.ArrayList;
+-import java.util.List;
+-import retrofit2.Call;
+-import retrofit2.Callback;
+-import retrofit2.Response;
+-
+-public class SearchCandidatesActivity extends AppCompatActivity {
+-
+-    private ActivitySearchCandidatesBinding binding;
+-    private TokenManager tokenManager;
+-    private SearchCandidateAdapter adapter;
+-
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        binding = ActivitySearchCandidatesBinding.inflate(getLayoutInflater());
+-        setContentView(binding.getRoot());
+-        setTitle("Search Candidates");
+-
+-        tokenManager = new TokenManager(this);
+-        adapter = new SearchCandidateAdapter(new ArrayList<>());
+-        binding.rvCandidates.setLayoutManager(new LinearLayoutManager(this));
+-        binding.rvCandidates.setAdapter(adapter);
+-
+-        binding.btnSearch.setOnClickListener(v -> performSearch());
+-        performSearch();
+-    }
+-
+-    private void performSearch() {
+-        CandidateSearchRequest request = new CandidateSearchRequest();
+-        request.skills = text(binding.etSkills).isEmpty() ? null : text(binding.etSkills);
+-        request.city = text(binding.etCity).isEmpty() ? null : text(binding.etCity);
+-        request.experienceMin = intVal(binding.etExpMin);
+-        request.experienceMax = intVal(binding.etExpMax);
+-        request.salaryMin = doubleVal(binding.etSalaryMin);
+-        request.salaryMax = doubleVal(binding.etSalaryMax);
+-
+-        setLoading(true);
+-
+-        RetrofitClient.get().searchCandidates(tokenManager.getBearerToken(), request)
+-            .enqueue(new Callback<List<CandidateSearchResult>>() {
+-                @Override
+-                public void onResponse(Call<List<CandidateSearchResult>> call, Response<List<CandidateSearchResult>> response) {
+-                    setLoading(false);
+-                    if (response.isSuccessful() && response.body() != null) {
+-                        List<CandidateSearchResult> results = response.body();
+-                        adapter.update(results);
+-                        binding.tvResultCount.setVisibility(View.VISIBLE);
+-                        binding.tvResultCount.setText(results.size() + " candidate(s) found");
+-                        binding.tvEmpty.setVisibility(results.isEmpty() ? View.VISIBLE : View.GONE);
+-                    } else {
+-                        Toast.makeText(SearchCandidatesActivity.this, "Search failed", Toast.LENGTH_SHORT).show();
+-                    }
+-                }
+-
+-                @Override
+-                public void onFailure(Call<List<CandidateSearchResult>> call, Throwable t) {
+-                    setLoading(false);
+-                    Toast.makeText(SearchCandidatesActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+-                }
+-            });
+-    }
+-
+-    private String text(com.google.android.material.textfield.TextInputEditText et) {
+-        return et.getText() != null ? et.getText().toString().trim() : "";
+-    }
+-
+-    private Integer intVal(com.google.android.material.textfield.TextInputEditText et) {
+-        String s = text(et);
+-        return s.isEmpty() ? null : Integer.parseInt(s);
+-    }
+-
+-    private Double doubleVal(com.google.android.material.textfield.TextInputEditText et) {
+-        String s = text(et);
+-        return s.isEmpty() ? null : Double.parseDouble(s);
+-    }
+-
+-    private void setLoading(boolean loading) {
+-        binding.progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+-        binding.btnSearch.setEnabled(!loading);
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/VerificationAdapter.java b/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/VerificationAdapter.java
+deleted file mode 100644
+index 1374b1b..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/VerificationAdapter.java
++++ /dev/null
+@@ -1,62 +0,0 @@
+-package com.workforcex.employer.ui.employer;
+-
+-import android.view.LayoutInflater;
+-import android.view.View;
+-import android.view.ViewGroup;
+-import android.widget.Button;
+-import android.widget.TextView;
+-import androidx.annotation.NonNull;
+-import androidx.recyclerview.widget.RecyclerView;
+-import com.workforcex.employer.R;
+-import com.workforcex.employer.api.Verification;
+-import java.util.List;
+-
+-public class VerificationAdapter extends RecyclerView.Adapter<VerificationAdapter.VH> {
+-
+-    private final List<Verification> items;
+-    private final OnVerificationAction onAction;
+-
+-    public interface OnVerificationAction {
+-        void onUpdate(String verificationId, String status, String comments);
+-    }
+-
+-    public VerificationAdapter(List<Verification> items, OnVerificationAction onAction) {
+-        this.items = items;
+-        this.onAction = onAction;
+-    }
+-
+-    @NonNull
+-    @Override
+-    public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_verification, parent, false);
+-        return new VH(v);
+-    }
+-
+-    @Override
+-    public void onBindViewHolder(@NonNull VH h, int pos) {
+-        Verification item = items.get(pos);
+-        h.tvWorkerName.setText("Worker: " + item.user.mobileNumber);
+-        h.tvVerificationType.setText("Type: " + item.verificationType);
+-
+-        h.btnApprove.setOnClickListener(v -> onAction.onUpdate(item.id, "VERIFIED", ""));
+-        h.btnReject.setOnClickListener(v -> onAction.onUpdate(item.id, "REJECTED", ""));
+-    }
+-
+-    @Override
+-    public int getItemCount() {
+-        return items.size();
+-    }
+-
+-    static class VH extends RecyclerView.ViewHolder {
+-        TextView tvWorkerName, tvVerificationType;
+-        Button btnApprove, btnReject;
+-
+-        VH(View v) {
+-            super(v);
+-            tvWorkerName = v.findViewById(R.id.tvWorkerName);
+-            tvVerificationType = v.findViewById(R.id.tvVerificationType);
+-            btnApprove = v.findViewById(R.id.btnApprove);
+-            btnReject = v.findViewById(R.id.btnReject);
+-        }
+-    }
+-}
+diff --git a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/VerifyWorkerActivity.java b/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/VerifyWorkerActivity.java
+deleted file mode 100644
+index 49d8fb4..0000000
+--- a/android/employer/app/src/main/java/com/workforcex/employer/ui/employer/VerifyWorkerActivity.java
++++ /dev/null
+@@ -1,80 +0,0 @@
+-package com.workforcex.employer.ui.employer;
+-
+-import android.os.Bundle;
+-import android.view.View;
+-import android.widget.Toast;
+-import androidx.appcompat.app.AppCompatActivity;
+-import androidx.recyclerview.widget.LinearLayoutManager;
+-import com.workforcex.employer.api.RetrofitClient;
+-import com.workforcex.employer.api.Verification;
+-import com.workforcex.employer.databinding.ActivityVerifyWorkerBinding;
+-import com.workforcex.employer.utils.TokenManager;
+-import java.util.List;
+-import retrofit2.Call;
+-import retrofit2.Callback;
+-import retrofit2.Response;
+-
+-public class VerifyWorkerActivity extends AppCompatActivity {
+-
+-    private ActivityVerifyWorkerBinding binding;
+-    private TokenManager tokenManager;
+-    private String workerId;
+-
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        binding = ActivityVerifyWorkerBinding.inflate(getLayoutInflater());
+-        setContentView(binding.getRoot());
+-        tokenManager = new TokenManager(this);
+-
+-        workerId = getIntent().getStringExtra("workerId");
+-        String workerName = getIntent().getStringExtra("workerName");
+-        setTitle("Verify " + workerName);
+-
+-        binding.rvDocuments.setLayoutManager(new LinearLayoutManager(this));
+-        loadWorkerDocuments();
+-    }
+-
+-    private void loadWorkerDocuments() {
+-        binding.progressBar.setVisibility(View.VISIBLE);
+-        // This endpoint doesn't exist yet, so we'll need to add it
+-        RetrofitClient.get().getWorkerDocuments(tokenManager.getBearerToken(), workerId)
+-                .enqueue(new Callback<List<Verification>>() {
+-                    @Override
+-                    public void onResponse(Call<List<Verification>> call, Response<List<Verification>> response) {
+-                        binding.progressBar.setVisibility(View.GONE);
+-                        if (response.isSuccessful() && response.body() != null) {
+-                            binding.rvDocuments.setAdapter(new DocumentAdapter(response.body(), VerifyWorkerActivity.this::updateVerificationStatus));
+-                        } else {
+-                            Toast.makeText(VerifyWorkerActivity.this, "Failed to load documents", Toast.LENGTH_SHORT).show();
+-                        }
+-                    }
+-
+-                    @Override
+-                    public void onFailure(Call<List<Verification>> call, Throwable t) {
+-                        binding.progressBar.setVisibility(View.GONE);
+-                        Toast.makeText(VerifyWorkerActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+-                    }
+-                });
+-    }
+-
+-    private void updateVerificationStatus(String verificationId, String status, String comments) {
+-        RetrofitClient.get().updateEmployerVerificationStatus(tokenManager.getBearerToken(), verificationId, status, comments)
+-                .enqueue(new Callback<Void>() {
+-                    @Override
+-                    public void onResponse(Call<Void> call, Response<Void> response) {
+-                        if (response.isSuccessful()) {
+-                            Toast.makeText(VerifyWorkerActivity.this, "Verification status updated", Toast.LENGTH_SHORT).show();
+-                            loadWorkerDocuments(); // Refresh the list
+-                        } else {
+-                            Toast.makeText(VerifyWorkerActivity.this, "Failed to update status", Toast.LENGTH_SHORT).show();
+-                        }
+-                    }
+-
+-                    @Override
+-                    public void onFailure(Call<Void> call, Throwable t) {
+-                        Toast.makeText(VerifyWorkerActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+-                    }
+-                });
+-    }
+-}
