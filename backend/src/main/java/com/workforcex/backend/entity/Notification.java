@@ -35,4 +35,5 @@ public class Notification {
     // For deep linking
     private String linkType; // e.g., "JOB_APPLICATION", "JOB_DETAILS"
     private UUID linkId;
+    private String jobTitle;
 }

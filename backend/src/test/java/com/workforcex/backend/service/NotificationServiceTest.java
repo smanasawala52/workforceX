@@ -37,8 +37,9 @@ class NotificationServiceTest {
         String message = "Test message with link";
         String linkType = "TEST_LINK";
         UUID linkId = UUID.randomUUID();
+        String jobTitle = "Test Job";
 
-        notificationService.createNotification(user, message, linkType, linkId);
+        notificationService.createNotification(user, message, linkType, linkId, jobTitle);
 
         verify(notificationRepository).save(any(Notification.class));
     }

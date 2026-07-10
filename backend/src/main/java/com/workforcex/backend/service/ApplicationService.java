@@ -46,7 +46,8 @@ public class ApplicationService {
                 employer,
             "A new candidate has applied for your job: " + job.getTitle(),
             "JOB_APPLICANTS",
-            job.getId()
+            job.getId(),
+            job.getTitle()
         );
         return buildResponse(savedApplication);
     }
@@ -77,7 +78,7 @@ public class ApplicationService {
         String companyName = employerProfileRepository.findByUserId(employer.getId())
                 .map(EmployerProfile::getCompanyName).orElse("a company");
         String message = String.format("You have received a job offer for '%s' from %s!", job.getTitle(), companyName);
-        notificationService.createNotification(worker, message, "MY_APPLICATIONS", savedApplication.getId());
+        notificationService.createNotification(worker, message, "MY_APPLICATIONS", savedApplication.getId(), job.getTitle());
 
         return buildResponse(savedApplication);
     }
@@ -131,7 +132,7 @@ public class ApplicationService {
                 .map(EmployerProfile::getCompanyName).orElse("a company");
         String message = String.format("Your application for '%s' at %s has been updated to: %s",
                 savedApplication.getJob().getTitle(), companyName, newStatus.toString());
-        notificationService.createNotification(savedApplication.getWorker(), message, "MY_APPLICATIONS", savedApplication.getId());
+        notificationService.createNotification(savedApplication.getWorker(), message, "MY_APPLICATIONS", savedApplication.getId(), savedApplication.getJob().getTitle());
 
         return buildResponse(savedApplication);
     }

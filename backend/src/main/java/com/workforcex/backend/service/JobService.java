@@ -19,7 +19,7 @@ public class JobService {
     private final JobRepository jobRepository;
     private final UserRepository userRepository;
     private final SkillRepository skillRepository;
-    private EmployerProfileRepository employerProfileRepository;
+    private final EmployerProfileRepository employerProfileRepository;
 
     public Job createJob(String employerMobileNumber, JobRequest request) {
         User employer = userRepository.findByMobileNumber(employerMobileNumber)

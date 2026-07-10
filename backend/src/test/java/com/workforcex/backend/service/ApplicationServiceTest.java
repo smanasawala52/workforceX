@@ -80,7 +80,8 @@ class ApplicationServiceTest {
             eq(employer),
             eq("A new candidate has applied for your job: Test Job"),
             eq("JOB_APPLICANTS"),
-            eq(job.getId())
+            eq(job.getId()),
+            eq(job.getTitle())
         );
     }
 
@@ -101,7 +102,8 @@ class ApplicationServiceTest {
             eq(worker),
             anyString(),
             eq("MY_APPLICATIONS"),
-            eq(application.getId()) // Verify with the correct, non-null ID
+            eq(application.getId()),
+            eq(job.getTitle())
         );
     }
 
@@ -120,7 +122,8 @@ class ApplicationServiceTest {
             eq(worker),
             anyString(),
             eq("MY_APPLICATIONS"),
-            eq(application.getId())
+            eq(application.getId()),
+            eq(job.getTitle())
         );
     }
 
