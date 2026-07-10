@@ -34,11 +34,5 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host ""
 Write-Host "Setting production environment..." -ForegroundColor Cyan
 
-$env:SPRING_DATASOURCE_URL = "jdbc:postgresql://db.hzpfusegsixiyrcxllvl.supabase.co:5432/postgres"
-$env:SPRING_DATASOURCE_USERNAME = "postgres"
-$env:SPRING_DATASOURCE_PASSWORD = "sMPQW@23091988"
-$env:APP_JWT_SECRET = "workforcex-prod-test-production-use-1234567890"
-$env:SPRING_PROFILES_ACTIVE = "prod"
-
 Write-Host "Starting Spring Boot..." -ForegroundColor Green
 mvn spring-boot:run
