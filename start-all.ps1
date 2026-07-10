@@ -23,14 +23,14 @@ $root = $PSScriptRoot
 # ── Backend ───────────────────────────────────────────────────────────────────
 Write-Host "Starting backend in a new window..." -ForegroundColor Cyan
 Start-Process powershell -ArgumentList "-NoExit", "-Command", `
-    "cd '$root\backend'; Write-Host 'Starting Spring Boot backend...' -ForegroundColor Cyan; mvn spring-boot:run"
+    "cd '$root\backend'; .\run-backend.ps1"
 
 Write-Host "Waiting 60s for backend to start before launching apps..." -ForegroundColor Yellow
 Start-Sleep -Seconds 60
 
 # ── Worker App ────────────────────────────────────────────────────────────────
 Write-Host "Starting Worker app in a new window..." -ForegroundColor Cyan
-$workerArgs = "-NoExit -Command cd '$root\android\worker'; .\run-worker.ps1"
+$workerArgs = "-NoExit -Command cd '$root\android\worker'; .\run-worker-kmp.ps1"
 if ($AvdName -ne "") { $workerArgs += " -AvdName '$AvdName'" }
 if ($SdkPath -ne "") { $workerArgs += " -SdkPath '$SdkPath'" }
 Start-Process powershell -ArgumentList $workerArgs

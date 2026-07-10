@@ -31,6 +31,8 @@
         <activity android:name=".ui.employer.SearchCandidatesActivity" android:exported="false"/>
         <activity android:name=".ui.employer.JobApplicantsActivity" android:exported="false"/>
         <activity android:name=".ui.employer.NotificationsActivity" android:exported="false"/>
+        <activity android:name=".ui.employer.ReviewVerificationsActivity" android:exported="false"/>
+        <activity android:name=".ui.employer.VerifyWorkerActivity" android:exported="false"/>
 
     </application>
 
