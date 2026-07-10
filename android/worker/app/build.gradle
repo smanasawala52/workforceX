@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -14,14 +15,23 @@ android {
         versionName "1.0"
     }
 
+    signingConfigs {
+        release {
+            storeFile file('workforcex-release-key.jks') // Path to your .jks file
+            storePassword 'changeit'
+            keyAlias 'workforcex_alias'
+            keyPassword 'changeit'
+        }
+    }
     buildTypes {
         debug {
-            // For dev: point at local backend. Change to Railway URL for device testing.
-            buildConfigField "String", "BASE_URL", '"http://10.0.2.2:8080/"'
+            buildConfigField "String", "BASE_URL", '"https://workforcex-jtz0.onrender.com"'
         }
         release {
+            buildConfigField "String", "BASE_URL", '"https://workforcex-jtz0.onrender.com"'
+            signingConfig signingConfigs.release // Link the config here
             minifyEnabled false
-            buildConfigField "String", "BASE_URL", '"https://YOUR_RAILWAY_URL/"'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -34,9 +44,15 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
+    implementation project(':shared')
+
     // UI
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
@@ -46,13 +62,6 @@ dependencies {
     // Lifecycle (ViewModel + LiveData)
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.7.0'
     implementation 'androidx.lifecycle:lifecycle-livedata:2.7.0'
-
-    // Retrofit: HTTP client for calling the backend API
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-
-    // OkHttp logging interceptor: shows every API call in Logcat
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
 
     // Testing
     implementation 'androidx.cardview:cardview:1.0.0'
