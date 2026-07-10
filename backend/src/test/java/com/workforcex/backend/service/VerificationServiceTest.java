@@ -2,11 +2,13 @@ package com.workforcex.backend.service;
 
 import com.workforcex.backend.entity.Document;
 import com.workforcex.backend.entity.DocumentType;
+import com.workforcex.backend.entity.EmployerVerification;
 import com.workforcex.backend.entity.User;
 import com.workforcex.backend.entity.Verification;
 import com.workforcex.backend.entity.VerificationStatus;
 import com.workforcex.backend.entity.VerificationType;
 import com.workforcex.backend.repository.DocumentRepository;
+import com.workforcex.backend.repository.EmployerVerificationRepository;
 import com.workforcex.backend.repository.UserRepository;
 import com.workforcex.backend.repository.VerificationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,16 +35,22 @@ class VerificationServiceTest {
     @Mock private UserRepository userRepository;
     @Mock private DocumentRepository documentRepository;
     @Mock private VerificationRepository verificationRepository;
+    @Mock private EmployerVerificationRepository employerVerificationRepository;
 
     @InjectMocks private VerificationService verificationService;
 
     private User user;
+    private User employer;
 
     @BeforeEach
     void setUp() {
         user = new User();
         user.setId(UUID.randomUUID());
         user.setMobileNumber("1234567890");
+
+        employer = new User();
+        employer.setId(UUID.randomUUID());
+        employer.setMobileNumber("9876543210");
     }
 
     @Test
@@ -79,16 +87,21 @@ class VerificationServiceTest {
     }
 
     @Test
-    void updateVerificationStatus_shouldUpdateStatusAndComments() {
+    void updateEmployerVerificationStatus_shouldSaveNewEmployerVerification() {
         Verification verification = new Verification();
         verification.setId(UUID.randomUUID());
+
+        when(userRepository.findByMobileNumber(employer.getMobileNumber())).thenReturn(Optional.of(employer));
         when(verificationRepository.findById(verification.getId())).thenReturn(Optional.of(verification));
-        when(verificationRepository.save(any(Verification.class))).thenAnswer(i -> i.getArguments()[0]);
+        when(employerVerificationRepository.save(any(EmployerVerification.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        Verification updatedVerification = verificationService.updateVerificationStatus(verification.getId(), VerificationStatus.VERIFIED, "Looks good.");
+        EmployerVerification result = verificationService.updateEmployerVerificationStatus(
+                employer.getMobileNumber(), verification.getId(), VerificationStatus.VERIFIED, "Looks good.");
 
-        verify(verificationRepository).save(verification);
-        assertThat(updatedVerification.getStatus()).isEqualTo(VerificationStatus.VERIFIED);
-        assertThat(updatedVerification.getReviewerComments()).isEqualTo("Looks good.");
+        verify(employerVerificationRepository).save(any(EmployerVerification.class));
+        assertThat(result.getEmployer()).isEqualTo(employer);
+        assertThat(result.getVerification()).isEqualTo(verification);
+        assertThat(result.getStatus()).isEqualTo(VerificationStatus.VERIFIED);
+        assertThat(result.getReviewerComments()).isEqualTo("Looks good.");
     }
 }

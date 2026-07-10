@@ -2,11 +2,13 @@ package com.workforcex.backend.service;
 
 import com.workforcex.backend.entity.Document;
 import com.workforcex.backend.entity.DocumentType;
+import com.workforcex.backend.entity.EmployerVerification;
 import com.workforcex.backend.entity.User;
 import com.workforcex.backend.entity.Verification;
 import com.workforcex.backend.entity.VerificationStatus;
 import com.workforcex.backend.entity.VerificationType;
 import com.workforcex.backend.repository.DocumentRepository;
+import com.workforcex.backend.repository.EmployerVerificationRepository;
 import com.workforcex.backend.repository.UserRepository;
 import com.workforcex.backend.repository.VerificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class VerificationService {
     private final UserRepository userRepository;
     private final DocumentRepository documentRepository;
     private final VerificationRepository verificationRepository;
+    private final EmployerVerificationRepository employerVerificationRepository;
     // In a real app, this would be a service that uploads to S3, Google Cloud Storage, etc.
     // private final FileStorageService fileStorageService;
 
@@ -79,13 +82,26 @@ public class VerificationService {
         }
     }
 
-    // This would be an admin-only endpoint
-    public Verification updateVerificationStatus(UUID verificationId, VerificationStatus newStatus, String comments) {
+    public List<Verification> getPendingVerifications() {
+        return verificationRepository.findByStatus(VerificationStatus.SUBMITTED);
+    }
+
+    public List<Verification> getVerificationsForWorker(UUID workerId) {
+        return verificationRepository.findByUserId(workerId);
+    }
+
+    public EmployerVerification updateEmployerVerificationStatus(String employerMobile, UUID verificationId, VerificationStatus newStatus, String comments) {
+        User employer = userRepository.findByMobileNumber(employerMobile)
+                .orElseThrow(() -> new IllegalArgumentException("Employer not found"));
+
         Verification verification = verificationRepository.findById(verificationId)
                 .orElseThrow(() -> new IllegalArgumentException("Verification record not found"));
 
-        verification.setStatus(newStatus);
-        verification.setReviewerComments(comments);
-        return verificationRepository.save(verification);
+        EmployerVerification employerVerification = new EmployerVerification();
+        employerVerification.setEmployer(employer);
+        employerVerification.setVerification(verification);
+        employerVerification.setStatus(newStatus);
+        employerVerification.setReviewerComments(comments);
+        return employerVerificationRepository.save(employerVerification);
     }
 }

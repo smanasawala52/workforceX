@@ -21,17 +21,34 @@
                 android:layout_height="wrap_content"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Skills Required (up to 5)"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp"/>
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Skills Required (comma separated, e.g. security,driving)"
+            android:hint="Type to search skills..."
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_marginBottom="12dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etSkills"
+            android:layout_marginBottom="8dp">
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/acSkills"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:completionThreshold="1"
+                android:imeOptions="actionDone"
+                android:inputType="text"/>
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupSkills"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"

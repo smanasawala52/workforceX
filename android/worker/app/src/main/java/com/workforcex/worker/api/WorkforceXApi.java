@@ -53,4 +53,8 @@ public interface WorkforceXApi {
             @Header("Authorization") String token,
             @Part("type") RequestBody type,
             @Part MultipartBody.Part file);
+
+    // Skills
+    @GET("api/skills")
+    Call<List<Skill>> getSkills();
 }

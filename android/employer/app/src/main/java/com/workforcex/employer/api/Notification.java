@@ -20,4 +20,7 @@ public class Notification {
 
     @SerializedName("linkId")
     public String linkId;
+
+    @SerializedName("jobTitle")
+    public String jobTitle;
 }

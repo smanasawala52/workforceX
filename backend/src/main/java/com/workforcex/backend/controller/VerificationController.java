@@ -2,6 +2,7 @@ package com.workforcex.backend.controller;
 
 import com.workforcex.backend.entity.Document;
 import com.workforcex.backend.entity.DocumentType;
+import com.workforcex.backend.entity.EmployerVerification;
 import com.workforcex.backend.entity.Verification;
 import com.workforcex.backend.entity.VerificationStatus;
 import com.workforcex.backend.service.VerificationService;
@@ -45,15 +46,34 @@ public class VerificationController {
     }
 
     /**
+     * Employer: Get all pending verifications.
+     */
+    @GetMapping("/pending")
+    @PreAuthorize("hasRole('EMPLOYER')")
+    public ResponseEntity<List<Verification>> getPendingVerifications() {
+        return ResponseEntity.ok(verificationService.getPendingVerifications());
+    }
+
+    /**
+     * Employer: Get all documents for a specific worker.
+     */
+    @GetMapping("/worker/{workerId}")
+    @PreAuthorize("hasRole('EMPLOYER')")
+    public ResponseEntity<List<Verification>> getWorkerDocuments(@PathVariable UUID workerId) {
+        return ResponseEntity.ok(verificationService.getVerificationsForWorker(workerId));
+    }
+
+    /**
      * Admin/Employer: Update the status of a verification record.
      */
     @PutMapping("/{verificationId}/status")
-    // @PreAuthorize is removed; security is now handled centrally in SecurityConfig
-    public ResponseEntity<Verification> updateVerificationStatus(
+    @PreAuthorize("hasRole('EMPLOYER')")
+    public ResponseEntity<EmployerVerification> updateVerificationStatus(
+            Authentication auth,
             @PathVariable UUID verificationId,
             @RequestParam("status") VerificationStatus newStatus,
             @RequestBody(required = false) String comments
     ) {
-        return ResponseEntity.ok(verificationService.updateVerificationStatus(verificationId, newStatus, comments));
+        return ResponseEntity.ok(verificationService.updateEmployerVerificationStatus(auth.getName(), verificationId, newStatus, comments));
     }
 }

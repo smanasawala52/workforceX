@@ -26,6 +26,7 @@ abstract class AbstractIntegrationTest {
     @Autowired protected JobApplicationRepository applicationRepository;
     @Autowired protected NotificationRepository notificationRepository;
     @Autowired protected DocumentRepository documentRepository;
+    @Autowired protected EmployerVerificationRepository employerVerificationRepository;
     @Autowired protected VerificationRepository verificationRepository;
     @Autowired protected SkillRepository skillRepository;
 
@@ -34,6 +35,7 @@ abstract class AbstractIntegrationTest {
         applicationRepository.deleteAll();
         notificationRepository.deleteAll();
         documentRepository.deleteAll();
+        employerVerificationRepository.deleteAll();
         verificationRepository.deleteAll();
         jobRepository.deleteAll();
         workerProfileRepository.deleteAll();

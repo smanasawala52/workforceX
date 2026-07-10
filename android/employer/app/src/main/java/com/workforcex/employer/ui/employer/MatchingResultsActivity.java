@@ -131,14 +131,14 @@ public class MatchingResultsActivity extends AppCompatActivity {
             h.tvSalary.setText("Prefers: ₹" + item.preferredSalary.intValue());
             h.tvMobile.setText("📞 " + item.mobileNumber);
 
-            boolean hasBeenContacted = item.applicationStatus != null;
-            if (hasBeenContacted) {
-                h.btnOfferJob.setEnabled(false);
-                h.btnOfferJob.setText(item.applicationStatus);
-            } else {
-                h.btnOfferJob.setEnabled(true);
-                h.btnOfferJob.setText("Offer Job");
-            }
+            // boolean hasBeenContacted = item.applicationStatus != null;
+            // if (hasBeenContacted) {
+            //     h.btnOfferJob.setEnabled(false);
+            //     h.btnOfferJob.setText(item.applicationStatus);
+            // } else {
+            //     h.btnOfferJob.setEnabled(true);
+            //     h.btnOfferJob.setText("Offer Job");
+            // }
             h.btnOfferJob.setOnClickListener(v -> onOfferClick.onOffer(item, h.btnOfferJob));
 
             h.btnCall.setOnClickListener(v -> {

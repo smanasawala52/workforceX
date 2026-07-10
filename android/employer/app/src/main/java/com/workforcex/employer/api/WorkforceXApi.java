@@ -67,4 +67,22 @@ public interface WorkforceXApi {
 
     @PUT("api/notifications/{notificationId}/read")
     Call<Void> markAsRead(@Header("Authorization") String token, @Path("notificationId") String notificationId);
+
+    // Verification
+    @GET("api/verification/pending")
+    Call<List<Verification>> getPendingVerifications(@Header("Authorization") String token);
+
+    @GET("api/verification/worker/{workerId}")
+    Call<List<Verification>> getWorkerDocuments(@Header("Authorization") String token, @Path("workerId") String workerId);
+
+    @PUT("api/verification/{verificationId}/status")
+    Call<Void> updateEmployerVerificationStatus(
+            @Header("Authorization") String token,
+            @Path("verificationId") String verificationId,
+            @Query("status") String status,
+            @Body String comments);
+
+    // Skills
+    @GET("api/skills")
+    Call<List<Skill>> getSkills();
 }

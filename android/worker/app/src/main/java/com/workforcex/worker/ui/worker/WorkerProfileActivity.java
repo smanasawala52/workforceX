@@ -9,12 +9,16 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.chip.Chip;
 import com.workforcex.worker.api.RetrofitClient;
+import com.workforcex.worker.api.Skill;
 import com.workforcex.worker.api.WorkerProfileRequest;
 import com.workforcex.worker.api.WorkerProfileResponse;
 import com.workforcex.worker.databinding.ActivityWorkerProfileBinding;
 import com.workforcex.worker.utils.TokenManager;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -24,22 +28,8 @@ public class WorkerProfileActivity extends AppCompatActivity {
     private ActivityWorkerProfileBinding binding;
     private TokenManager tokenManager;
 
-    private static final String[] ALL_SKILLS = {
-        "security", "patrolling", "surveillance", "cctv", "access-control",
-        "driving", "car", "truck", "bus", "bike", "hcv", "lmv", "delivery",
-        "housekeeping", "cleaning", "mopping", "sweeping", "laundry",
-        "cooking", "kitchen", "chef", "south-indian", "north-indian",
-        "electrical", "wiring", "electrician", "plumbing", "plumber",
-        "carpentry", "woodwork", "furniture", "painting", "masonry", "construction",
-        "welding", "fabrication", "ac-repair", "hvac", "refrigeration",
-        "lift", "elevator", "generator", "facility-management", "maintenance",
-        "warehouse", "logistics", "inventory", "data-entry", "computer",
-        "typing", "ms-office", "reception", "communication", "english",
-        "patient-care", "hospital", "nursing", "gardening", "forklift",
-        "supervision", "leadership", "reporting", "watchman", "cleaner"
-    };
-
     private final Set<String> selectedSkills = new LinkedHashSet<>();
+    private List<String> allSkills = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +39,28 @@ public class WorkerProfileActivity extends AppCompatActivity {
         setTitle("My Profile");
         tokenManager = new TokenManager(this);
 
-        setupSkillsAutocomplete();
+        fetchSkillsAndSetupAutocomplete();
         loadExistingProfile();
         binding.btnSave.setOnClickListener(v -> saveProfile());
     }
 
+    private void fetchSkillsAndSetupAutocomplete() {
+        RetrofitClient.get().getSkills().enqueue(new Callback<List<Skill>>() {
+            @Override
+            public void onResponse(Call<List<Skill>> call, Response<List<Skill>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    allSkills = response.body().stream().map(s -> s.name).collect(Collectors.toList());
+                    setupSkillsAutocomplete();
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Skill>> call, Throwable t) {}
+        });
+    }
+
     private void setupSkillsAutocomplete() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_dropdown_item_1line, ALL_SKILLS);
+                this, android.R.layout.simple_dropdown_item_1line, allSkills);
         binding.acSkills.setAdapter(adapter);
 
         binding.acSkills.setOnItemClickListener((parent, view, position, id) -> {
@@ -79,6 +83,10 @@ public class WorkerProfileActivity extends AppCompatActivity {
     }
 
     private void addSkillChip(String skill) {
+        if (selectedSkills.size() >= 5) {
+            Toast.makeText(this, "You can add a maximum of 5 skills", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String clean = skill.trim().toLowerCase();
         if (clean.isEmpty() || selectedSkills.contains(clean)) return;
 

@@ -61,7 +61,7 @@ public class NotificationsActivity extends AppCompatActivity {
             Intent intent = new Intent(this, JobApplicantsActivity.class);
             intent.putExtra("jobId", notification.linkId);
             // We don't have the job title here, so the title will be generic
-            intent.putExtra("jobTitle", "Applicants");
+            intent.putExtra("jobTitle", notification.jobTitle);
             startActivity(intent);
         }
     }
