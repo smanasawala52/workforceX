@@ -20,7 +20,8 @@ public record WorkerProfileResponse(
         String state,
         String skills,
         Integer experience,
-        Double preferredSalary
+        Double preferredSalary,
+        String description
 ) {
     public static WorkerProfileResponse fromEntity(WorkerProfile profile) {
         return new WorkerProfileResponse(
@@ -40,7 +41,8 @@ public record WorkerProfileResponse(
                         profile.getSkill4(),
                         profile.getSkill5()),
                 profile.getExperience(),
-                profile.getPreferredSalary()
+                profile.getPreferredSalary(),
+                profile.getDescription()
         );
     }
     public static String getMergedSkills(String skill1, String skill2, String skill3, String skill4, String skill5) {

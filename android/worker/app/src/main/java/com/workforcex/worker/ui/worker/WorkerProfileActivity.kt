@@ -125,6 +125,7 @@ class WorkerProfileActivity : AppCompatActivity() {
                         if (p.preferredSalary != null) binding.etSalary.setText(p.preferredSalary.toInt().toString())
                         if (p.availability != null) binding.etAvailability.setText(p.availability)
                         if (p.languages != null) binding.etLanguages.setText(p.languages)
+                        if (p.description != null) binding.etDescription.setText(p.description)
                     }
                 }
 
@@ -142,7 +143,8 @@ class WorkerProfileActivity : AppCompatActivity() {
             experience = binding.etExperience.text.toString().trim().toIntOrNull() ?: 0,
             preferredSalary = binding.etSalary.text.toString().trim().toDoubleOrNull() ?: 0.0,
             availability = binding.etAvailability.text.toString().trim(),
-            languages = binding.etLanguages.text.toString().trim()
+            languages = binding.etLanguages.text.toString().trim(),
+            description = binding.etDescription.text.toString().trim()
         )
 
         setLoading(true)

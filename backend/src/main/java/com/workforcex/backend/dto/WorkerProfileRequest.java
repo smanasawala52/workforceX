@@ -16,6 +16,7 @@ public record WorkerProfileRequest(
         String state,
         String skills,
         Integer experience,
-        Double preferredSalary
+        Double preferredSalary,
+        String description
 ) {
 }

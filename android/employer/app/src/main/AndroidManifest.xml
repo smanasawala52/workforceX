@@ -5,7 +5,7 @@
 
     <application
         android:name=".MyApplication"
-        android.allowBackup="true"
+        android:allowBackup="true"
         android:label="WorkforceX - Hire"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"

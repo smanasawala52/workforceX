@@ -53,4 +53,7 @@ public class WorkerProfile {
 
     @Column(length = 2000)
     private String resumeExtractedSkills;
+
+    @Column(length = 3000)
+    private String description;
 }

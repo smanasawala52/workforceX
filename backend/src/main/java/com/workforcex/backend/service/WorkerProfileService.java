@@ -55,6 +55,7 @@ public class WorkerProfileService {
         seedSkills(allSkillsFromData);
         profile.setExperience(request.experience());
         profile.setPreferredSalary(request.preferredSalary());
+        profile.setDescription(request.description());
 
         return workerProfileRepository.save(profile);
     }
@@ -66,6 +67,12 @@ public class WorkerProfileService {
         return workerProfileRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Worker profile not found - complete your profile first"));
     }
+
+    public WorkerProfile getByUserId(UUID userId) {
+        return workerProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Worker profile not found"));
+    }
+
     private Set<String> splitToSet(String csv) {
         if (csv == null || csv.isBlank()) return null;
         return Arrays.stream(csv.toLowerCase().split(","))

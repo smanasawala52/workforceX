@@ -14,7 +14,7 @@ public interface WorkerProfileRepository extends JpaRepository<WorkerProfile, UU
 
     Optional<WorkerProfile> findByUserId(UUID userId);
 
-    @Query("SELECT w FROM WorkerProfile w WHERE (:city IS NULL OR LOWER(w.city) IN :city) " +
+    @Query("SELECT w FROM WorkerProfile w WHERE (:cities IS NULL OR LOWER(w.city) IN :cities) " +
             "AND (:minExperience IS NULL OR w.experience >= :minExperience) " +
             "AND (:maxExperience IS NULL OR w.experience <= :maxExperience) " +
             "AND (:minSalary IS NULL OR w.preferredSalary >= :minSalary) " +
@@ -22,7 +22,7 @@ public interface WorkerProfileRepository extends JpaRepository<WorkerProfile, UU
             "AND (:skills IS NULL OR LOWER(w.skill1) IN :skills OR LOWER(w.skill2) IN :skills " +
             "OR LOWER(w.skill3) IN :skills OR LOWER(w.skill4) IN :skills OR LOWER(w.skill5) IN :skills)")
     List<WorkerProfile> searchCandidates(
-            @Param("city") Set<String> city,
+            @Param("cities") Set<String> cities,
             @Param("minExperience") Integer minExperience,
             @Param("maxExperience") Integer maxExperience,
             @Param("minSalary") Double minSalary,

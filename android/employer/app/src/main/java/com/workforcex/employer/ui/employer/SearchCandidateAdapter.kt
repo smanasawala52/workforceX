@@ -1,5 +1,6 @@
 package com.workforcex.employer.ui.employer
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,6 +40,12 @@ class SearchCandidateAdapter(private var candidates: List<CandidateSearchResult>
         h.tvExpScore.text = String.format("%.0f%%", c.experienceScore)
         h.tvLocScore.text = String.format("%.0f%%", c.locationScore)
         h.tvSalScore.text = String.format("%.0f%%", c.salaryScore)
+
+        h.itemView.setOnClickListener {
+            val intent = Intent(h.itemView.context, CandidateProfileActivity::class.java)
+            intent.putExtra("workerId", c.workerId)
+            h.itemView.context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int = candidates.size

@@ -155,32 +155,6 @@ public class MatchingService {
                 )
                 .toList();
     }
-    private boolean passesHardFilters(WorkerProfile worker, CandidateSearchRequest req) {
-        if (req.skills() != null && !req.skills().isBlank()) {
-            Set<String> has = getMergedSkillsSet(worker.getSkill1(),
-                    worker.getSkill2(),
-                    worker.getSkill3(),
-                    worker.getSkill4(),
-                    worker.getSkill5());
-            if (has.isEmpty()) return false;
-            Set<String> required = splitToSet(req.skills());
-            boolean anyMatch = required.stream().anyMatch(has::contains);
-            if (!anyMatch) return false;
-        }
-        if (req.city() != null && !req.city().isBlank()) {
-            if (worker.getCity() == null) return false;
-            if (!worker.getCity().trim().equalsIgnoreCase(req.city().trim())) return false;
-        }
-        if (req.experienceMin() != null && worker.getExperience() != null
-                && worker.getExperience() < req.experienceMin()) return false;
-        if (req.experienceMax() != null && worker.getExperience() != null
-                && worker.getExperience() > req.experienceMax()) return false;
-        if (req.salaryMin() != null && worker.getPreferredSalary() != null
-                && worker.getPreferredSalary() < req.salaryMin()) return false;
-        if (req.salaryMax() != null && worker.getPreferredSalary() != null
-                && worker.getPreferredSalary() > req.salaryMax()) return false;
-        return true;
-    }
 
     private record Scores(double skill, double experience, double location, double salary) {
         double total() {

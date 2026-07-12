@@ -103,6 +103,7 @@ public class DataInitializer implements ApplicationRunner {
             profile.setExperience(Integer.parseInt(w[3]));
             profile.setCity(w[4]);
             profile.setPreferredSalary(Double.parseDouble(w[5]));
+            profile.setDescription("Experienced and reliable " + w[1] + " with " + w[3] + " years of experience in " + w[2] + ". Seeking a challenging role in a reputed organization.");
             workerProfileRepository.save(profile);
         }
         seedSkills(allSkillsFromData);

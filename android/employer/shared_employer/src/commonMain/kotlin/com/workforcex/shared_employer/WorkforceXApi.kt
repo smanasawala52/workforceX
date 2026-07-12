@@ -96,4 +96,7 @@ interface WorkforceXApi {
     // Skills
     @GET("api/skills")
     fun getSkills(): Call<List<Skill>>
+
+    @GET("api/worker/profile/{workerId}")
+    fun getWorkerProfile(@Header("Authorization") token: String, @Path("workerId") workerId: String): Call<WorkerProfileResponse>
 }

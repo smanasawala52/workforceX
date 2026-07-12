@@ -1,5 +1,6 @@
 package com.workforcex.employer.ui.employer
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -154,6 +155,11 @@ class JobApplicantsActivity : AppCompatActivity() {
             }
             h.btnHire.setOnClickListener {
                 onAction(item, "HIRED", h.adapterPosition)
+            }
+            h.itemView.setOnClickListener {
+                val intent = Intent(h.itemView.context, CandidateProfileActivity::class.java)
+                intent.putExtra("workerId", item.workerId)
+                h.itemView.context.startActivity(intent)
             }
         }
 

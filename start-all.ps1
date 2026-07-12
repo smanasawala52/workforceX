@@ -37,7 +37,7 @@ Start-Process powershell -ArgumentList $workerArgs
 
 # ── Employer App ──────────────────────────────────────────────────────────────
 Write-Host "Starting Employer app in a new window..." -ForegroundColor Magenta
-$employerArgs = "-NoExit -Command cd '$root\android\employer'; .\run-employer.ps1"
+$employerArgs = "-NoExit -Command cd '$root\android\employer'; .\run-employer-kmp.ps1"
 if ($AvdName -ne "") { $employerArgs += " -AvdName '$AvdName'" }
 if ($SdkPath -ne "") { $employerArgs += " -SdkPath '$SdkPath'" }
 Start-Process powershell -ArgumentList $employerArgs

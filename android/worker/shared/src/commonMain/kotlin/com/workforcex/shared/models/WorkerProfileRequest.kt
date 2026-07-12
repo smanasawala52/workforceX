@@ -9,5 +9,6 @@ data class WorkerProfileRequest(
     val experience: Int,
     val preferredSalary: Double,
     val availability: String,
-    val languages: String
+    val languages: String,
+    val description: String
 )

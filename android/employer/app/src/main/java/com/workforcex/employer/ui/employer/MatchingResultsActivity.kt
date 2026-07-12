@@ -159,6 +159,11 @@ class MatchingResultsActivity : AppCompatActivity() {
                         .show()
                 }
             }
+            h.itemView.setOnClickListener {
+                val intent = Intent(h.itemView.context, CandidateProfileActivity::class.java)
+                intent.putExtra("workerId", item.workerId)
+                h.itemView.context.startActivity(intent)
+            }
         }
 
         override fun getItemCount(): Int = items.size

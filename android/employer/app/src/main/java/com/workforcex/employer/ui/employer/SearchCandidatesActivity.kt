@@ -41,9 +41,9 @@ class SearchCandidatesActivity : AppCompatActivity() {
             skills = text(binding.etSkills).ifEmpty { "" },
             city = text(binding.etCity).ifEmpty { "" },
             experienceMin = intVal(binding.etExpMin) ?: 0,
-            experienceMax = intVal(binding.etExpMax) ?: 0,
+            experienceMax = intVal(binding.etExpMax) ?: 100,
             salaryMin = doubleVal(binding.etSalaryMin) ?: 0.0,
-            salaryMax = doubleVal(binding.etSalaryMax) ?: 0.0
+            salaryMax = doubleVal(binding.etSalaryMax) ?: 1000000.0
         )
 
         setLoading(true)
