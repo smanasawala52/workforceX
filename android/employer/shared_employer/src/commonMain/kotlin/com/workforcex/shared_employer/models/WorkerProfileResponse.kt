@@ -2,16 +2,16 @@ package com.workforcex.shared_employer.models
 
 data class WorkerProfileResponse(
     val id: String,
-    val mobileNumber: String,
-    val name: String,
-    val gender: String,
-    val email: String,
-    val city: String,
-    val state: String,
-    val skills: String,
-    val experience: Int,
-    val preferredSalary: Double,
+    val mobileNumber: String?,
+    val name: String?,
+    val gender: String?,
+    val email: String?,
+    val city: String?,
+    val state: String?,
+    val skills: String?,
+    val experience: Int?,
+    val preferredSalary: Double?,
     val availability: String?,
-    val languages: String,
-    val description: String
+    val languages: String?,
+    val description: String?
 )

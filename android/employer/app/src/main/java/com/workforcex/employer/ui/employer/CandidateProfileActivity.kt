@@ -42,21 +42,41 @@ class CandidateProfileActivity : AppCompatActivity() {
                 ) {
                     if (response.isSuccessful && response.body() != null) {
                         val p = response.body()!!
-                        binding.tvName.text = p.name
-                        binding.tvMobile.text = "Mobile: ${p.mobileNumber}"
-                        binding.tvEmail.text = "Email: ${p.email}"
-                        binding.tvLocation.text = "Location: ${p.city}, ${p.state}"
-                        binding.tvSkills.text = "Skills: ${p.skills}"
-                        binding.tvExperience.text = "Experience: ${p.experience} years"
-                        binding.tvSalary.text = "Expected Salary: ₹${p.preferredSalary.toInt()}/month"
-                        if (p.availability.isNullOrEmpty()) {
-                            binding.tvAvailability.visibility = android.view.View.GONE
+
+                        showOrHide(binding.tvName, p.name) { it }
+                        showOrHide(binding.tvMobile, p.mobileNumber) { "Mobile: $it" }
+                        showOrHide(binding.tvEmail, p.email) { "Email: $it" }
+
+                        val location = listOfNotNull(
+                            p.city?.takeIf { it.isNotEmpty() },
+                            p.state?.takeIf { it.isNotEmpty() }
+                        ).joinToString(", ")
+                        if (location.isEmpty()) {
+                            binding.tvLocation.visibility = android.view.View.GONE
                         } else {
-                            binding.tvAvailability.visibility = android.view.View.VISIBLE
-                            binding.tvAvailability.text = "Availability: ${p.availability}"
+                            binding.tvLocation.visibility = android.view.View.VISIBLE
+                            binding.tvLocation.text = "Location: $location"
                         }
-                        binding.tvLanguages.text = "Languages: ${p.languages}"
-                        binding.tvDescription.text = "Description: ${p.description}"
+
+                        showOrHide(binding.tvSkills, p.skills) { "Skills: $it" }
+
+                        if (p.experience == null) {
+                            binding.tvExperience.visibility = android.view.View.GONE
+                        } else {
+                            binding.tvExperience.visibility = android.view.View.VISIBLE
+                            binding.tvExperience.text = "Experience: ${p.experience} years"
+                        }
+
+                        if (p.preferredSalary == null) {
+                            binding.tvSalary.visibility = android.view.View.GONE
+                        } else {
+                            binding.tvSalary.visibility = android.view.View.VISIBLE
+                            binding.tvSalary.text = "Expected Salary: ₹${p.preferredSalary.toInt()}/month"
+                        }
+
+                        showOrHide(binding.tvAvailability, p.availability) { "Availability: $it" }
+                        showOrHide(binding.tvLanguages, p.languages) { "Languages: $it" }
+                        showOrHide(binding.tvDescription, p.description) { "Description: $it" }
                     } else {
                         Toast.makeText(this@CandidateProfileActivity, "Failed to load profile", Toast.LENGTH_SHORT).show()
                     }
@@ -66,5 +86,18 @@ class CandidateProfileActivity : AppCompatActivity() {
                     Toast.makeText(this@CandidateProfileActivity, "Network error", Toast.LENGTH_SHORT).show()
                 }
             })
+    }
+
+    /**
+     * Hides [view] when [value] is null or empty; otherwise shows it and sets its
+     * text to the result of [format] applied to the value.
+     */
+    private fun showOrHide(view: android.widget.TextView, value: String?, format: (String) -> String) {
+        if (value.isNullOrEmpty()) {
+            view.visibility = android.view.View.GONE
+        } else {
+            view.visibility = android.view.View.VISIBLE
+            view.text = format(value)
+        }
     }
 }
