@@ -11,7 +11,7 @@ data class WorkerProfileResponse(
     val skills: String,
     val experience: Int,
     val preferredSalary: Double,
-    val availability: String,
+    val availability: String?,
     val languages: String,
     val description: String
 )
