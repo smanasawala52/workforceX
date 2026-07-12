@@ -49,7 +49,12 @@ class CandidateProfileActivity : AppCompatActivity() {
                         binding.tvSkills.text = "Skills: ${p.skills}"
                         binding.tvExperience.text = "Experience: ${p.experience} years"
                         binding.tvSalary.text = "Expected Salary: ₹${p.preferredSalary.toInt()}/month"
-                        binding.tvAvailability.text = "Availability: ${p.availability}"
+                        if (p.availability.isNullOrEmpty()) {
+                            binding.tvAvailability.visibility = android.view.View.GONE
+                        } else {
+                            binding.tvAvailability.visibility = android.view.View.VISIBLE
+                            binding.tvAvailability.text = "Availability: ${p.availability}"
+                        }
                         binding.tvLanguages.text = "Languages: ${p.languages}"
                         binding.tvDescription.text = "Description: ${p.description}"
                     } else {
