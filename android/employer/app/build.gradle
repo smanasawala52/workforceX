@@ -15,12 +15,23 @@ android {
         versionName "1.0"
     }
 
+    signingConfigs {
+        release {
+            storeFile file('workforcex-release-key.jks') // Path to your .jks file
+            storePassword 'changeit'
+            keyAlias 'workforcex_alias'
+            keyPassword 'changeit'
+        }
+    }
+
     buildTypes {
         debug {
             buildConfigField "String", "BASE_URL", '"https://workforcex-jtz0.onrender.com"'
         }
         release {
+            signingConfig signingConfigs.release // Link the config here
             minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "BASE_URL", '"https://workforcex-jtz0.onrender.com"'
         }
     }

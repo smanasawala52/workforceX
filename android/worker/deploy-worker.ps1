@@ -3,6 +3,8 @@
 # Cleans and builds release APK for the Worker App
 # ============================================================
 clear
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
+
 $env:ANDROID_HOME = "C:\Users\shabb\AppData\Local\Android\Sdk"
 $workerPath = "C:\Repo\workforceX\android\worker"
 
