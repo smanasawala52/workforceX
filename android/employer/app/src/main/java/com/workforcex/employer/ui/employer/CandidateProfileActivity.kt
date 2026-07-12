@@ -67,11 +67,12 @@ class CandidateProfileActivity : AppCompatActivity() {
                             binding.tvExperience.text = "Experience: ${p.experience} years"
                         }
 
-                        if (p.preferredSalary == null) {
+                        val salary = p.preferredSalary
+                        if (salary == null) {
                             binding.tvSalary.visibility = android.view.View.GONE
                         } else {
                             binding.tvSalary.visibility = android.view.View.VISIBLE
-                            binding.tvSalary.text = "Expected Salary: ₹${p.preferredSalary.toInt()}/month"
+                            binding.tvSalary.text = "Expected Salary: ₹${salary.toInt()}/month"
                         }
 
                         showOrHide(binding.tvAvailability, p.availability) { "Availability: $it" }
