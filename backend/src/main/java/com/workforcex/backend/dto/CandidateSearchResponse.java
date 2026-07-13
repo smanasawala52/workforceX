@@ -34,7 +34,7 @@ public record CandidateSearchResponse(
             double salaryScore
     ) {
         return new CandidateSearchResponse(
-                profile.getId(),
+                profile.getUserId(),
                 profile.getName(),
                 profile.getUserMobileNumber(),
                 getMergedSkills(profile.getSkill1(),
