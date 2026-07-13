@@ -30,7 +30,21 @@ class CandidateProfileActivity : AppCompatActivity() {
             return
         }
 
-        loadWorkerProfile(workerId)
+        // TEMP DEBUG: show the raw workerId instead of calling the API, to confirm
+        // what value is actually being passed from the search results screen.
+        binding.tvName.text = "DEBUG workerId = $workerId"
+        binding.tvMobile.visibility = android.view.View.GONE
+        binding.tvEmail.visibility = android.view.View.GONE
+        binding.tvLocation.visibility = android.view.View.GONE
+        binding.tvSkills.visibility = android.view.View.GONE
+        binding.tvExperience.visibility = android.view.View.GONE
+        binding.tvSalary.visibility = android.view.View.GONE
+        binding.tvAvailability.visibility = android.view.View.GONE
+        binding.tvLanguages.visibility = android.view.View.GONE
+        binding.tvDescription.visibility = android.view.View.GONE
+        return
+
+        // loadWorkerProfile(workerId)
     }
 
     private fun loadWorkerProfile(workerId: String) {
