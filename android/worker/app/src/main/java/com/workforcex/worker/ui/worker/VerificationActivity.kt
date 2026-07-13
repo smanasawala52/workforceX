@@ -1,5 +1,6 @@
 package com.workforcex.worker.ui.worker
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.workforcex.shared.RetrofitClient
+import com.workforcex.shared.models.Document
 import com.workforcex.shared.models.Verification
 import com.workforcex.worker.databinding.ActivityVerificationBinding
 import com.workforcex.worker.utils.TokenManager
@@ -42,8 +44,10 @@ class VerificationActivity : AppCompatActivity() {
         tokenManager = TokenManager(this)
 
         binding.rvVerificationStatus.layoutManager = LinearLayoutManager(this)
+        binding.rvDocuments.layoutManager = LinearLayoutManager(this)
         setupDocumentSpinner()
         loadVerificationStatus()
+        loadMyDocuments()
 
         binding.btnChooseFile.setOnClickListener {
             if (binding.spinnerDocumentType.selectedItem != null) {
@@ -85,6 +89,39 @@ class VerificationActivity : AppCompatActivity() {
             })
     }
 
+    private fun loadMyDocuments() {
+        RetrofitClient.get().getMyDocuments(tokenManager.getBearerToken())
+            .enqueue(object : Callback<List<Document>> {
+                override fun onResponse(
+                    call: Call<List<Document>>,
+                    response: Response<List<Document>>
+                ) {
+                    if (response.isSuccessful && response.body() != null) {
+                        binding.rvDocuments.adapter = DocumentListAdapter(response.body()!!) { doc ->
+                            openDocument(doc)
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<List<Document>>, t: Throwable) {
+                    // Non-critical: verification status above still loads fine.
+                }
+            })
+    }
+
+    private fun openDocument(document: Document) {
+        val fullUrl = if (document.fileUrl.startsWith("http")) {
+            document.fileUrl
+        } else {
+            RetrofitClient.baseUrl().trimEnd('/') + document.fileUrl
+        }
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(fullUrl)))
+        } catch (e: Exception) {
+            Toast.makeText(this, "Unable to open document", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun uploadDocument() {
         if (selectedFileUri == null) {
             Toast.makeText(this, "Please select a file to upload", Toast.LENGTH_SHORT).show()
@@ -116,6 +153,7 @@ class VerificationActivity : AppCompatActivity() {
                         if (response.isSuccessful) {
                             Toast.makeText(this@VerificationActivity, "Upload successful", Toast.LENGTH_SHORT).show()
                             loadVerificationStatus() // Refresh the list
+                            loadMyDocuments() // Refresh the list of uploaded files too
                             binding.tvSelectedFile.text = "No file selected"
                             selectedFileUri = null
                         } else {

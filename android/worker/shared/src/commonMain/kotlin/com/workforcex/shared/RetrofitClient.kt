@@ -14,6 +14,8 @@ object RetrofitClient {
         this.baseUrl = baseUrl
     }
 
+    fun baseUrl(): String = baseUrl
+
     fun get(): WorkforceXApi {
         if (instance == null) {
             val logging = HttpLoggingInterceptor()

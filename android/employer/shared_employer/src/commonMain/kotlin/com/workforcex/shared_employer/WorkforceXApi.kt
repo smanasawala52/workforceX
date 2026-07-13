@@ -85,6 +85,16 @@ interface WorkforceXApi {
     @GET("api/verification/worker/{workerId}")
     fun getWorkerDocuments(@Header("Authorization") token: String, @Path("workerId") workerId: String): Call<List<Verification>>
 
+    // The actual uploaded files (filenames + view URLs) for a worker - what
+    // an employer's profile view needs to show/open the real documents,
+    // as opposed to getWorkerDocuments above, which despite its name only
+    // returns coarse per-category verification status.
+    @GET("api/verification/worker/{workerId}/documents")
+    fun getWorkerDocumentFiles(
+        @Header("Authorization") token: String,
+        @Path("workerId") workerId: String
+    ): Call<List<Document>>
+
     @PUT("api/verification/{verificationId}/status")
     fun updateEmployerVerificationStatus(
         @Header("Authorization") token: String,

@@ -50,6 +50,11 @@ interface WorkforceXApi {
     @GET("api/verification/status")
     fun getVerificationStatus(@Header("Authorization") token: String): Call<List<Verification>>
 
+    // Actual uploaded documents (filenames + view URLs) - distinct from
+    // /status above, which only returns the coarse per-category status.
+    @GET("api/verification/documents")
+    fun getMyDocuments(@Header("Authorization") token: String): Call<List<Document>>
+
     @Multipart
     @POST("api/verification/upload")
     fun uploadDocument(
