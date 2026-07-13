@@ -78,7 +78,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:layout_marginBottom="12dp"/>
+            android.layout_marginBottom="12dp"/>
+
+        <Button
+            android:id="@+id/btnVerifyWorker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View Worker Verification"
+            android:layout_marginTop="24dp"/>
 
     </LinearLayout>
 </ScrollView>

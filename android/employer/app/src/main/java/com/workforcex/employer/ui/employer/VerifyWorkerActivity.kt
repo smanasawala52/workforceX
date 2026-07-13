@@ -12,6 +12,7 @@ import com.workforcex.employer.utils.TokenManager
 import com.workforcex.shared_employer.RetrofitClient
 import com.workforcex.shared_employer.models.Document
 import com.workforcex.shared_employer.models.Verification
+import com.workforcex.shared_employer.models.VerificationUpdateBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -96,7 +97,7 @@ class VerifyWorkerActivity : AppCompatActivity() {
     }
 
     private fun updateVerificationStatus(verificationId: String, status: String, comments: String) {
-        RetrofitClient.get().updateEmployerVerificationStatus(tokenManager.getBearerToken(), verificationId, status, comments)
+        RetrofitClient.get().updateEmployerVerificationStatus(tokenManager.getBearerToken(), verificationId, status, VerificationUpdateBody(comments))
             .enqueue(object : Callback<Void> {
                 override fun onResponse(call: Call<Void>, response: Response<Void>) {
                     if (response.isSuccessful) {

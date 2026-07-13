@@ -40,7 +40,7 @@ class ReviewVerificationsActivity : AppCompatActivity() {
                     binding.progressBar.visibility = View.GONE
                     if (response.isSuccessful && response.body() != null) {
                         binding.rvVerifications.adapter =
-                            VerificationAdapter(response.body()!!, this@ReviewVerificationsActivity::updateVerificationStatus)
+                            VerificationAdapter(response.body()!!)
                     } else {
                         Toast.makeText(this@ReviewVerificationsActivity, "Failed to load verifications", Toast.LENGTH_SHORT).show()
                     }
@@ -48,24 +48,6 @@ class ReviewVerificationsActivity : AppCompatActivity() {
 
                 override fun onFailure(call: Call<List<Verification>>, t: Throwable) {
                     binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this@ReviewVerificationsActivity, "Network error", Toast.LENGTH_SHORT).show()
-                }
-            })
-    }
-
-    private fun updateVerificationStatus(verificationId: String, status: String, comments: String) {
-        RetrofitClient.get().updateEmployerVerificationStatus(tokenManager.getBearerToken(), verificationId, status, comments)
-            .enqueue(object : Callback<Void> {
-                override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                    if (response.isSuccessful) {
-                        Toast.makeText(this@ReviewVerificationsActivity, "Verification status updated", Toast.LENGTH_SHORT).show()
-                        loadPendingVerifications() // Refresh the list
-                    } else {
-                        Toast.makeText(this@ReviewVerificationsActivity, "Failed to update status", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<Void>, t: Throwable) {
                     Toast.makeText(this@ReviewVerificationsActivity, "Network error", Toast.LENGTH_SHORT).show()
                 }
             })

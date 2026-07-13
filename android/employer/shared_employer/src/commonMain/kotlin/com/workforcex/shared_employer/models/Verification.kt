@@ -13,10 +13,17 @@ data class Verification(
     val verificationType: String,
 
     @SerializedName("status")
-    val status: String
+    val status: String,
+
+    @SerializedName("documents")
+    val documents: List<Document> = emptyList()
 ) {
     data class User(
+        @SerializedName("id")
+        val id: String,
         @SerializedName("mobileNumber")
-        val mobileNumber: String
+        val mobileNumber: String,
+        @SerializedName("name")
+        val name: String?
     )
 }

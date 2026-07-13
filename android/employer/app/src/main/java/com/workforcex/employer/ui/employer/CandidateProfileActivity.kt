@@ -1,5 +1,6 @@
 package com.workforcex.employer.ui.employer
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -30,9 +31,12 @@ class CandidateProfileActivity : AppCompatActivity() {
             return
         }
 
-        // TEMP DEBUG: show the raw workerId instead of calling the API, to confirm
-        // what value is actually being passed from the search results screen.
-
+        binding.btnVerifyWorker.setOnClickListener {
+            val intent = Intent(this, VerifyWorkerActivity::class.java)
+            intent.putExtra("workerId", workerId)
+            intent.putExtra("workerName", binding.tvName.text)
+            startActivity(intent)
+        }
 
         loadWorkerProfile(workerId)
     }

@@ -100,7 +100,7 @@ interface WorkforceXApi {
         @Header("Authorization") token: String,
         @Path("verificationId") verificationId: String,
         @Query("status") status: String,
-        @Body comments: String
+        @Body comments: VerificationUpdateBody
     ): Call<Void>
 
     // Skills

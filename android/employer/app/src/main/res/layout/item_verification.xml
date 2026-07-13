@@ -20,25 +20,11 @@
         android:layout_height="wrap_content"
         android:text="Type: "/>
 
-    <LinearLayout
+    <Button
+        android:id="@+id/btnView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="8dp">
-
-        <Button
-            android:id="@+id/btnApprove"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="Approve"/>
-
-        <Button
-            android:id="@+id/btnReject"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="Reject"/>
-    </LinearLayout>
+        android:text="View"
+        android:layout_marginTop="8dp"/>
 
 </LinearLayout>

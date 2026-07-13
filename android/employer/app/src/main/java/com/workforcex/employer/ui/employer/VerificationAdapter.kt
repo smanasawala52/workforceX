@@ -1,5 +1,6 @@
 package com.workforcex.employer.ui.employer
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,13 +11,8 @@ import com.workforcex.employer.R
 import com.workforcex.shared_employer.models.Verification
 
 class VerificationAdapter(
-    private val items: List<Verification>,
-    private val onAction: OnVerificationAction
+    private val items: List<Verification>
 ) : RecyclerView.Adapter<VerificationAdapter.VH>() {
-
-    fun interface OnVerificationAction {
-        fun onUpdate(verificationId: String, status: String, comments: String)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         val v = LayoutInflater.from(parent.context)
@@ -26,11 +22,17 @@ class VerificationAdapter(
 
     override fun onBindViewHolder(h: VH, pos: Int) {
         val item = items[pos]
-        h.tvWorkerName.text = "Worker: " + item.user.mobileNumber
+        h.tvWorkerName.text = "Worker: " + (item.user.name ?: item.user.mobileNumber)
         h.tvVerificationType.text = "Type: " + item.verificationType
 
-        h.btnApprove.setOnClickListener { onAction.onUpdate(item.id, "VERIFIED", "") }
-        h.btnReject.setOnClickListener { onAction.onUpdate(item.id, "REJECTED", "") }
+        h.btnView.setOnClickListener {
+            val context = h.itemView.context
+            val intent = Intent(context, VerifyWorkerActivity::class.java).apply {
+                putExtra("workerId", item.user.id)
+                putExtra("workerName", item.user.name)
+            }
+            context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int = items.size
@@ -38,7 +40,6 @@ class VerificationAdapter(
     class VH(v: View) : RecyclerView.ViewHolder(v) {
         val tvWorkerName: TextView = v.findViewById(R.id.tvWorkerName)
         val tvVerificationType: TextView = v.findViewById(R.id.tvVerificationType)
-        val btnApprove: Button = v.findViewById(R.id.btnApprove)
-        val btnReject: Button = v.findViewById(R.id.btnReject)
+        val btnView: Button = v.findViewById(R.id.btnView)
     }
 }
