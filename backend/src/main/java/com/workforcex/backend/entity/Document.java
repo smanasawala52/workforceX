@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -29,6 +31,12 @@ public class Document {
     @Column(nullable = false)
     private String fileName;
 
+    // Opaque key used by FileStorageService to locate the file (local relative
+    // path, or object-storage key). NOT a directly browsable URL - the real,
+    // access-controlled/signed URL is resolved on read via FileStorageService.
     @Column(nullable = false)
-    private String fileUrl; // URL to the stored file (e.g., in S3)
+    private String storageKey;
+
+    @CreationTimestamp
+    private Instant createdAt;
 }

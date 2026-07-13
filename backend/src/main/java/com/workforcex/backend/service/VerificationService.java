@@ -1,5 +1,6 @@
 package com.workforcex.backend.service;
 
+import com.workforcex.backend.dto.DocumentResponse;
 import com.workforcex.backend.entity.Document;
 import com.workforcex.backend.entity.DocumentType;
 import com.workforcex.backend.entity.EmployerVerification;
@@ -11,6 +12,7 @@ import com.workforcex.backend.repository.DocumentRepository;
 import com.workforcex.backend.repository.EmployerVerificationRepository;
 import com.workforcex.backend.repository.UserRepository;
 import com.workforcex.backend.repository.VerificationRepository;
+import com.workforcex.backend.service.storage.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,8 +28,7 @@ public class VerificationService {
     private final DocumentRepository documentRepository;
     private final VerificationRepository verificationRepository;
     private final EmployerVerificationRepository employerVerificationRepository;
-    // In a real app, this would be a service that uploads to S3, Google Cloud Storage, etc.
-    // private final FileStorageService fileStorageService;
+    private final FileStorageService fileStorageService;
 
     public List<Verification> getVerificationStatusForUser(String userMobile) {
         User user = userRepository.findByMobileNumber(userMobile)
@@ -39,21 +40,78 @@ public class VerificationService {
         User user = userRepository.findByMobileNumber(userMobile)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        // Simulate file upload and get a URL
-        // String fileUrl = fileStorageService.upload(file);
-        String fileUrl = "/uploads/" + user.getId() + "/" + file.getOriginalFilename();
+        String storageKey;
+        try {
+            storageKey = fileStorageService.store(file, user.getId());
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to store uploaded file", e);
+        }
 
         Document document = new Document();
         document.setUser(user);
         document.setDocumentType(documentType);
         document.setFileName(file.getOriginalFilename());
-        document.setFileUrl(fileUrl);
+        document.setStorageKey(storageKey);
         documentRepository.save(document);
 
         // When a document is uploaded, update the corresponding verification status to "SUBMITTED"
         updateVerificationStatusOnUpload(user, documentType);
 
         return document;
+    }
+
+    /**
+     * Worker: list of their own uploaded documents (with a live view URL) -
+     * this is what actually backs the "list of documents" the worker sees,
+     * as opposed to the coarse per-category status in Verification.
+     */
+    public List<DocumentResponse> getDocumentsForUser(UUID userId) {
+        return documentRepository.findByUserId(userId).stream()
+                .map(this::toDocumentResponse)
+                .toList();
+    }
+
+    public List<DocumentResponse> getDocumentsForUserByMobile(String mobile) {
+        User user = userRepository.findByMobileNumber(mobile)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return getDocumentsForUser(user.getId());
+    }
+
+    /**
+     * Employer: same list of a specific worker's documents, so the employer
+     * profile view shows the actual files the worker uploaded rather than
+     * just an aggregate status.
+     */
+    public List<DocumentResponse> getDocumentsForWorker(UUID workerId) {
+        return getDocumentsForUser(workerId);
+    }
+
+    /** Resolves a single document, enforcing that the requester may see it. */
+    public Document getDocumentForAccess(UUID documentId, String requesterMobile, boolean requesterIsEmployer) {
+        Document document = documentRepository.findById(documentId)
+                .orElseThrow(() -> new IllegalArgumentException("Document not found"));
+
+        if (requesterIsEmployer) {
+            return document; // Employers may view any worker's documents to verify them.
+        }
+
+        User requester = userRepository.findByMobileNumber(requesterMobile)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        if (!document.getUser().getId().equals(requester.getId())) {
+            throw new SecurityException("Not authorized to access this document");
+        }
+        return document;
+    }
+
+    private DocumentResponse toDocumentResponse(Document document) {
+        String url = fileStorageService.resolveUrl(document.getId(), document.getStorageKey());
+        return new DocumentResponse(
+                document.getId(),
+                document.getDocumentType(),
+                document.getFileName(),
+                url,
+                document.getCreatedAt()
+        );
     }
 
     private void updateVerificationStatusOnUpload(User user, DocumentType documentType) {

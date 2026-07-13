@@ -11,6 +11,7 @@ import com.workforcex.backend.repository.DocumentRepository;
 import com.workforcex.backend.repository.EmployerVerificationRepository;
 import com.workforcex.backend.repository.UserRepository;
 import com.workforcex.backend.repository.VerificationRepository;
+import com.workforcex.backend.service.storage.FileStorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +37,7 @@ class VerificationServiceTest {
     @Mock private DocumentRepository documentRepository;
     @Mock private VerificationRepository verificationRepository;
     @Mock private EmployerVerificationRepository employerVerificationRepository;
+    @Mock private FileStorageService fileStorageService;
 
     @InjectMocks private VerificationService verificationService;
 
@@ -54,16 +56,17 @@ class VerificationServiceTest {
     }
 
     @Test
-    void uploadDocument_shouldSaveDocumentAndSubmitForVerification() {
+    void uploadDocument_shouldSaveDocumentAndSubmitForVerification() throws Exception {
         MockMultipartFile file = new MockMultipartFile("file", "aadhaar.pdf", "application/pdf", new byte[0]);
         when(userRepository.findByMobileNumber(user.getMobileNumber())).thenReturn(Optional.of(user));
         when(verificationRepository.findByUserId(user.getId())).thenReturn(new ArrayList<>());
         when(documentRepository.save(any(Document.class))).thenAnswer(i -> i.getArguments()[0]);
+        when(fileStorageService.store(any(), any())).thenReturn(user.getId() + "/aadhaar.pdf");
 
         Document doc = verificationService.uploadDocument(user.getMobileNumber(), DocumentType.AADHAAR, file);
 
         verify(documentRepository).save(any(Document.class));
-        assertThat(doc.getFileUrl()).isEqualTo("/uploads/" + user.getId() + "/aadhaar.pdf");
+        assertThat(doc.getStorageKey()).isEqualTo(user.getId() + "/aadhaar.pdf");
         verify(verificationRepository).save(any(Verification.class));
     }
 

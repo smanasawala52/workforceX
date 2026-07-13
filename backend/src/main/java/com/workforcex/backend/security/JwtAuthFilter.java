@@ -30,13 +30,26 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
+        String token = null;
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+        } else if (isRawDocumentRequest(request)) {
+            // Narrow, deliberate exception: Android opens this URL via an
+            // external ACTION_VIEW intent (browser/PDF viewer), which cannot
+            // attach an Authorization header. Only this single dev-only
+            // local-storage endpoint accepts a token query param; every
+            // other endpoint still requires the header. In prod this path
+            // isn't used at all (documents are served via signed Supabase
+            // Storage URLs instead).
+            token = request.getParameter("token");
+        }
+
+        if (token == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authHeader.substring(7);
         String mobileNumber = extractMobileNumberSafely(token);
 
         if (mobileNumber != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -59,5 +72,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             return null; // malformed/expired token - treat as unauthenticated
         }
+    }
+
+    private boolean isRawDocumentRequest(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        return uri != null
+                && uri.startsWith("/api/verification/documents/")
+                && uri.endsWith("/raw");
     }
 }

@@ -41,6 +41,33 @@ class VerificationControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
+    void worker_andEmployer_seeTheSameUploadedDocuments() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "aadhaar.pdf", MediaType.APPLICATION_PDF_VALUE, "fake-pdf-content".getBytes());
+
+        mockMvc.perform(multipart("/api/verification/upload")
+                        .file(file)
+                        .param("type", "AADHAAR")
+                        .header("Authorization", "Bearer " + workerToken))
+                .andExpect(status().isOk());
+
+        // Worker sees the document they uploaded.
+        mockMvc.perform(get("/api/verification/documents")
+                        .header("Authorization", "Bearer " + workerToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].documentType").value("AADHAAR"))
+                .andExpect(jsonPath("$[0].fileName").value("aadhaar.pdf"))
+                .andExpect(jsonPath("$[0].fileUrl").exists());
+
+        // The same document is visible to an employer viewing this worker's profile.
+        mockMvc.perform(get("/api/verification/worker/" + worker.getId() + "/documents")
+                        .header("Authorization", "Bearer " + employerToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].documentType").value("AADHAAR"))
+                .andExpect(jsonPath("$[0].fileName").value("aadhaar.pdf"))
+                .andExpect(jsonPath("$[0].fileUrl").exists());
+    }
+
+    @Test
     void employer_canUpdateVerificationStatus() throws Exception {
         worker_canUploadDocumentAndItCreatesVerificationRecord();
 
