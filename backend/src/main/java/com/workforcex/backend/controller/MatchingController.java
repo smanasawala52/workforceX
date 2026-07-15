@@ -4,6 +4,7 @@ import com.workforcex.backend.dto.CandidateSearchRequest;
 import com.workforcex.backend.dto.CandidateSearchResponse;
 import com.workforcex.backend.dto.MatchedWorkerResponse;
 import com.workforcex.backend.service.MatchingService;
+import com.workforcex.backend.util.PhoneNumbers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,11 +29,11 @@ public class MatchingController {
     @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<List<MatchedWorkerResponse>> getMatchedWorkers(
             Authentication authentication,
-            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode,
             @PathVariable UUID jobId
     ) {
+        PhoneNumbers.Split split = PhoneNumbers.split(authentication.getName());
         return ResponseEntity.ok(
-                matchingService.getMatchedWorkers(countryCode, authentication.getName(), jobId));
+                matchingService.getMatchedWorkers(split.countryCode(), split.mobileNumber(), jobId));
     }
 
     /**

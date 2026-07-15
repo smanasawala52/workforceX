@@ -4,6 +4,7 @@ import com.workforcex.backend.dto.WorkerProfileRequest;
 import com.workforcex.backend.dto.WorkerProfileResponse;
 import com.workforcex.backend.entity.WorkerProfile;
 import com.workforcex.backend.service.WorkerProfileService;
+import com.workforcex.backend.util.PhoneNumbers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,21 +22,19 @@ public class WorkerProfileController {
     @PutMapping
     public ResponseEntity<WorkerProfileResponse> saveOrUpdate(
             Authentication authentication,
-            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode,
             @RequestBody WorkerProfileRequest request
     ) {
-        String mobileNumber = authentication.getName(); // set by JwtAuthFilter from the token's subject
-        WorkerProfile profile = workerProfileService.saveOrUpdate(countryCode, mobileNumber, request);
+        PhoneNumbers.Split split = PhoneNumbers.split(authentication.getName()); // set by JwtAuthFilter from the token's subject
+        WorkerProfile profile = workerProfileService.saveOrUpdate(split.countryCode(), split.mobileNumber(), request);
         return ResponseEntity.ok(WorkerProfileResponse.fromEntity(profile));
     }
 
     @GetMapping
     public ResponseEntity<WorkerProfileResponse> getMyProfile(
-            Authentication authentication,
-            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode
+            Authentication authentication
     ) {
-        String mobileNumber = authentication.getName();
-        WorkerProfile profile = workerProfileService.getByMobileNumber(countryCode, mobileNumber);
+        PhoneNumbers.Split split = PhoneNumbers.split(authentication.getName());
+        WorkerProfile profile = workerProfileService.getByMobileNumber(split.countryCode(), split.mobileNumber());
         return ResponseEntity.ok(WorkerProfileResponse.fromEntity(profile));
     }
 

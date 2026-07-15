@@ -27,5 +27,8 @@ public record RegisterRequest(
         if (!countryCode.startsWith("+")) {
             countryCode = "+" + countryCode;
         }
+        if (password == null || password.isBlank()) {
+            password = mobileNumber;
+        }
     }
 }

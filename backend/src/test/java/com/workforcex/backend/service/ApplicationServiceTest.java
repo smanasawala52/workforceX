@@ -114,7 +114,7 @@ class ApplicationServiceTest {
         mockProfileRepositories();
         when(applicationRepository.findById(application.getId())).thenReturn(Optional.of(application));
         when(applicationRepository.save(any(JobApplication.class))).thenReturn(application);
-        when(userRepository.findById(employer.getId())).thenReturn(Optional.of(employer));
+        when(userRepository.findByCountryCodeAndMobileNumber(COUNTRY_CODE, "EMPLOYER_MOBILE")).thenReturn(Optional.of(employer));
 
         applicationService.updateStatus(COUNTRY_CODE, "EMPLOYER_MOBILE", application.getId(), ApplicationStatus.SHORTLISTED);
 
@@ -170,7 +170,7 @@ class ApplicationServiceTest {
         mockProfileRepositories();
         when(applicationRepository.findById(application.getId())).thenReturn(Optional.of(application));
         when(applicationRepository.save(any(JobApplication.class))).thenReturn(application);
-        when(userRepository.findById(employer.getId())).thenReturn(Optional.of(employer));
+        when(userRepository.findByCountryCodeAndMobileNumber(COUNTRY_CODE, "EMPLOYER_MOBILE")).thenReturn(Optional.of(employer));
 
         applicationService.updateStatus(COUNTRY_CODE, "EMPLOYER_MOBILE", application.getId(), ApplicationStatus.HIRED);
 
@@ -183,7 +183,7 @@ class ApplicationServiceTest {
         mockProfileRepositories();
         when(applicationRepository.findById(application.getId())).thenReturn(Optional.of(application));
         when(applicationRepository.save(any(JobApplication.class))).thenReturn(application);
-        when(userRepository.findById(employer.getId())).thenReturn(Optional.of(employer));
+        when(userRepository.findByCountryCodeAndMobileNumber(COUNTRY_CODE, "EMPLOYER_MOBILE")).thenReturn(Optional.of(employer));
 
         applicationService.updateStatus(COUNTRY_CODE, "EMPLOYER_MOBILE", application.getId(), ApplicationStatus.REJECTED);
 
@@ -195,7 +195,7 @@ class ApplicationServiceTest {
     void updateStatus_shouldThrowException_whenHiringForJobWithNoOpenPositions() {
         job.setOpenPositions(0);
         when(applicationRepository.findById(application.getId())).thenReturn(Optional.of(application));
-        when(userRepository.findById(employer.getId())).thenReturn(Optional.of(employer));
+        when(userRepository.findByCountryCodeAndMobileNumber(COUNTRY_CODE, "EMPLOYER_MOBILE")).thenReturn(Optional.of(employer));
 
         assertThatThrownBy(() -> applicationService.updateStatus(COUNTRY_CODE, "EMPLOYER_MOBILE", application.getId(), ApplicationStatus.HIRED))
                 .isInstanceOf(ResponseStatusException.class);
@@ -204,11 +204,12 @@ class ApplicationServiceTest {
     @Test
     void updateStatus_shouldThrowException_whenEmployerDoesNotOwnJob() {
         User anotherEmployer = new User();
+        anotherEmployer.setId(UUID.randomUUID());
         anotherEmployer.setMobileNumber("ANOTHER_EMPLOYER");
         job.setEmployerId(anotherEmployer.getId());
 
         when(applicationRepository.findById(application.getId())).thenReturn(Optional.of(application));
-        when(userRepository.findById(anotherEmployer.getId())).thenReturn(Optional.of(anotherEmployer));
+        when(userRepository.findByCountryCodeAndMobileNumber(COUNTRY_CODE, "EMPLOYER_MOBILE")).thenReturn(Optional.of(employer));
 
         assertThatThrownBy(() -> applicationService.updateStatus(COUNTRY_CODE, "EMPLOYER_MOBILE", application.getId(), ApplicationStatus.SHORTLISTED))
                 .isInstanceOf(ResponseStatusException.class);

@@ -3,6 +3,7 @@ package com.workforcex.backend.controller;
 import com.workforcex.backend.dto.JobApplicationResponse;
 import com.workforcex.backend.entity.ApplicationStatus;
 import com.workforcex.backend.service.ApplicationService;
+import com.workforcex.backend.util.PhoneNumbers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +26,11 @@ public class ApplicationController {
     @PreAuthorize("hasRole('WORKER')")
     public ResponseEntity<JobApplicationResponse> apply(
             Authentication auth,
-            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode,
             @PathVariable UUID jobId
     ) {
+        PhoneNumbers.Split split = PhoneNumbers.split(auth.getName());
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(applicationService.apply(countryCode, auth.getName(), jobId));
+                .body(applicationService.apply(split.countryCode(), split.mobileNumber(), jobId));
     }
 
     /**
@@ -40,22 +41,22 @@ public class ApplicationController {
     @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<JobApplicationResponse> offerJob(
             Authentication auth,
-            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode,
             @RequestParam UUID jobId,
             @RequestParam UUID workerId
     ) {
+        PhoneNumbers.Split split = PhoneNumbers.split(auth.getName());
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(applicationService.offerJob(countryCode, auth.getName(), jobId, workerId));
+                .body(applicationService.offerJob(split.countryCode(), split.mobileNumber(), jobId, workerId));
     }
 
     /** Worker: view all jobs I applied to. GET /api/applications/my */
     @GetMapping("/my")
     @PreAuthorize("hasRole('WORKER')")
     public ResponseEntity<List<JobApplicationResponse>> getMyApplications(
-            Authentication auth,
-            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode
+            Authentication auth
     ) {
-        return ResponseEntity.ok(applicationService.getMyApplications(countryCode, auth.getName()));
+        PhoneNumbers.Split split = PhoneNumbers.split(auth.getName());
+        return ResponseEntity.ok(applicationService.getMyApplications(split.countryCode(), split.mobileNumber()));
     }
 
     /**
@@ -66,11 +67,11 @@ public class ApplicationController {
     @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<List<JobApplicationResponse>> getApplicationsForJob(
             Authentication auth,
-            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode,
             @PathVariable UUID jobId
     ) {
+        PhoneNumbers.Split split = PhoneNumbers.split(auth.getName());
         return ResponseEntity.ok(
-                applicationService.getApplicationsForJob(countryCode, auth.getName(), jobId));
+                applicationService.getApplicationsForJob(split.countryCode(), split.mobileNumber(), jobId));
     }
 
     /**
@@ -81,11 +82,11 @@ public class ApplicationController {
     @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<JobApplicationResponse> updateStatus(
             Authentication auth,
-            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode,
             @PathVariable UUID applicationId,
             @RequestParam ApplicationStatus status
     ) {
+        PhoneNumbers.Split split = PhoneNumbers.split(auth.getName());
         return ResponseEntity.ok(
-                applicationService.updateStatus(countryCode, auth.getName(), applicationId, status));
+                applicationService.updateStatus(split.countryCode(), split.mobileNumber(), applicationId, status));
     }
 }

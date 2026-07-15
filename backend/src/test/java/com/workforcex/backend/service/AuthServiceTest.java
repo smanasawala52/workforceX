@@ -43,7 +43,7 @@ class AuthServiceTest {
 
     @Test
     void register_savesNewUser_whenMobileNumberNotTaken() {
-        RegisterRequest request = new RegisterRequest(COUNTRY_CODE, MOBILE, "", Role.WORKER);
+        RegisterRequest request = new RegisterRequest(COUNTRY_CODE, MOBILE, MOBILE, Role.WORKER);
 
         when(userRepository.existsByCountryCodeAndMobileNumber(COUNTRY_CODE, MOBILE)).thenReturn(false);
         when(passwordEncoder.encode(MOBILE)).thenReturn("hashed-password");
