@@ -209,7 +209,7 @@ public class MatchingService {
     }
 
     private Set<String> splitToSet(String csv) {
-        if (csv == null || csv.isBlank()) return new HashSet<>();
+        if (csv == null || csv.isBlank()) return null;
         csv=csv.replace("[","").replace("]","");
         return Arrays.stream(csv.toLowerCase().split(","))
                 .map(String::trim)

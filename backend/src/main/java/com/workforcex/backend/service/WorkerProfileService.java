@@ -39,7 +39,7 @@ public class WorkerProfileService {
                 .orElseGet(() -> {
                     WorkerProfile newProfile = new WorkerProfile();
                     newProfile.setUserId(user.getId());
-                    newProfile.setUserMobileNumber(user.getCountryCode() + user.getMobileNumber());
+                    newProfile.setUserMobileNumber(user.getMobileNumber());
                     return newProfile;
                 });
 
