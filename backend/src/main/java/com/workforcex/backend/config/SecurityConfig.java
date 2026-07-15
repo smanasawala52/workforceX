@@ -37,6 +37,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/verification/status").hasRole("WORKER")
                         .requestMatchers(HttpMethod.POST, "/api/verification/upload").hasRole("WORKER")
                         .requestMatchers(HttpMethod.PUT, "/api/verification/**").hasRole("EMPLOYER")
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**",
+                                "/api-docs/**"
+                        ).permitAll()
                         // All other requests must be authenticated
                         .anyRequest().authenticated()
                 )
