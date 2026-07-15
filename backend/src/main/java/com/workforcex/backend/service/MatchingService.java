@@ -33,6 +33,7 @@ public class MatchingService {
     private final JobApplicationRepository applicationRepository;
 
     public List<MatchedWorkerResponse> getMatchedWorkers(
+            String countryCode,
             String employerMobileNumber,
             UUID jobId
     ) {
@@ -40,10 +41,10 @@ public class MatchingService {
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new IllegalArgumentException("Job not found"));
 
-        User employer = userRepository.findById(job.getEmployerId())
+        User employer = userRepository.findByCountryCodeAndMobileNumber(countryCode, employerMobileNumber)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        if (!employer.getMobileNumber().equals(employerMobileNumber)) {
+        if (!job.getEmployerId().equals(employer.getId())) {
             throw new IllegalArgumentException(
                     "You do not have permission to access this job"
             );

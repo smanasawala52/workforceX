@@ -19,8 +19,8 @@ public interface WorkerProfileRepository extends JpaRepository<WorkerProfile, UU
             "AND (:maxExperience IS NULL OR w.experience <= :maxExperience) " +
             "AND (:minSalary IS NULL OR w.preferredSalary >= :minSalary) " +
             "AND (:maxSalary IS NULL OR w.preferredSalary <= :maxSalary) " +
-            "AND (:skills IS NULL OR LOWER(w.skill1) IN :skills OR LOWER(w.skill2) IN :skills " +
-            "OR LOWER(w.skill3) IN :skills OR LOWER(w.skill4) IN :skills OR LOWER(w.skill5) IN :skills)")
+            "AND ((:skills IS NULL) OR (LOWER(w.skill1) IN :skills OR LOWER(w.skill2) IN :skills " +
+            "OR LOWER(w.skill3) IN :skills OR LOWER(w.skill4) IN :skills OR LOWER(w.skill5) IN :skills))")
     List<WorkerProfile> searchCandidates(
             @Param("cities") Set<String> cities,
             @Param("minExperience") Integer minExperience,
@@ -35,8 +35,8 @@ public interface WorkerProfileRepository extends JpaRepository<WorkerProfile, UU
             "OR (:experience IS NULL OR w.experience >= :experience) " +
             "OR (:salaryMin IS NULL OR w.preferredSalary >= :salaryMin) " +
             "OR (:salaryMax IS NULL OR w.preferredSalary <= :salaryMax) " +
-            "OR (:skills IS NULL OR LOWER(w.skill1) IN :skills OR LOWER(w.skill2) IN :skills " +
-            "OR LOWER(w.skill3) IN :skills OR LOWER(w.skill4) IN :skills OR LOWER(w.skill5) IN :skills)")
+            "OR ((:skills IS NULL) OR (LOWER(w.skill1) IN :skills OR LOWER(w.skill2) IN :skills " +
+            "OR LOWER(w.skill3) IN :skills OR LOWER(w.skill4) IN :skills OR LOWER(w.skill5) IN :skills))")
     List<WorkerProfile> findMatchingWorkers(
             @Param("location") Set<String> location,
             @Param("experience") Integer experience,

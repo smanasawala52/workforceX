@@ -34,7 +34,10 @@ class MatchingServiceTest {
     void getMatchedWorkers_shouldReturnEmptyList_whenNoWorkersExist() {
         // Given
         UUID jobId = UUID.randomUUID();
+        String countryCode = "+91";
         User employer = new User();
+        employer.setId(UUID.randomUUID());
+        employer.setCountryCode(countryCode);
         employer.setMobileNumber("1234567890");
         Job job = new Job();
         job.setEmployerId(employer.getId());
@@ -42,12 +45,12 @@ class MatchingServiceTest {
 
 
         when(jobRepository.findById(jobId)).thenReturn(Optional.of(job));
-        when(userRepository.findById(employer.getId())).thenReturn(Optional.of(employer));
+        when(userRepository.findByCountryCodeAndMobileNumber(countryCode, "1234567890")).thenReturn(Optional.of(employer));
         when(workerProfileRepository.findMatchingWorkers(any(), any(), any(), any(), any()))
                 .thenReturn(Collections.emptyList());
 
         // When
-        var result = matchingService.getMatchedWorkers("1234567890", jobId);
+        var result = matchingService.getMatchedWorkers(countryCode, "1234567890", jobId);
 
         // Then
         assertThat(result).isNotNull();

@@ -10,4 +10,8 @@
     <string name="role_employer">Employer</string>
     <string name="error_mobile_required">Enter your 10-digit mobile number</string>
     <string name="error_role_required">Select a role</string>
+    <string-array name="country_codes">
+        <item>+91 (IN)</item>
+        <item>+971 (AE)</item>
+    </string-array>
 </resources>

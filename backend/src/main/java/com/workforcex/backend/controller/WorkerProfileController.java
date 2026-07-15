@@ -4,6 +4,7 @@ import com.workforcex.backend.dto.WorkerProfileRequest;
 import com.workforcex.backend.dto.WorkerProfileResponse;
 import com.workforcex.backend.entity.WorkerProfile;
 import com.workforcex.backend.service.WorkerProfileService;
+import com.workforcex.backend.util.PhoneNumbers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -23,15 +24,17 @@ public class WorkerProfileController {
             Authentication authentication,
             @RequestBody WorkerProfileRequest request
     ) {
-        String mobileNumber = authentication.getName(); // set by JwtAuthFilter from the token's subject
-        WorkerProfile profile = workerProfileService.saveOrUpdate(mobileNumber, request);
+        PhoneNumbers.Split split = PhoneNumbers.split(authentication.getName()); // set by JwtAuthFilter from the token's subject
+        WorkerProfile profile = workerProfileService.saveOrUpdate(split.countryCode(), split.mobileNumber(), request);
         return ResponseEntity.ok(WorkerProfileResponse.fromEntity(profile));
     }
 
     @GetMapping
-    public ResponseEntity<WorkerProfileResponse> getMyProfile(Authentication authentication) {
-        String mobileNumber = authentication.getName();
-        WorkerProfile profile = workerProfileService.getByMobileNumber(mobileNumber);
+    public ResponseEntity<WorkerProfileResponse> getMyProfile(
+            Authentication authentication
+    ) {
+        PhoneNumbers.Split split = PhoneNumbers.split(authentication.getName());
+        WorkerProfile profile = workerProfileService.getByMobileNumber(split.countryCode(), split.mobileNumber());
         return ResponseEntity.ok(WorkerProfileResponse.fromEntity(profile));
     }
 

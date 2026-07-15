@@ -20,7 +20,7 @@ class VerificationControllerIntegrationTest extends AbstractIntegrationTest {
     void setUp() throws Exception {
         workerToken = registerAndLoginAs("9876543210", "WORKER");
         employerToken = registerAndLoginAs("1112223334", "EMPLOYER");
-        worker = userRepository.findByMobileNumber("9876543210").get();
+        worker = userRepository.findByCountryCodeAndMobileNumber("+91", "9876543210").get();
     }
 
     @Test

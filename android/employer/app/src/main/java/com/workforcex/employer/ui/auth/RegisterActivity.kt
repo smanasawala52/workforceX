@@ -32,8 +32,11 @@ class RegisterActivity : AppCompatActivity() {
             return
         }
         setLoading(true)
+
+        val selectedCountryCode = binding.spinnerCountryCode.selectedItem.toString().split(" ")[0]
+
         // Employer app always registers as EMPLOYER — no role selector needed
-        RetrofitClient.get().register(RegisterRequest(mobile, "EMPLOYER", "+91"))
+        RetrofitClient.get().register(RegisterRequest(mobile, "EMPLOYER", selectedCountryCode))
             .enqueue(object : Callback<RegisterResponse> {
                 override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
                     setLoading(false)

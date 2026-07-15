@@ -14,8 +14,10 @@ import com.workforcex.backend.repository.UserRepository;
 import com.workforcex.backend.repository.VerificationRepository;
 import com.workforcex.backend.service.storage.FileStorageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,15 +32,18 @@ public class VerificationService {
     private final EmployerVerificationRepository employerVerificationRepository;
     private final FileStorageService fileStorageService;
 
-    public List<Verification> getVerificationStatusForUser(String userMobile) {
-        User user = userRepository.findByMobileNumber(userMobile)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    private User findUserByMobile(String countryCode, String mobileNumber) {
+        return userRepository.findByCountryCodeAndMobileNumber(countryCode, mobileNumber)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    }
+
+    public List<Verification> getVerificationStatusForUser(String countryCode, String userMobile) {
+        User user = findUserByMobile(countryCode, userMobile);
         return verificationRepository.findByUserId(user.getId());
     }
 
-    public Document uploadDocument(String userMobile, DocumentType documentType, MultipartFile file) {
-        User user = userRepository.findByMobileNumber(userMobile)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public Document uploadDocument(String countryCode, String userMobile, DocumentType documentType, MultipartFile file) {
+        User user = findUserByMobile(countryCode, userMobile);
 
         String storageKey;
         try {
@@ -71,9 +76,8 @@ public class VerificationService {
                 .toList();
     }
 
-    public List<DocumentResponse> getDocumentsForUserByMobile(String mobile) {
-        User user = userRepository.findByMobileNumber(mobile)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public List<DocumentResponse> getDocumentsForUserByMobile(String countryCode, String mobile) {
+        User user = findUserByMobile(countryCode, mobile);
         return getDocumentsForUser(user.getId());
     }
 
@@ -87,7 +91,7 @@ public class VerificationService {
     }
 
     /** Resolves a single document, enforcing that the requester may see it. */
-    public Document getDocumentForAccess(UUID documentId, String requesterMobile, boolean requesterIsEmployer) {
+    public Document getDocumentForAccess(UUID documentId, String countryCode, String requesterMobile, boolean requesterIsEmployer) {
         Document document = documentRepository.findById(documentId)
                 .orElseThrow(() -> new IllegalArgumentException("Document not found"));
 
@@ -95,8 +99,7 @@ public class VerificationService {
             return document; // Employers may view any worker's documents to verify them.
         }
 
-        User requester = userRepository.findByMobileNumber(requesterMobile)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User requester = findUserByMobile(countryCode, requesterMobile);
         if (!document.getUser().getId().equals(requester.getId())) {
             throw new SecurityException("Not authorized to access this document");
         }
@@ -148,9 +151,8 @@ public class VerificationService {
         return verificationRepository.findByUserId(workerId);
     }
 
-    public EmployerVerification updateEmployerVerificationStatus(String employerMobile, UUID verificationId, VerificationStatus newStatus, String comments) {
-        User employer = userRepository.findByMobileNumber(employerMobile)
-                .orElseThrow(() -> new IllegalArgumentException("Employer not found"));
+    public EmployerVerification updateEmployerVerificationStatus(String countryCode, String employerMobile, UUID verificationId, VerificationStatus newStatus, String comments) {
+        User employer = findUserByMobile(countryCode, employerMobile);
 
         Verification verification = verificationRepository.findById(verificationId)
                 .orElseThrow(() -> new IllegalArgumentException("Verification record not found"));

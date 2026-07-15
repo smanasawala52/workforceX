@@ -32,8 +32,11 @@ class RegisterActivity : AppCompatActivity() {
             return
         }
         setLoading(true)
+
+        val selectedCountryCode = binding.spinnerCountryCode.selectedItem.toString().split(" ")[0]
+
         // Worker app always registers as WORKER
-        RetrofitClient.get().register(RegisterRequest(mobile, "WORKER", "+91"))
+        RetrofitClient.get().register(RegisterRequest(mobile, "WORKER", selectedCountryCode))
             .enqueue(object : Callback<RegisterResponse> {
                 override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
                     setLoading(false)

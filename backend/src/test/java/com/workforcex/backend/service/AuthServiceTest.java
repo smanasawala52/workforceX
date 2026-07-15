@@ -33,6 +33,7 @@ class AuthServiceTest {
     @InjectMocks
     private AuthService authService;
 
+    private static final String COUNTRY_CODE = "+91";
     private static final String MOBILE = "9876543210";
 
     @BeforeEach
@@ -42,9 +43,9 @@ class AuthServiceTest {
 
     @Test
     void register_savesNewUser_whenMobileNumberNotTaken() {
-        RegisterRequest request = new RegisterRequest(MOBILE, Role.WORKER,"");
+        RegisterRequest request = new RegisterRequest(COUNTRY_CODE, MOBILE, MOBILE, Role.WORKER);
 
-        when(userRepository.existsByMobileNumber(MOBILE)).thenReturn(false);
+        when(userRepository.existsByCountryCodeAndMobileNumber(COUNTRY_CODE, MOBILE)).thenReturn(false);
         when(passwordEncoder.encode(MOBILE)).thenReturn("hashed-password");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
             User u = invocation.getArgument(0);
@@ -55,6 +56,7 @@ class AuthServiceTest {
         User result = authService.register(request);
 
         assertThat(result.getMobileNumber()).isEqualTo(MOBILE);
+        assertThat(result.getCountryCode()).isEqualTo(COUNTRY_CODE);
         assertThat(result.getRole()).isEqualTo(Role.WORKER);
         assertThat(result.getPassword()).isEqualTo("hashed-password");
         verify(userRepository).save(any(User.class));
@@ -62,9 +64,9 @@ class AuthServiceTest {
 
     @Test
     void register_throws_whenMobileNumberAlreadyExists() {
-        RegisterRequest request = new RegisterRequest(MOBILE, Role.WORKER,"");
+        RegisterRequest request = new RegisterRequest(COUNTRY_CODE, MOBILE, "", Role.WORKER);
 
-        when(userRepository.existsByMobileNumber(MOBILE)).thenReturn(true);
+        when(userRepository.existsByCountryCodeAndMobileNumber(COUNTRY_CODE, MOBILE)).thenReturn(true);
 
         assertThatThrownBy(() -> authService.register(request))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -75,15 +77,16 @@ class AuthServiceTest {
 
     @Test
     void login_succeeds_whenPasswordMatches() {
-        LoginRequest request = new LoginRequest(MOBILE, MOBILE);
+        LoginRequest request = new LoginRequest(COUNTRY_CODE, MOBILE, MOBILE);
 
         User existingUser = new User();
         existingUser.setId(UUID.randomUUID());
+        existingUser.setCountryCode(COUNTRY_CODE);
         existingUser.setMobileNumber(MOBILE);
         existingUser.setPassword("hashed-password");
         existingUser.setRole(Role.WORKER);
 
-        when(userRepository.findByMobileNumber(MOBILE)).thenReturn(Optional.of(existingUser));
+        when(userRepository.findByCountryCodeAndMobileNumber(COUNTRY_CODE, MOBILE)).thenReturn(Optional.of(existingUser));
         when(passwordEncoder.matches(MOBILE, "hashed-password")).thenReturn(true);
 
         User result = authService.login(request);
@@ -93,9 +96,9 @@ class AuthServiceTest {
 
     @Test
     void login_throws_whenUserNotFound() {
-        LoginRequest request = new LoginRequest(MOBILE, MOBILE);
+        LoginRequest request = new LoginRequest(COUNTRY_CODE, MOBILE, MOBILE);
 
-        when(userRepository.findByMobileNumber(MOBILE)).thenReturn(Optional.empty());
+        when(userRepository.findByCountryCodeAndMobileNumber(COUNTRY_CODE, MOBILE)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> authService.login(request))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -104,14 +107,15 @@ class AuthServiceTest {
 
     @Test
     void login_throws_whenPasswordDoesNotMatch() {
-        LoginRequest request = new LoginRequest(MOBILE, "wrong-password");
+        LoginRequest request = new LoginRequest(COUNTRY_CODE, MOBILE, "wrong-password");
 
         User existingUser = new User();
+        existingUser.setCountryCode(COUNTRY_CODE);
         existingUser.setMobileNumber(MOBILE);
         existingUser.setPassword("hashed-password");
         existingUser.setRole(Role.WORKER);
 
-        when(userRepository.findByMobileNumber(MOBILE)).thenReturn(Optional.of(existingUser));
+        when(userRepository.findByCountryCodeAndMobileNumber(COUNTRY_CODE, MOBILE)).thenReturn(Optional.of(existingUser));
         when(passwordEncoder.matches("wrong-password", "hashed-password")).thenReturn(false);
 
         assertThatThrownBy(() -> authService.login(request))

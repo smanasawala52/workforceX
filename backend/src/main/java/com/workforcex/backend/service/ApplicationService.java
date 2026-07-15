@@ -25,9 +25,13 @@ public class ApplicationService {
     private final EmployerProfileRepository employerProfileRepository;
     private final NotificationService notificationService;
 
-    public JobApplicationResponse apply(String workerMobile, UUID jobId) {
-        User worker = userRepository.findByMobileNumber(workerMobile)
+    private User findUserByMobile(String countryCode, String mobileNumber) {
+        return userRepository.findByCountryCodeAndMobileNumber(countryCode, mobileNumber)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    }
+
+    public JobApplicationResponse apply(String countryCode, String workerMobile, UUID jobId) {
+        User worker = findUserByMobile(countryCode, workerMobile);
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job not found"));
 
@@ -52,9 +56,8 @@ public class ApplicationService {
         return buildResponse(savedApplication);
     }
 
-    public JobApplicationResponse offerJob(String employerMobile, UUID jobId, UUID workerId) {
-        User employer = userRepository.findByMobileNumber(employerMobile)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employer not found"));
+    public JobApplicationResponse offerJob(String countryCode, String employerMobile, UUID jobId, UUID workerId) {
+        User employer = findUserByMobile(countryCode, employerMobile);
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job not found"));
 
@@ -83,20 +86,18 @@ public class ApplicationService {
         return buildResponse(savedApplication);
     }
 
-    public List<JobApplicationResponse> getMyApplications(String workerMobile) {
-        User worker = userRepository.findByMobileNumber(workerMobile)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    public List<JobApplicationResponse> getMyApplications(String countryCode, String workerMobile) {
+        User worker = findUserByMobile(countryCode, workerMobile);
         return applicationRepository.findAllByWorkerId(worker.getId()).stream()
                 .map(this::buildResponse)
                 .collect(Collectors.toList());
     }
 
-    public List<JobApplicationResponse> getApplicationsForJob(String employerMobile, UUID jobId) {
+    public List<JobApplicationResponse> getApplicationsForJob(String countryCode, String employerMobile, UUID jobId) {
+        User employer = findUserByMobile(countryCode, employerMobile);
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Job not found"));
-        User employer = userRepository.findById(job.getEmployerId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        if (!employer.getMobileNumber().equals(employerMobile)) {
+        if (!job.getEmployerId().equals(employer.getId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You do not have permission to view this job's applications");
         }
         return applicationRepository.findAllByJobId(jobId).stream()
@@ -104,13 +105,12 @@ public class ApplicationService {
                 .collect(Collectors.toList());
     }
 
-    public JobApplicationResponse updateStatus(String employerMobile, UUID applicationId, ApplicationStatus newStatus) {
+    public JobApplicationResponse updateStatus(String countryCode, String employerMobile, UUID applicationId, ApplicationStatus newStatus) {
+        User employer = findUserByMobile(countryCode, employerMobile);
         JobApplication application = applicationRepository.findById(applicationId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Application not found"));
 
-        User employer = userRepository.findById(application.getJob().getEmployerId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        if (!employer.getMobileNumber().equals(employerMobile)) {
+        if (!application.getJob().getEmployerId().equals(employer.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to update this application");
         }
 

@@ -8,6 +8,7 @@ import com.workforcex.backend.entity.Verification;
 import com.workforcex.backend.entity.VerificationStatus;
 import com.workforcex.backend.service.VerificationService;
 import com.workforcex.backend.service.storage.LocalFileStorageService;
+import com.workforcex.backend.util.PhoneNumbers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -42,8 +43,11 @@ public class VerificationController {
      */
     @GetMapping("/status")
     @PreAuthorize("hasRole('WORKER')")
-    public ResponseEntity<List<Verification>> getMyVerificationStatus(Authentication auth) {
-        return ResponseEntity.ok(verificationService.getVerificationStatusForUser(auth.getName()));
+    public ResponseEntity<List<Verification>> getMyVerificationStatus(
+            Authentication auth
+    ) {
+        PhoneNumbers.Split split = PhoneNumbers.split(auth.getName());
+        return ResponseEntity.ok(verificationService.getVerificationStatusForUser(split.countryCode(), split.mobileNumber()));
     }
 
     /**
@@ -56,7 +60,8 @@ public class VerificationController {
             @RequestParam("type") DocumentType documentType,
             @RequestParam("file") MultipartFile file
     ) {
-        return ResponseEntity.ok(verificationService.uploadDocument(auth.getName(), documentType, file));
+        PhoneNumbers.Split split = PhoneNumbers.split(auth.getName());
+        return ResponseEntity.ok(verificationService.uploadDocument(split.countryCode(), split.mobileNumber(), documentType, file));
     }
 
     /**
@@ -84,8 +89,11 @@ public class VerificationController {
      */
     @GetMapping("/documents")
     @PreAuthorize("hasRole('WORKER')")
-    public ResponseEntity<List<DocumentResponse>> getMyDocuments(Authentication auth) {
-        return ResponseEntity.ok(verificationService.getDocumentsForUserByMobile(auth.getName()));
+    public ResponseEntity<List<DocumentResponse>> getMyDocuments(
+            Authentication auth
+    ) {
+        PhoneNumbers.Split split = PhoneNumbers.split(auth.getName());
+        return ResponseEntity.ok(verificationService.getDocumentsForUserByMobile(split.countryCode(), split.mobileNumber()));
     }
 
     /**
@@ -106,7 +114,10 @@ public class VerificationController {
      * never need to hit this endpoint there.
      */
     @GetMapping("/documents/{documentId}/raw")
-    public ResponseEntity<Resource> getDocumentFile(@PathVariable UUID documentId, Authentication auth) {
+    public ResponseEntity<Resource> getDocumentFile(
+            @PathVariable UUID documentId,
+            Authentication auth
+    ) {
         if (localFileStorageService == null) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
         }
@@ -114,9 +125,10 @@ public class VerificationController {
         boolean isEmployer = auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_EMPLOYER"));
 
+        PhoneNumbers.Split split = PhoneNumbers.split(auth.getName());
         Document document;
         try {
-            document = verificationService.getDocumentForAccess(documentId, auth.getName(), isEmployer);
+            document = verificationService.getDocumentForAccess(documentId, split.countryCode(), split.mobileNumber(), isEmployer);
         } catch (SecurityException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } catch (IllegalArgumentException e) {
@@ -148,6 +160,7 @@ public class VerificationController {
             @RequestParam("status") VerificationStatus newStatus,
             @RequestBody(required = false) String comments
     ) {
-        return ResponseEntity.ok(verificationService.updateEmployerVerificationStatus(auth.getName(), verificationId, newStatus, comments));
+        PhoneNumbers.Split split = PhoneNumbers.split(auth.getName());
+        return ResponseEntity.ok(verificationService.updateEmployerVerificationStatus(split.countryCode(), split.mobileNumber(), verificationId, newStatus, comments));
     }
 }

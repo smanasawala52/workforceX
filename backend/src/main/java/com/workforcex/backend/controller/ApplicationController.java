@@ -3,6 +3,7 @@ package com.workforcex.backend.controller;
 import com.workforcex.backend.dto.JobApplicationResponse;
 import com.workforcex.backend.entity.ApplicationStatus;
 import com.workforcex.backend.service.ApplicationService;
+import com.workforcex.backend.util.PhoneNumbers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,9 @@ public class ApplicationController {
             Authentication auth,
             @PathVariable UUID jobId
     ) {
+        PhoneNumbers.Split split = PhoneNumbers.split(auth.getName());
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(applicationService.apply(auth.getName(), jobId));
+                .body(applicationService.apply(split.countryCode(), split.mobileNumber(), jobId));
     }
 
     /**
@@ -42,15 +44,19 @@ public class ApplicationController {
             @RequestParam UUID jobId,
             @RequestParam UUID workerId
     ) {
+        PhoneNumbers.Split split = PhoneNumbers.split(auth.getName());
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(applicationService.offerJob(auth.getName(), jobId, workerId));
+                .body(applicationService.offerJob(split.countryCode(), split.mobileNumber(), jobId, workerId));
     }
 
     /** Worker: view all jobs I applied to. GET /api/applications/my */
     @GetMapping("/my")
     @PreAuthorize("hasRole('WORKER')")
-    public ResponseEntity<List<JobApplicationResponse>> getMyApplications(Authentication auth) {
-        return ResponseEntity.ok(applicationService.getMyApplications(auth.getName()));
+    public ResponseEntity<List<JobApplicationResponse>> getMyApplications(
+            Authentication auth
+    ) {
+        PhoneNumbers.Split split = PhoneNumbers.split(auth.getName());
+        return ResponseEntity.ok(applicationService.getMyApplications(split.countryCode(), split.mobileNumber()));
     }
 
     /**
@@ -63,8 +69,9 @@ public class ApplicationController {
             Authentication auth,
             @PathVariable UUID jobId
     ) {
+        PhoneNumbers.Split split = PhoneNumbers.split(auth.getName());
         return ResponseEntity.ok(
-                applicationService.getApplicationsForJob(auth.getName(), jobId));
+                applicationService.getApplicationsForJob(split.countryCode(), split.mobileNumber(), jobId));
     }
 
     /**
@@ -78,7 +85,8 @@ public class ApplicationController {
             @PathVariable UUID applicationId,
             @RequestParam ApplicationStatus status
     ) {
+        PhoneNumbers.Split split = PhoneNumbers.split(auth.getName());
         return ResponseEntity.ok(
-                applicationService.updateStatus(auth.getName(), applicationId, status));
+                applicationService.updateStatus(split.countryCode(), split.mobileNumber(), applicationId, status));
     }
 }

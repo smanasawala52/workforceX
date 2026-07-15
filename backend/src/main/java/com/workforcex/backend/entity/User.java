@@ -9,7 +9,9 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"countryCode", "mobileNumber"})
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,16 +22,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    // Country code stored separately for future internationalisation
+    // Country code stored separately for future internationalization
     // Defaults to +91 (India)
     @Column(nullable = false)
     private String countryCode = "+91";
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String mobileNumber; // 10-digit local number, no country code
 
     @Column(nullable = false)
-    private String password; // BCrypt hash
+    private String password; // Bcrypt hash
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
