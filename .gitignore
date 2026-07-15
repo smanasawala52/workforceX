@@ -11,3 +11,4 @@ local.properties
 
 # Ignore local override properties files
 application-local.properties
+/backend/data/uploads/*
