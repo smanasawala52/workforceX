@@ -28,10 +28,11 @@ public class MatchingController {
     @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<List<MatchedWorkerResponse>> getMatchedWorkers(
             Authentication authentication,
+            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode,
             @PathVariable UUID jobId
     ) {
         return ResponseEntity.ok(
-                matchingService.getMatchedWorkers(authentication.getName(), jobId));
+                matchingService.getMatchedWorkers(countryCode, authentication.getName(), jobId));
     }
 
     /**

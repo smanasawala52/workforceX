@@ -16,21 +16,21 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     public User register(RegisterRequest request) {
-        if (userRepository.existsByMobileNumber(request.mobileNumber())) {
+        if (userRepository.existsByCountryCodeAndMobileNumber(request.countryCode(), request.mobileNumber())) {
             throw new IllegalArgumentException("Mobile number already registered");
         }
 
         User user = new User();
         user.setCountryCode(request.countryCode());
         user.setMobileNumber(request.mobileNumber());
-        user.setPassword(passwordEncoder.encode(request.mobileNumber()));
+        user.setPassword(passwordEncoder.encode(request.password()));
         user.setRole(request.role());
 
         return userRepository.save(user);
     }
 
     public User login(LoginRequest request) {
-        User user = userRepository.findByMobileNumber(request.mobileNumber())
+        User user = userRepository.findByCountryCodeAndMobileNumber(request.countryCode(), request.mobileNumber())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid mobile number or password"));
 
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {

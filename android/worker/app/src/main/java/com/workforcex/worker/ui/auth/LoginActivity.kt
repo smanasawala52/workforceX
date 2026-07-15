@@ -43,7 +43,10 @@ class LoginActivity : AppCompatActivity() {
             return
         }
         setLoading(true)
-        RetrofitClient.get().login(LoginRequest(mobile, password))
+
+        val selectedCountryCode = binding.spinnerCountryCode.selectedItem.toString().split(" ")[0]
+
+        RetrofitClient.get().login(LoginRequest(mobile, password, selectedCountryCode))
             .enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                     setLoading(false)

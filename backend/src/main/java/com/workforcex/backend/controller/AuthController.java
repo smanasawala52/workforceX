@@ -33,7 +33,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         User user = authService.login(request);
-        String token = jwtUtil.generateToken(user.getMobileNumber(), user.getRole().name());
+        String token = jwtUtil.generateToken(user.getCountryCode() + user.getMobileNumber(), user.getRole().name());
         return ResponseEntity.ok(LoginResponse.fromEntity(user, token));
     }
 

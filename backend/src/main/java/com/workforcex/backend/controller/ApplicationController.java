@@ -25,10 +25,11 @@ public class ApplicationController {
     @PreAuthorize("hasRole('WORKER')")
     public ResponseEntity<JobApplicationResponse> apply(
             Authentication auth,
+            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode,
             @PathVariable UUID jobId
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(applicationService.apply(auth.getName(), jobId));
+                .body(applicationService.apply(countryCode, auth.getName(), jobId));
     }
 
     /**
@@ -39,18 +40,22 @@ public class ApplicationController {
     @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<JobApplicationResponse> offerJob(
             Authentication auth,
+            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode,
             @RequestParam UUID jobId,
             @RequestParam UUID workerId
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(applicationService.offerJob(auth.getName(), jobId, workerId));
+                .body(applicationService.offerJob(countryCode, auth.getName(), jobId, workerId));
     }
 
     /** Worker: view all jobs I applied to. GET /api/applications/my */
     @GetMapping("/my")
     @PreAuthorize("hasRole('WORKER')")
-    public ResponseEntity<List<JobApplicationResponse>> getMyApplications(Authentication auth) {
-        return ResponseEntity.ok(applicationService.getMyApplications(auth.getName()));
+    public ResponseEntity<List<JobApplicationResponse>> getMyApplications(
+            Authentication auth,
+            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode
+    ) {
+        return ResponseEntity.ok(applicationService.getMyApplications(countryCode, auth.getName()));
     }
 
     /**
@@ -61,10 +66,11 @@ public class ApplicationController {
     @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<List<JobApplicationResponse>> getApplicationsForJob(
             Authentication auth,
+            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode,
             @PathVariable UUID jobId
     ) {
         return ResponseEntity.ok(
-                applicationService.getApplicationsForJob(auth.getName(), jobId));
+                applicationService.getApplicationsForJob(countryCode, auth.getName(), jobId));
     }
 
     /**
@@ -75,10 +81,11 @@ public class ApplicationController {
     @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<JobApplicationResponse> updateStatus(
             Authentication auth,
+            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode,
             @PathVariable UUID applicationId,
             @RequestParam ApplicationStatus status
     ) {
         return ResponseEntity.ok(
-                applicationService.updateStatus(auth.getName(), applicationId, status));
+                applicationService.updateStatus(countryCode, auth.getName(), applicationId, status));
     }
 }

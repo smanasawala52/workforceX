@@ -11,8 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.*;
@@ -35,6 +37,23 @@ public class ResumeService {
     private final UserRepository userRepository;
     private final WorkerProfileRepository workerProfileRepository;
     private final SkillRepository skillRepository;
+
+    private User findUserByFullMobile(String fullMobile) {
+        String countryCode;
+        String mobileNumber;
+        if (fullMobile.startsWith("+91")) {
+            countryCode = "+91";
+            mobileNumber = fullMobile.substring(3);
+        } else if (fullMobile.startsWith("+971")) {
+            countryCode = "+971";
+            mobileNumber = fullMobile.substring(4);
+        } else {
+            countryCode = "+91"; // Fallback
+            mobileNumber = fullMobile;
+        }
+        return userRepository.findByCountryCodeAndMobileNumber(countryCode, mobileNumber)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    }
 
     // Master skill list for blue-collar/semi-skilled workers
     private static final List<String> SKILL_KEYWORDS = List.of(
@@ -84,8 +103,7 @@ public class ResumeService {
         Integer detectedExp = detectExperience(extractedText);
 
         // Save to worker profile
-        User user = userRepository.findByMobileNumber(mobileNumber)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User user = findUserByFullMobile(mobileNumber);
 
         WorkerProfile profile = workerProfileRepository.findByUserId(user.getId())
                 .orElseGet(() -> {

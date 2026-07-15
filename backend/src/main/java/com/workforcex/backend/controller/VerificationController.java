@@ -42,8 +42,11 @@ public class VerificationController {
      */
     @GetMapping("/status")
     @PreAuthorize("hasRole('WORKER')")
-    public ResponseEntity<List<Verification>> getMyVerificationStatus(Authentication auth) {
-        return ResponseEntity.ok(verificationService.getVerificationStatusForUser(auth.getName()));
+    public ResponseEntity<List<Verification>> getMyVerificationStatus(
+            Authentication auth,
+            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode
+    ) {
+        return ResponseEntity.ok(verificationService.getVerificationStatusForUser(countryCode, auth.getName()));
     }
 
     /**
@@ -53,10 +56,11 @@ public class VerificationController {
     @PreAuthorize("hasRole('WORKER')")
     public ResponseEntity<Document> uploadDocument(
             Authentication auth,
+            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode,
             @RequestParam("type") DocumentType documentType,
             @RequestParam("file") MultipartFile file
     ) {
-        return ResponseEntity.ok(verificationService.uploadDocument(auth.getName(), documentType, file));
+        return ResponseEntity.ok(verificationService.uploadDocument(countryCode, auth.getName(), documentType, file));
     }
 
     /**
@@ -84,8 +88,11 @@ public class VerificationController {
      */
     @GetMapping("/documents")
     @PreAuthorize("hasRole('WORKER')")
-    public ResponseEntity<List<DocumentResponse>> getMyDocuments(Authentication auth) {
-        return ResponseEntity.ok(verificationService.getDocumentsForUserByMobile(auth.getName()));
+    public ResponseEntity<List<DocumentResponse>> getMyDocuments(
+            Authentication auth,
+            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode
+    ) {
+        return ResponseEntity.ok(verificationService.getDocumentsForUserByMobile(countryCode, auth.getName()));
     }
 
     /**
@@ -106,7 +113,11 @@ public class VerificationController {
      * never need to hit this endpoint there.
      */
     @GetMapping("/documents/{documentId}/raw")
-    public ResponseEntity<Resource> getDocumentFile(@PathVariable UUID documentId, Authentication auth) {
+    public ResponseEntity<Resource> getDocumentFile(
+            @PathVariable UUID documentId,
+            Authentication auth,
+            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode
+    ) {
         if (localFileStorageService == null) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
         }
@@ -116,7 +127,7 @@ public class VerificationController {
 
         Document document;
         try {
-            document = verificationService.getDocumentForAccess(documentId, auth.getName(), isEmployer);
+            document = verificationService.getDocumentForAccess(documentId, countryCode, auth.getName(), isEmployer);
         } catch (SecurityException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } catch (IllegalArgumentException e) {
@@ -144,10 +155,11 @@ public class VerificationController {
     @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<EmployerVerification> updateVerificationStatus(
             Authentication auth,
+            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode,
             @PathVariable UUID verificationId,
             @RequestParam("status") VerificationStatus newStatus,
             @RequestBody(required = false) String comments
     ) {
-        return ResponseEntity.ok(verificationService.updateEmployerVerificationStatus(auth.getName(), verificationId, newStatus, comments));
+        return ResponseEntity.ok(verificationService.updateEmployerVerificationStatus(countryCode, auth.getName(), verificationId, newStatus, comments));
     }
 }

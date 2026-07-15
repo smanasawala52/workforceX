@@ -8,7 +8,9 @@ import com.workforcex.backend.repository.SkillRepository;
 import com.workforcex.backend.repository.UserRepository;
 import com.workforcex.backend.repository.WorkerProfileRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,19 +23,23 @@ public class WorkerProfileService {
     private final UserRepository userRepository;
     private final SkillRepository skillRepository;
 
+    private User findUserByMobile(String countryCode, String mobileNumber) {
+        return userRepository.findByCountryCodeAndMobileNumber(countryCode, mobileNumber)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    }
+
     /**
      * Creates the profile if one doesn't exist yet, otherwise updates it.
      * mobileNumber comes from the authenticated JWT, never from the request body.
      */
-    public WorkerProfile saveOrUpdate(String mobileNumber, WorkerProfileRequest request) {
-        User user = userRepository.findByMobileNumber(mobileNumber)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public WorkerProfile saveOrUpdate(String countryCode, String mobileNumber, WorkerProfileRequest request) {
+        User user = findUserByMobile(countryCode, mobileNumber);
 
         WorkerProfile profile = workerProfileRepository.findByUserId(user.getId())
                 .orElseGet(() -> {
                     WorkerProfile newProfile = new WorkerProfile();
                     newProfile.setUserId(user.getId());
-                    newProfile.setUserMobileNumber(user.getMobileNumber());
+                    newProfile.setUserMobileNumber(user.getCountryCode() + user.getMobileNumber());
                     return newProfile;
                 });
 
@@ -60,9 +66,8 @@ public class WorkerProfileService {
         return workerProfileRepository.save(profile);
     }
 
-    public WorkerProfile getByMobileNumber(String mobileNumber) {
-        User user = userRepository.findByMobileNumber(mobileNumber)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public WorkerProfile getByMobileNumber(String countryCode, String mobileNumber) {
+        User user = findUserByMobile(countryCode, mobileNumber);
 
         return workerProfileRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Worker profile not found - complete your profile first"));
@@ -74,7 +79,7 @@ public class WorkerProfileService {
     }
 
     private Set<String> splitToSet(String csv) {
-        if (csv == null || csv.isBlank()) return null;
+        if (csv == null || csv.isBlank()) return new HashSet<>();
         return Arrays.stream(csv.toLowerCase().split(","))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())

@@ -9,6 +9,8 @@ param(
     [string]$SdkPath = ""
 )
 
+
+git pull origin main
 Write-Host ""
 Write-Host "================================================" -ForegroundColor Cyan
 Write-Host "  WorkforceX Worker App (KMP) - Build & Run  " -ForegroundColor Cyan

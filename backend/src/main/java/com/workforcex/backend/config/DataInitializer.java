@@ -75,7 +75,7 @@ public class DataInitializer implements ApplicationRunner {
         };
         Set<String> allSkillsFromData = new HashSet<>();
         for (String[] w : workers) {
-            User user = userRepository.findByMobileNumber(w[0]).orElseGet(() -> {
+            User user = userRepository.findByCountryCodeAndMobileNumber("+91", w[0]).orElseGet(() -> {
                 User u = new User();
                 u.setCountryCode("+91");
                 u.setMobileNumber(w[0]);
@@ -88,7 +88,7 @@ public class DataInitializer implements ApplicationRunner {
                     .orElseGet(() -> {
                         WorkerProfile p = new WorkerProfile();
                         p.setUserId(user.getId());
-                        p.setUserMobileNumber(user.getMobileNumber());
+                        p.setUserMobileNumber(user.getFullMobileNumber());
                         return p;
                     });
             profile.setName(w[1]);
@@ -161,7 +161,7 @@ public class DataInitializer implements ApplicationRunner {
         int jobIndex = 0;
         Set<String> allSkillsFromData = new HashSet<>();
         for (String[] emp : employers) {
-            User user = userRepository.findByMobileNumber(emp[0]).orElseGet(() -> {
+            User user = userRepository.findByCountryCodeAndMobileNumber("+91", emp[0]).orElseGet(() -> {
                 User u = new User();
                 u.setCountryCode("+91");
                 u.setMobileNumber(emp[0]);
@@ -187,7 +187,7 @@ public class DataInitializer implements ApplicationRunner {
                 //job.setEmployer(user);
                 job.setEmployerId(user.getId());
                 job.setCompanyName(profile.getCompanyName());
-                job.setEmployerMobileNumber(user.getMobileNumber());
+                job.setEmployerMobileNumber(user.getFullMobileNumber());
                 job.setTitle(t[0]);
                 List<String> skills = new ArrayList<>(splitToSet(t[1]));
                 int size = skills.size();

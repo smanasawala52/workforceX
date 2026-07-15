@@ -29,15 +29,13 @@
         android:orientation="horizontal"
         android:layout_marginBottom="16dp">
 
-        <TextView
+        <Spinner
+            android:id="@+id/spinnerCountryCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+91"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:paddingEnd="8dp"
-            android:paddingTop="16dp"
-            android:gravity="center_vertical"/>
+            android:layout_gravity="center_vertical"
+            android:entries="@array/country_codes"
+            />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"

@@ -7,7 +7,9 @@ import com.workforcex.backend.entity.Skill;
 import com.workforcex.backend.entity.User;
 import com.workforcex.backend.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,12 +23,28 @@ public class JobService {
     private final SkillRepository skillRepository;
     private final EmployerProfileRepository employerProfileRepository;
 
+    private User findUserByFullMobile(String fullMobile) {
+        String countryCode;
+        String mobileNumber;
+        if (fullMobile.startsWith("+91")) {
+            countryCode = "+91";
+            mobileNumber = fullMobile.substring(3);
+        } else if (fullMobile.startsWith("+971")) {
+            countryCode = "+971";
+            mobileNumber = fullMobile.substring(4);
+        } else {
+            countryCode = "+91"; // Fallback
+            mobileNumber = fullMobile;
+        }
+        return userRepository.findByCountryCodeAndMobileNumber(countryCode, mobileNumber)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    }
+
     public Job createJob(String employerMobileNumber, JobRequest request) {
-        User employer = userRepository.findByMobileNumber(employerMobileNumber)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User employer = findUserByFullMobile(employerMobileNumber);
 
         Job job = new Job();
-        job.setEmployerMobileNumber(employer.getMobileNumber());
+        job.setEmployerMobileNumber(employer.getFullMobileNumber());
         String companyName = request.companyName();
         if (companyName != null && !companyName.isBlank()) {
             job.setCompanyName(companyName);
@@ -65,8 +83,7 @@ public class JobService {
     }
 
     public List<Job> getJobsForEmployer(String employerMobileNumber) {
-        User employer = userRepository.findByMobileNumber(employerMobileNumber)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User employer = findUserByFullMobile(employerMobileNumber);
         return jobRepository.findAllByEmployerId(employer.getId());
     }
 
@@ -75,7 +92,7 @@ public class JobService {
                 .orElseThrow(() -> new IllegalArgumentException("Job not found"));
         User employer = userRepository.findById(job.getEmployerId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        if (!employer.getMobileNumber().equals(employerMobileNumber)) {
+        if (!employer.getFullMobileNumber().equals(employerMobileNumber)) {
             throw new IllegalArgumentException("You do not have permission to access this job");
         }
         return job;

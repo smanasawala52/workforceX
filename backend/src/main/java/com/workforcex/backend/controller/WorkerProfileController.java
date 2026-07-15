@@ -21,17 +21,21 @@ public class WorkerProfileController {
     @PutMapping
     public ResponseEntity<WorkerProfileResponse> saveOrUpdate(
             Authentication authentication,
+            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode,
             @RequestBody WorkerProfileRequest request
     ) {
         String mobileNumber = authentication.getName(); // set by JwtAuthFilter from the token's subject
-        WorkerProfile profile = workerProfileService.saveOrUpdate(mobileNumber, request);
+        WorkerProfile profile = workerProfileService.saveOrUpdate(countryCode, mobileNumber, request);
         return ResponseEntity.ok(WorkerProfileResponse.fromEntity(profile));
     }
 
     @GetMapping
-    public ResponseEntity<WorkerProfileResponse> getMyProfile(Authentication authentication) {
+    public ResponseEntity<WorkerProfileResponse> getMyProfile(
+            Authentication authentication,
+            @RequestHeader(value = "X-Country-Code", defaultValue = "+91") String countryCode
+    ) {
         String mobileNumber = authentication.getName();
-        WorkerProfile profile = workerProfileService.getByMobileNumber(mobileNumber);
+        WorkerProfile profile = workerProfileService.getByMobileNumber(countryCode, mobileNumber);
         return ResponseEntity.ok(WorkerProfileResponse.fromEntity(profile));
     }
 
