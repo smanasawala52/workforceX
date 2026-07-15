@@ -105,7 +105,7 @@ class ApplicationControllerIntegrationTest extends AbstractIntegrationTest {
         String employerToken = registerAndLoginAs(EMPLOYER, "EMPLOYER");
         registerAndLoginAs(WORKER1, "WORKER");
         String jobId = createJob(employerToken);
-        User worker = userRepository.findByMobileNumber(WORKER1).get();
+        User worker = userRepository.findByCountryCodeAndMobileNumber("+91", WORKER1).get();
 
         mockMvc.perform(post("/api/applications/offer")
                         .header("Authorization", "Bearer " + employerToken)
@@ -119,7 +119,7 @@ class ApplicationControllerIntegrationTest extends AbstractIntegrationTest {
         String employerToken = registerAndLoginAs(EMPLOYER, "EMPLOYER");
         String workerToken = registerAndLoginAs(WORKER1, "WORKER");
         String jobId = createJob(employerToken);
-        User worker = userRepository.findByMobileNumber(WORKER1).get();
+        User worker = userRepository.findByCountryCodeAndMobileNumber("+91", WORKER1).get();
 
         mockMvc.perform(post("/api/applications/" + jobId).header("Authorization", "Bearer " + workerToken));
 
