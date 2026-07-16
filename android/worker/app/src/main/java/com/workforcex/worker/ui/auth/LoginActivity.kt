@@ -4,9 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.workforcex.shared.Result
 import com.workforcex.worker.databinding.ActivityLoginBinding
 import com.workforcex.worker.ui.worker.WorkerDashboardActivity
@@ -16,13 +16,14 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var tokenManager: TokenManager
-    private val loginViewModel: LoginViewModel by viewModels()
+    private lateinit var loginViewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         tokenManager = TokenManager(this)
+        loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
 
         binding.btnLogin.setOnClickListener { attemptLogin() }
         binding.tvGoToRegister.setOnClickListener {
