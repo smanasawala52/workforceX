@@ -42,6 +42,13 @@ if ($AvdName -ne "") { $employerArgs += " -AvdName '$AvdName'" }
 if ($SdkPath -ne "") { $employerArgs += " -SdkPath '$SdkPath'" }
 Start-Process powershell -ArgumentList $employerArgs
 
+
+# ── WebApp ───────────────────────────────────────────────────────────────────
+Write-Host "Starting WebApp in a new window..." -ForegroundColor Cyan
+Start-Process powershell -ArgumentList "-NoExit", "-Command", `
+    "cd '$root'; .\run-employer-webapp.ps1"
+
+
 Write-Host ""
 Write-Host "All three processes launched!" -ForegroundColor Green
 Write-Host ""

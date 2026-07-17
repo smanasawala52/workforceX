@@ -29,9 +29,13 @@ public class DataInitializer implements ApplicationRunner {
     private final WorkerProfileRepository workerProfileRepository;
     private final PasswordEncoder passwordEncoder;
     private final SkillRepository skillRepository;
+    private final AdminRepository adminRepository;
+    private final CSRRepository csrRepository;
 
     @Override
     public void run(ApplicationArguments args) {
+        createAdmins();
+        createCSRs();
         if (jobRepository.count() > 0) {
             log.info("DataInitializer: jobs already exist, skipping seed.");
         } else {
@@ -46,6 +50,95 @@ public class DataInitializer implements ApplicationRunner {
             log.info("DataInitializer: seeding 20 dummy workers...");
             createWorkers();
             log.info("DataInitializer: worker seeding complete.");
+        }
+    }
+
+    private void createAdmins() {
+        // Super Admin
+        if (userRepository.findByCountryCodeAndMobileNumber("+91", "9000000000").isEmpty()) {
+            log.info("DataInitializer: creating super admin user...");
+            User user = new User();
+            user.setCountryCode("+91");
+            user.setMobileNumber("9000000000");
+            user.setPassword(passwordEncoder.encode("admin"));
+            user.setRole(Role.ADMIN);
+            userRepository.save(user);
+
+            Admin admin = new Admin();
+            admin.setUser(user);
+            admin.setRegion(null); // Super admin
+            adminRepository.save(admin);
+            log.info("DataInitializer: super admin user created.");
+        }
+
+        // Mumbai Admin
+        if (userRepository.findByCountryCodeAndMobileNumber("+91", "9000000001").isEmpty()) {
+            log.info("DataInitializer: creating Mumbai admin user...");
+            User user = new User();
+            user.setCountryCode("+91");
+            user.setMobileNumber("9000000001");
+            user.setPassword(passwordEncoder.encode("admin"));
+            user.setRole(Role.ADMIN);
+            userRepository.save(user);
+
+            Admin admin = new Admin();
+            admin.setUser(user);
+            admin.setRegion("Mumbai");
+            adminRepository.save(admin);
+            log.info("DataInitializer: Mumbai admin user created.");
+        }
+
+        // Delhi Admin
+        if (userRepository.findByCountryCodeAndMobileNumber("+91", "9000000002").isEmpty()) {
+            log.info("DataInitializer: creating Delhi admin user...");
+            User user = new User();
+            user.setCountryCode("+91");
+            user.setMobileNumber("9000000002");
+            user.setPassword(passwordEncoder.encode("admin"));
+            user.setRole(Role.ADMIN);
+            userRepository.save(user);
+
+            Admin admin = new Admin();
+            admin.setUser(user);
+            admin.setRegion("Delhi");
+            adminRepository.save(admin);
+            log.info("DataInitializer: Delhi admin user created.");
+        }
+    }
+
+    private void createCSRs() {
+        // Mumbai CSR
+        if (userRepository.findByCountryCodeAndMobileNumber("+91", "9000000003").isEmpty()) {
+            log.info("DataInitializer: creating Mumbai CSR user...");
+            User user = new User();
+            user.setCountryCode("+91");
+            user.setMobileNumber("9000000003");
+            user.setPassword(passwordEncoder.encode("csr"));
+            user.setRole(Role.CSR);
+            userRepository.save(user);
+
+            CSR csr = new CSR();
+            csr.setUser(user);
+            csr.setRegion("Mumbai");
+            csrRepository.save(csr);
+            log.info("DataInitializer: Mumbai CSR user created.");
+        }
+
+        // Delhi CSR
+        if (userRepository.findByCountryCodeAndMobileNumber("+91", "9000000004").isEmpty()) {
+            log.info("DataInitializer: creating Delhi CSR user...");
+            User user = new User();
+            user.setCountryCode("+91");
+            user.setMobileNumber("9000000004");
+            user.setPassword(passwordEncoder.encode("csr"));
+            user.setRole(Role.CSR);
+            userRepository.save(user);
+
+            CSR csr = new CSR();
+            csr.setUser(user);
+            csr.setRegion("Delhi");
+            csrRepository.save(csr);
+            log.info("DataInitializer: Delhi CSR user created.");
         }
     }
 

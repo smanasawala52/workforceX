@@ -1,6 +1,7 @@
 package com.workforcex.backend.controller;
 
 import com.workforcex.backend.dto.DocumentResponse;
+import com.workforcex.backend.dto.VerificationResponse;
 import com.workforcex.backend.entity.Document;
 import com.workforcex.backend.entity.DocumentType;
 import com.workforcex.backend.entity.EmployerVerification;
@@ -69,7 +70,7 @@ public class VerificationController {
      */
     @GetMapping("/pending")
     @PreAuthorize("hasRole('EMPLOYER')")
-    public ResponseEntity<List<Verification>> getPendingVerifications() {
+    public ResponseEntity<List<VerificationResponse>> getPendingVerifications() {
         return ResponseEntity.ok(verificationService.getPendingVerifications());
     }
 

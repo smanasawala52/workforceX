@@ -4,7 +4,7 @@
 # sets production environment variables, and starts Spring Boot.
 # ============================================================
 clear
-git pull origin uae-impl
+git pull origin main
 Write-Host ""
 Write-Host "======================================" -ForegroundColor Green
 Write-Host "   WorkforceX Backend Startup         " -ForegroundColor Green

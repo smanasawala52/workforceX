@@ -1,6 +1,7 @@
 package com.workforcex.backend.service;
 
 import com.workforcex.backend.dto.DocumentResponse;
+import com.workforcex.backend.dto.VerificationResponse;
 import com.workforcex.backend.entity.Document;
 import com.workforcex.backend.entity.DocumentType;
 import com.workforcex.backend.entity.EmployerVerification;
@@ -21,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -143,8 +145,24 @@ public class VerificationService {
         }
     }
 
-    public List<Verification> getPendingVerifications() {
-        return verificationRepository.findByStatus(VerificationStatus.SUBMITTED);
+    public List<VerificationResponse> getPendingVerifications() {
+        return verificationRepository.findByStatus(VerificationStatus.SUBMITTED).stream()
+                .map(VerificationResponse::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    public void approveVerification(UUID verificationId) {
+        Verification verification = verificationRepository.findById(verificationId)
+                .orElseThrow(() -> new IllegalArgumentException("Verification not found"));
+        verification.setStatus(VerificationStatus.VERIFIED);
+        verificationRepository.save(verification);
+    }
+
+    public void rejectVerification(UUID verificationId) {
+        Verification verification = verificationRepository.findById(verificationId)
+                .orElseThrow(() -> new IllegalArgumentException("Verification not found"));
+        verification.setStatus(VerificationStatus.REJECTED);
+        verificationRepository.save(verification);
     }
 
     public List<Verification> getVerificationsForWorker(UUID workerId) {

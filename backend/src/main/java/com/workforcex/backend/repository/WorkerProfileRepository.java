@@ -14,6 +14,8 @@ public interface WorkerProfileRepository extends JpaRepository<WorkerProfile, UU
 
     Optional<WorkerProfile> findByUserId(UUID userId);
 
+    List<WorkerProfile> findByCity(String city);
+
     @Query("SELECT w FROM WorkerProfile w WHERE (:cities IS NULL OR LOWER(w.city) IN :cities) " +
             "AND (:minExperience IS NULL OR w.experience >= :minExperience) " +
             "AND (:maxExperience IS NULL OR w.experience <= :maxExperience) " +

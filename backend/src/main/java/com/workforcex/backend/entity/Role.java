@@ -6,5 +6,7 @@ package com.workforcex.backend.entity;
  */
 public enum Role {
     WORKER,
-    EMPLOYER
+    EMPLOYER,
+    ADMIN,
+    CSR
 }
