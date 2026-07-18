@@ -118,7 +118,7 @@ public class JobService {
     }
 
     private Set<String> splitToSet(String csv) {
-        if (csv == null || csv.isBlank()) return null;
+        if (csv == null || csv.isBlank()) return new HashSet<>();
         return Arrays.stream(csv.toLowerCase().split(","))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())

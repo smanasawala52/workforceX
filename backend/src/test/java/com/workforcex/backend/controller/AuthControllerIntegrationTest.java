@@ -95,10 +95,20 @@ class AuthControllerIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void protectedEndpoint_rejectsRequest_withoutToken() throws Exception {
-        mockMvc.perform(post("/api/some-protected-endpoint"))
+        mockMvc.perform(post("/api/auth/some-protected-endpoint"))
                 .andExpect(result -> {
                     int status = result.getResponse().getStatus();
                     org.assertj.core.api.Assertions.assertThat(status).isIn(401, 403);
                 });
+    }
+
+    @Test
+    void protectedEndpoint_grantsAccess_withValidToken() throws Exception {
+        String token = registerAndLoginAs("9000077771", "WORKER");
+
+        mockMvc.perform(post("/api/auth/some-protected-endpoint")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Access granted"));
     }
 }

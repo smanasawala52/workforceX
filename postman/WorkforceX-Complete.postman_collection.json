@@ -1,862 +1,1487 @@
 {
-  "info": {
-    "name": "WorkforceX - Complete API",
-    "description": "WorkforceX backend API collection.\n\nFLOW:\n1. Run 'Register + Login (Worker)' \u2192 {{workerToken}} auto-saved\n2. Run 'Register + Login (Employer)' \u2192 {{employerToken}} auto-saved\n3. Use each folder with the correct token variable.",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:8080"
-    },
-    {
-      "key": "workerToken",
-      "value": ""
-    },
-    {
-      "key": "employerToken",
-      "value": ""
-    },
-    {
-      "key": "jobId",
-      "value": ""
-    }
-  ],
-  "item": [
-    {
-      "name": "Auth",
-      "item": [
-        {
-          "name": "Register Worker",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/auth/register",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "register"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"mobileNumber\": \"9876543210\",\n  \"role\": \"WORKER\",\n  \"countryCode\": \"+91\"\n}"
-            }
-          }
-        },
-        {
-          "name": "Register Employer",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/auth/register",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "register"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"mobileNumber\": \"9123456780\",\n  \"role\": \"EMPLOYER\",\n  \"countryCode\": \"+91\"\n}"
-            }
-          }
-        },
-        {
-          "name": "Login Worker \u2192 saves {{workerToken}}",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const d = pm.response.json();",
-                  "if(d.token){ pm.collectionVariables.set('workerToken', d.token); console.log('workerToken saved'); }"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"mobileNumber\": \"9876543210\",\n  \"password\": \"9876543210\"\n}"
-            }
-          }
-        },
-        {
-          "name": "Login Employer \u2192 saves {{employerToken}}",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const d = pm.response.json();",
-                  "if(d.token){ pm.collectionVariables.set('employerToken', d.token); console.log('employerToken saved'); }"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"mobileNumber\": \"9123456780\",\n  \"password\": \"9123456780\"\n}"
-            }
-          }
-        },
-        {
-          "name": "Register - Duplicate (should 400)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/auth/register",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "register"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"mobileNumber\": \"9876543210\",\n  \"role\": \"WORKER\",\n  \"countryCode\": \"+91\"\n}"
-            }
-          }
-        },
-        {
-          "name": "Register - Invalid Mobile (should 400)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/auth/register",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "register"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"mobileNumber\": \"12345\",\n  \"role\": \"WORKER\"\n}"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Worker Profile (use workerToken)",
-      "item": [
-        {
-          "name": "Save / Update My Profile",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{workerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/worker/profile",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "worker",
-                "profile"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Ramesh Kumar\",\n  \"gender\": \"Male\",\n  \"city\": \"Mumbai\",\n  \"state\": \"Maharashtra\",\n  \"skills\": \"security,patrolling,cctv\",\n  \"experience\": 5,\n  \"preferredSalary\": 16000\n}"
-            }
-          }
-        },
-        {
-          "name": "Get My Profile",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{workerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/worker/profile",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "worker",
-                "profile"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Upload Resume PDF",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{workerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/worker/resume",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "worker",
-                "resume"
-              ]
-            },
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "file",
-                  "type": "file",
-                  "description": "Select a PDF resume from your machine"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Get Profile - No Token (should 401/403)",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/worker/profile",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "worker",
-                "profile"
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Employer Profile (use employerToken)",
-      "item": [
-        {
-          "name": "Save / Update Company Profile",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{employerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/employer/profile",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "employer",
-                "profile"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"companyName\": \"Acme Security Ltd\",\n  \"contactPerson\": \"Priya Shah\",\n  \"email\": \"priya@acme.example\",\n  \"address\": \"SG Highway, Ahmedabad\"\n}"
-            }
-          }
-        },
-        {
-          "name": "Get My Company Profile",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{employerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/employer/profile",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "employer",
-                "profile"
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Jobs - Employer CRUD (use employerToken)",
-      "item": [
-        {
-          "name": "Create Job \u2192 saves {{jobId}}",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const d = pm.response.json();",
-                  "if(d.id){ pm.collectionVariables.set('jobId', d.id); console.log('jobId saved: '+d.id); }"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{employerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/jobs",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "jobs"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"title\": \"Security Guard\",\n  \"skillsRequired\": \"security,patrolling\",\n  \"experienceRequired\": 2,\n  \"location\": \"Mumbai,Pune,Thane\",\n  \"salaryMin\": 15000,\n  \"salaryMax\": 18000,\n  \"openPositions\": 3,\n  \"description\": \"Night shift security guard for residential complex\"\n}"
-            }
-          }
-        },
-        {
-          "name": "Get All My Jobs",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{employerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/jobs",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "jobs"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Get Job by ID",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{employerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/jobs/{{jobId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "jobs",
-                "{{jobId}}"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Update Job",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{employerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/jobs/{{jobId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "jobs",
-                "{{jobId}}"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"title\": \"Senior Security Guard\",\n  \"skillsRequired\": \"security,patrolling,leadership\",\n  \"experienceRequired\": 4,\n  \"location\": \"Mumbai,Pune\",\n  \"salaryMin\": 19000,\n  \"salaryMax\": 22000,\n  \"openPositions\": 2,\n  \"description\": \"Updated description\"\n}"
-            }
-          }
-        },
-        {
-          "name": "Delete Job",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{employerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/jobs/{{jobId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "jobs",
-                "{{jobId}}"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Create Job - No Token (should 401/403)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/jobs",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "jobs"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\"title\":\"Test\"}"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Matching - Ranked Candidates (use employerToken)",
-      "item": [
-        {
-          "name": "Get Ranked Candidates for Job",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{employerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/matching/{{jobId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "matching",
-                "{{jobId}}"
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Candidate Search - Spiral 2 (use employerToken)",
-      "item": [
-        {
-          "name": "Search All Candidates (no filters)",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{employerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/matching/search",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "matching",
-                "search"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Search by Skills",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{employerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/matching/search?skills=security,patrolling",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "matching",
-                "search"
-              ],
-              "query": [
-                {
-                  "key": "skills",
-                  "value": "security,patrolling"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Search by City",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{employerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/matching/search?city=Mumbai",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "matching",
-                "search"
-              ],
-              "query": [
-                {
-                  "key": "city",
-                  "value": "Mumbai"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Search with All Filters",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{employerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/matching/search?skills=security&city=Mumbai&experienceMin=2&experienceMax=10&salaryMin=10000&salaryMax=20000",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "matching",
-                "search"
-              ],
-              "query": [
-                {
-                  "key": "skills",
-                  "value": "security"
-                },
-                {
-                  "key": "city",
-                  "value": "Mumbai"
-                },
-                {
-                  "key": "experienceMin",
-                  "value": "2"
-                },
-                {
-                  "key": "experienceMax",
-                  "value": "10"
-                },
-                {
-                  "key": "salaryMin",
-                  "value": "10000"
-                },
-                {
-                  "key": "salaryMax",
-                  "value": "20000"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Search - Worker Token (should 403)",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{workerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/matching/search",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "matching",
-                "search"
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Worker Browse Jobs - Spiral 2 (use workerToken)",
-      "item": [
-        {
-          "name": "Browse All Available Jobs",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{workerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/jobs/browse",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "jobs",
-                "browse"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Browse Jobs - Employer Token (should 403)",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{employerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/jobs/browse",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "jobs",
-                "browse"
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Resume Upload - Spiral 2 (use workerToken)",
-      "item": [
-        {
-          "name": "Upload Resume PDF",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{workerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/worker/resume",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "worker",
-                "resume"
-              ]
-            },
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "file",
-                  "type": "file",
-                  "description": "Select a PDF file from your local machine"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Upload Resume - Employer Token (should 403)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{employerToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/worker/resume",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "worker",
-                "resume"
-              ]
-            },
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "file",
-                  "type": "file"
-                }
-              ]
-            }
-          }
-        }
-      ]
-    }
-  ]
+	"info": {
+		"name": "WorkforceX - Complete API",
+		"description": "WorkforceX backend API collection.\n\nFLOW:\n1. Run 'Register + Login (Worker)' \u2192 {{workerToken}} auto-saved\n2. Run 'Register + Login (Employer)' \u2192 {{employerToken}} auto-saved\n3. Use each folder with the correct token variable.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "workerToken",
+			"value": ""
+		},
+		{
+			"key": "employerToken",
+			"value": ""
+		},
+		{
+			"key": "jobId",
+			"value": ""
+		},
+		{
+			"key": "applicationId",
+			"value": ""
+		},
+		{
+			"key": "verificationId",
+			"value": ""
+		},
+		{
+			"key": "notificationId",
+			"value": ""
+		},
+		{
+			"key": "workerUserId",
+			"value": ""
+		},
+		{
+			"key": "documentId",
+			"value": ""
+		}
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register Worker",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mobileNumber\": \"9876543210\",\n  \"role\": \"WORKER\",\n  \"countryCode\": \"+91\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Register Employer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mobileNumber\": \"9123456780\",\n  \"role\": \"EMPLOYER\",\n  \"countryCode\": \"+91\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Login Worker \u2192 saves {{workerToken}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const d = pm.response.json();",
+									"if(d.token){ pm.collectionVariables.set('workerToken', d.token); console.log('workerToken saved'); }"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mobileNumber\": \"9876543210\",\n  \"password\": \"9876543210\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Login Employer \u2192 saves {{employerToken}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const d = pm.response.json();",
+									"if(d.token){ pm.collectionVariables.set('employerToken', d.token); console.log('employerToken saved'); }"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mobileNumber\": \"9123456780\",\n  \"password\": \"9123456780\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Register - Duplicate (should 400)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mobileNumber\": \"9876543210\",\n  \"role\": \"WORKER\",\n  \"countryCode\": \"+91\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Register - Invalid Mobile (should 400)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mobileNumber\": \"12345\",\n  \"role\": \"WORKER\"\n}"
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Worker Profile (use workerToken)",
+			"item": [
+				{
+					"name": "Save / Update My Profile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{workerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/worker/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"worker",
+								"profile"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Ramesh Kumar\",\n  \"gender\": \"Male\",\n  \"city\": \"Mumbai\",\n  \"state\": \"Maharashtra\",\n  \"skills\": \"security,patrolling,cctv\",\n  \"experience\": 5,\n  \"preferredSalary\": 16000\n}"
+						}
+					}
+				},
+				{
+					"name": "Get My Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{workerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/worker/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"worker",
+								"profile"
+							]
+						}
+					}
+				},
+				{
+					"name": "Upload Resume PDF",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{workerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/worker/resume",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"worker",
+								"resume"
+							]
+						},
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"description": "Select a PDF resume from your machine"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Profile - No Token (should 401/403)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/worker/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"worker",
+								"profile"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Worker Profile by ID (any authenticated caller)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/worker/profile/{{workerUserId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"worker",
+								"profile",
+								"{{workerUserId}}"
+							]
+						},
+						"description": "Looks up a worker profile by their User ID. No role restriction beyond being authenticated \u2014 used by employers viewing an applicant/candidate. Populate {{workerUserId}} from an Applications or Candidate Search call first."
+					}
+				}
+			]
+		},
+		{
+			"name": "Employer Profile (use employerToken)",
+			"item": [
+				{
+					"name": "Save / Update Company Profile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/employer/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"employer",
+								"profile"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"companyName\": \"Acme Security Ltd\",\n  \"contactPerson\": \"Priya Shah\",\n  \"email\": \"priya@acme.example\",\n  \"address\": \"SG Highway, Ahmedabad\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Get My Company Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/employer/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"employer",
+								"profile"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Jobs - Employer CRUD (use employerToken)",
+			"item": [
+				{
+					"name": "Create Job \u2192 saves {{jobId}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const d = pm.response.json();",
+									"if(d.id){ pm.collectionVariables.set('jobId', d.id); console.log('jobId saved: '+d.id); }"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"jobs"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Security Guard\",\n  \"skillsRequired\": \"security,patrolling\",\n  \"experienceRequired\": 2,\n  \"location\": \"Mumbai,Pune,Thane\",\n  \"salaryMin\": 15000,\n  \"salaryMax\": 18000,\n  \"openPositions\": 3,\n  \"description\": \"Night shift security guard for residential complex\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Get All My Jobs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"jobs"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Job by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/{{jobId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"jobs",
+								"{{jobId}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Job",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/{{jobId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"jobs",
+								"{{jobId}}"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Senior Security Guard\",\n  \"skillsRequired\": \"security,patrolling,leadership\",\n  \"experienceRequired\": 4,\n  \"location\": \"Mumbai,Pune\",\n  \"salaryMin\": 19000,\n  \"salaryMax\": 22000,\n  \"openPositions\": 2,\n  \"description\": \"Updated description\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Delete Job",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/{{jobId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"jobs",
+								"{{jobId}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Job - No Token (should 401/403)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"jobs"
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\"title\":\"Test\"}"
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Matching - Ranked Candidates (use employerToken)",
+			"item": [
+				{
+					"name": "Get Ranked Candidates for Job",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/matching/{{jobId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"matching",
+								"{{jobId}}"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Candidate Search - Spiral 2 (use employerToken)",
+			"item": [
+				{
+					"name": "Search All Candidates (no filters)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/matching/search",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"matching",
+								"search"
+							]
+						}
+					}
+				},
+				{
+					"name": "Search by Skills",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/matching/search?skills=security,patrolling",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"matching",
+								"search"
+							],
+							"query": [
+								{
+									"key": "skills",
+									"value": "security,patrolling"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Search by City",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/matching/search?city=Mumbai",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"matching",
+								"search"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "Mumbai"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Search with All Filters",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/matching/search?skills=security&city=Mumbai&experienceMin=2&experienceMax=10&salaryMin=10000&salaryMax=20000",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"matching",
+								"search"
+							],
+							"query": [
+								{
+									"key": "skills",
+									"value": "security"
+								},
+								{
+									"key": "city",
+									"value": "Mumbai"
+								},
+								{
+									"key": "experienceMin",
+									"value": "2"
+								},
+								{
+									"key": "experienceMax",
+									"value": "10"
+								},
+								{
+									"key": "salaryMin",
+									"value": "10000"
+								},
+								{
+									"key": "salaryMax",
+									"value": "20000"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Search - Worker Token (should 403)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{workerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/matching/search",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"matching",
+								"search"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Worker Browse Jobs - Spiral 2 (use workerToken)",
+			"item": [
+				{
+					"name": "Browse All Available Jobs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{workerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/browse",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"jobs",
+								"browse"
+							]
+						}
+					}
+				},
+				{
+					"name": "Browse Jobs - Employer Token (should 403)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/browse",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"jobs",
+								"browse"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Resume Upload - Spiral 2 (use workerToken)",
+			"item": [
+				{
+					"name": "Upload Resume PDF",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{workerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/worker/resume",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"worker",
+								"resume"
+							]
+						},
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"description": "Select a PDF file from your local machine"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Upload Resume - Employer Token (should 403)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/worker/resume",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"worker",
+								"resume"
+							]
+						},
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Applications - Hiring Loop",
+			"item": [
+				{
+					"name": "Worker - Apply to Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{workerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/applications/{{jobId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"applications",
+								"{{jobId}}"
+							]
+						},
+						"description": "Run \"Create Job\" first so {{jobId}} is populated, then register/login a worker and apply."
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const d = pm.response.json();",
+									"if(d.applicationId){ pm.collectionVariables.set('applicationId', d.applicationId); console.log('applicationId saved: '+d.applicationId); }",
+									"if(d.workerId){ pm.collectionVariables.set('workerUserId', d.workerId); }"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Employer - Offer Job to Worker",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/applications/offer?jobId={{jobId}}&workerId={{workerUserId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"applications",
+								"offer"
+							],
+							"query": [
+								{
+									"key": "jobId",
+									"value": "{{jobId}}"
+								},
+								{
+									"key": "workerId",
+									"value": "{{workerUserId}}"
+								}
+							]
+						},
+						"description": "Proactively invite a matched worker to a job, without the worker applying first."
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const d = pm.response.json();",
+									"if(d.applicationId){ pm.collectionVariables.set('applicationId', d.applicationId); }"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Worker - My Applications",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{workerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/applications/my",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"applications",
+								"my"
+							]
+						}
+					}
+				},
+				{
+					"name": "Employer - View Applicants for Job",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/applications/job/{{jobId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"applications",
+								"job",
+								"{{jobId}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Employer - Shortlist Applicant",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/applications/{{applicationId}}/status?status=SHORTLISTED",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"applications",
+								"{{applicationId}}",
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "SHORTLISTED"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Employer - Reject Applicant",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/applications/{{applicationId}}/status?status=REJECTED",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"applications",
+								"{{applicationId}}",
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "REJECTED"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Worker - Apply Twice (should 400 - duplicate)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{workerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/applications/{{jobId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"applications",
+								"{{jobId}}"
+							]
+						},
+						"description": "Expects a 400 \u2014 a worker cannot apply to the same job more than once."
+					}
+				}
+			]
+		},
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "Get Unread Notifications",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{workerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notifications"
+							]
+						},
+						"description": "Works for either workerToken or employerToken \u2014 swap the Authorization header to check the other role's notifications."
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const d = pm.response.json();",
+									"if(Array.isArray(d) && d.length > 0 && d[0].id){ pm.collectionVariables.set('notificationId', d[0].id); console.log('notificationId saved: '+d[0].id); }"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Mark Notification as Read",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{workerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/{{notificationId}}/read",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notifications",
+								"{{notificationId}}",
+								"read"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Verification Center",
+			"item": [
+				{
+					"name": "Worker - Get My Verification Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{workerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/verification/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"verification",
+								"status"
+							]
+						}
+					}
+				},
+				{
+					"name": "Worker - Upload Verification Document",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{workerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/verification/upload?type=AADHAAR",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"verification",
+								"upload"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "AADHAAR",
+									"description": "One of: AADHAAR, PAN, DRIVING_LICENSE, PASSPORT, CERTIFICATION, PHOTO, INTRO_VIDEO (see DocumentType enum)"
+								}
+							]
+						},
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"description": "Select a PDF/image ID document from your machine"
+								}
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const d = pm.response.json();",
+									"if(d.id){ pm.collectionVariables.set('documentId', d.id); console.log('documentId saved: '+d.id); }"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Worker - Get My Uploaded Documents",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{workerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/verification/documents",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"verification",
+								"documents"
+							]
+						},
+						"description": "Returns filename/type/viewable URL for each document the worker uploaded (distinct from the coarse /status check above)."
+					}
+				},
+				{
+					"name": "Employer - Get All Pending Verifications",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/verification/pending",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"verification",
+								"pending"
+							]
+						}
+					}
+				},
+				{
+					"name": "Employer - Get Worker Verification Records",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/verification/worker/{{workerUserId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"verification",
+								"worker",
+								"{{workerUserId}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Employer - Get Worker Uploaded Document Files",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/verification/worker/{{workerUserId}}/documents",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"verification",
+								"worker",
+								"{{workerUserId}}",
+								"documents"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Raw Document File (dev/local storage only)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{workerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/verification/documents/{{documentId}}/raw",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"verification",
+								"documents",
+								"{{documentId}}",
+								"raw"
+							]
+						},
+						"description": "Only works when the backend is running with local disk storage (non-prod profile). In prod, use the fileUrl already returned by the \"Get My Uploaded Documents\" call instead \u2014 it is a signed Supabase Storage URL."
+					}
+				},
+				{
+					"name": "Employer - Approve Verification",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/verification/{{verificationId}}/status?status=VERIFIED",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"verification",
+								"{{verificationId}}",
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "VERIFIED"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "Documents checked and confirmed valid"
+						}
+					}
+				},
+				{
+					"name": "Employer - Reject Verification",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{employerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/verification/{{verificationId}}/status?status=REJECTED",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"verification",
+								"{{verificationId}}",
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "REJECTED"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "Document image was blurry, please re-upload"
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Skills",
+			"item": [
+				{
+					"name": "Get All Skills (public)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/skills",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"skills"
+							]
+						},
+						"description": "Public master skill list, auto-seeded as workers/jobs are created with new skills."
+					}
+				}
+			]
+		}
+	]
 }

@@ -188,13 +188,6 @@ public class ResumeService {
         return found ? maxYears : null;
     }
 
-    private Set<String> splitToSet(String csv) {
-        if (csv == null || csv.isBlank()) return null;
-        return Arrays.stream(csv.toLowerCase().split(","))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .collect(Collectors.toSet());
-    }
     private void seedSkills(Set<String> allSkillsFromData) {
         try {
             // 1. Get all names currently in the DB

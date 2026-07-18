@@ -147,6 +147,65 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+            <!-- Code coverage: `mvn verify` runs tests, builds the HTML report at
+                 target/site/jacoco/index.html, and fails the build if line/branch
+                 coverage drops below the thresholds below. Entities/DTOs/config are
+                 excluded from the *enforced* ratio since they're boilerplate that gets
+                 exercised transitively through the integration tests rather than
+                 having dedicated tests of their own. -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <excludes>
+                                        <exclude>com/workforcex/backend/entity/**</exclude>
+                                        <exclude>com/workforcex/backend/dto/**</exclude>
+                                        <exclude>com/workforcex/backend/BackendApplication.class</exclude>
+                                        <exclude>com/workforcex/backend/config/**</exclude>
+                                    </excludes>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>1.00</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>1.00</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
