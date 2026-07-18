@@ -279,7 +279,7 @@ index 9c85375..0000000
 -/**
 - * Singleton Retrofit client.
 - * BASE_URL comes from BuildConfig (set per build type in app/build.gradle).
-- * - Debug:   http://10.0.2.2:8080/ (emulator localhost)
+- * - Debug:   https://workforcex-jtz0.onrender.com/ (emulator localhost)
 - * - Release: your Railway URL
 - */
 -public class RetrofitClient {

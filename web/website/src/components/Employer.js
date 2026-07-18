@@ -1,12 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Card.css';
 
-function Employer() {
+function Employer({ employer }) {
   return (
     <div className="card">
-      <h2>Need to Hire?</h2>
-      <p>Find reliable and skilled workers for your business. Post a job in minutes.</p>
-      <button className="card-button">Post a Job</button>
+      <h2>{employer.name}</h2>
+      <p>{employer.industry}</p>
+      <Link to={`/employer/${employer.id}`} className="card-button">View Profile</Link>
     </div>
   );
 }
